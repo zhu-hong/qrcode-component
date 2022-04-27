@@ -23,6 +23,7 @@
     "babel-plugin-component": "1.1.1",
     "core-js": "3.21.1",
     "cssnano": "5.1.7",
+    "postcss": "8.4.12",
     "postcss-scss": "4.0.4",
     "rollup": "2.70.2",
     "rollup-plugin-postcss": "4.0.2",
@@ -31,7 +32,8 @@
     "rollup-plugin-windicss": "1.8.4",
     "vite": "2.9.5",
     "vite-plugin-vue2": "2.0.0",
-    "vite-plugin-windicss": "1.8.4"
+    "vite-plugin-windicss": "1.8.4",
+    "vue-template-compiler": "2.6.14"
   },
   "dependencies": {
     "element-ui": "2.15.8",
