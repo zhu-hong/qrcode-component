@@ -1,15 +1,12 @@
-import { Button } from 'element-ui'
-
 import './theme/fonts/element-icons.woff'
 import './theme/fonts/element-icons.ttf'
 
-import Starter from './components/Starter.vue'
-
 import 'virtual:windi.css'
+
+import QrCodeContainer from './components/QrCodeContainer.vue'
 
 export default {
   install: (Vue) => {
-    Vue.component(Button.name, Button)
-    Vue.component(Starter.name, Starter)
+    Vue.component(QrCodeContainer.name, QrCodeContainer)
   },
 }
