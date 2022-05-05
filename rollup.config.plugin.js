@@ -14,7 +14,6 @@ export default [
   }),
   Postcss({
     extract: 'style.css',
-    syntax: 'postcss-scss',
     plugins: [
       CssNano(),
     ],
