@@ -1,18 +1,23 @@
 <script>
+import PlaygroundMenu from './components/PlaygroundMenu.vue'
 export default {
-
+  components: {
+    PlaygroundMenu,
+  },
 }
 </script>
 
 <template>
-  <div class="w-screen h-screen bg-gray-400 flex flex-col">
-    <div class="h-56px flex-none"></div>
-    <div class="flex-1 bg-sky-400">
+  <div class="w-screen h-screen flex flex-col min-w-6xl">
+    <PlaygroundMenu />
+    <div class="flex-1 bg-[#fdfdfd] overflow-auto">
       <router-view></router-view>
     </div>
   </div>
 </template>
 
 <style>
-
+::-webkit-scrollbar {
+  display: none;
+}
 </style>

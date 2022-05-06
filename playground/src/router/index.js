@@ -8,9 +8,26 @@ export default new VueRouter({
     {
       path: '/',
       component: () => import('../pages/Home.vue'),
+      redirect: 'QrCodeContainerPlayer',
       children: [
         {
-          path: '',
+          path: 'QrCodeContainerPlayer',
+          name: 'QrCodeContainerPlayer',
+          component: () => import('../pages/QrCodeContainerPlayer.vue'),
+        },
+        {
+          path: 'QrCodeTemplatePlayer',
+          name: 'QrCodeTemplatePlayer',
+          component: () => import('../pages/QrCodeContainerPlayer.vue'),
+        },
+        {
+          path: 'QrCodeBinderPlayer',
+          name: 'QrCodeBinderPlayer',
+          component: () => import('../pages/QrCodeContainerPlayer.vue'),
+        },
+        {
+          path: 'QrCodeTemplateEditorPlayer',
+          name: 'QrCodeTemplateEditorPlayer',
           component: () => import('../pages/QrCodeContainerPlayer.vue'),
         },
       ],

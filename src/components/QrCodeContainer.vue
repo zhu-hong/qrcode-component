@@ -13,9 +13,7 @@ export default {
       return this.qrCodeInfo.model.config
     },
     tplData() {
-      const qrCodeInfo = JSON.parse(JSON.stringify(this.qrCodeInfo))
-      delete qrCodeInfo.model.config
-      return qrCodeInfo.model
+      return this.qrCodeInfo.model
     },
     qrCodeText() {
       return `https://dl-mobileres.effio.cn/yiyunapp/?qrid=${this.qrCodeInfo.id}`
@@ -27,9 +25,6 @@ export default {
 
     const qrCanvas = this.$refs.qrCodeCanvas.$el.querySelector('canvas')
     qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', qrCanvas.toDataURL())
-
-
-    qrCodeContainer.querySelector('[data-type=bg]').setAttribute('fill', this.tplData.backgroudColor)
 
     if(this.tplInfo.hasLogo) {
       qrCodeContainer.querySelector('[data-type=logo]').setAttribute('href', this.tplData.logo)
@@ -58,21 +53,13 @@ export default {
         renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
       })
     }
-
   },
 }
 </script>
 
 <template>
-  <div class="qrcode-container">
-    <div ref="qrCodeContainer" class="qrcode-container"></div>
+  <div style="width: 100%; height: 100%;">
+    <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
     <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="500" />
   </div>
 </template>
-
-<style scoped>
-.qrcode-container {
-  width: 100%;
-  height: 100%;
-}
-</style>
