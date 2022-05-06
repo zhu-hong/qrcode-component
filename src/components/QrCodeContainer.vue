@@ -54,7 +54,7 @@ export default {
         fieldHost.textContent = ''
       })
 
-      qrCodeContainer.querySelectorAll(`[data-count='${this.tplData.tagFields.length}']`).forEach((fieldHost, i) => {
+      qrCodeContainer.querySelectorAll(`[data-count='${this.tplInfo.tagCount}']`).forEach((fieldHost, i) => {
         renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
       })
     }
