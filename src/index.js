@@ -1,6 +1,3 @@
-import './theme/fonts/element-icons.woff'
-import './theme/fonts/element-icons.ttf'
-
 import QrCodeContainerComponent from './components/QrCodeContainer.vue'
 
 export default {
