@@ -3,7 +3,7 @@ import App from './src/App.vue'
 import router from './router'
 
 import QrCodeContainer from '../dist/lib.js'
-import '../dist/style.css'
+// import '../dist/style.css'
 
 import 'virtual:windi.css'
 

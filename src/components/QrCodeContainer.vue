@@ -64,8 +64,15 @@ export default {
 </script>
 
 <template>
-  <div style="width: 100; height: 100%;">
-    <div ref="qrCodeContainer" style="width: 100; height: 100%;"></div>
+  <div class="qrcode-container">
+    <div ref="qrCodeContainer" class="qrcode-container"></div>
     <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="500" />
   </div>
 </template>
+
+<style scoped>
+.qrcode-container {
+  width: 100%;
+  height: 100%;
+}
+</style>
