@@ -28,7 +28,33 @@ export default {
           "hasTitle": true,
           "hasSubTitle": false,
           "tagCount": 0
-        }
+        },
+        {
+          "id": "4XyTkqjZmeF",
+          "name": "自定义标签3",
+          "svg": "<svg width=\"100%\" height=\"100%\" version=\"1.1\" viewBox=\"0 0 450 450\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><rect x=\"0\" y=\"0\" data-type=\"bg\" fill=\"#FFFFFF\" width=\"100%\" height=\"100%\"></rect><g><image x=\"0\" y=\"0\" data-type=\"qr\" href=\"\" width=\"400\" height=\"400\" id=\"fPfhfPXoFgJMkqZTSLLfQ\" transform=\"translate(24,27.5)\"></image></g></svg>",
+          "svgDemo": "https://dl-edisk.effio.cn/ptest/1522472986147028992.svg",
+          "defaultColor": "#FFFFFF",
+          "defaultWidth": 150,
+          "defaultHeight": 150,
+          "hasLogo": false,
+          "hasTitle": false,
+          "hasSubTitle": false,
+          "tagCount": 0,
+        },
+        {
+          "id": "4XyTroo18Ph",
+          "name": "自定义标签4",
+          "svg": "<svg width=\"100%\" height=\"100%\" version=\"1.1\" viewBox=\"0 0 450 675\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\"><rect x=\"0\" y=\"0\" data-type=\"bg\" fill=\"#FFFFFF\" width=\"100%\" height=\"100%\"></rect><g><image x=\"0\" y=\"0\" data-type=\"qr\" href=\"\" width=\"404\" height=\"404\" id=\"XCGkuTrkmHfVvMLjiWWFA\" transform=\"translate(27,21)\"></image><g id=\"rKseveFttOPzdfYpQqdWz\" transform=\"translate(23,440)\"><text x=\"0\" y=\"0\" fill=\"#000000\" font-weight=\"normal\" font-style=\"normal\" font-family=\"-apple-system, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, &quot;Nimbus Sans L&quot;, Arial, &quot;Liberation Sans&quot;, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Noto Sans CJK SC&quot;, &quot;Source Han Sans SC&quot;, &quot;Source Han Sans CN&quot;, &quot;Microsoft YaHei&quot;, &quot;Wenquanyi Micro Hei&quot;, &quot;WenQuanYi Zen Hei&quot;, &quot;ST Heiti&quot;, SimHei, &quot;WenQuanYi Zen Hei Sharp&quot;, sans-serif\" font-size=\"38\" dominant-baseline=\"middle\" text-anchor=\"middle\" transform=\"translate(203,28.5)\"><tspan data-type=\"field\" dy=\"\" x=\"0\" data-count=\"4\" data-max=\"90\" data-len=\"11\" y=\"0\"></tspan><tspan data-type=\"field-placeholder4\" data-max=\"90\" data-len=\"11\" fill=\"transparent\" x=\"0\" y=\"0\">十</tspan></text></g><g id=\"tFtTioPVWCeuunenChslI\" transform=\"translate(23,495)\"><text x=\"0\" y=\"0\" fill=\"#000000\" font-weight=\"normal\" font-style=\"normal\" font-family=\"-apple-system, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, &quot;Nimbus Sans L&quot;, Arial, &quot;Liberation Sans&quot;, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Noto Sans CJK SC&quot;, &quot;Source Han Sans SC&quot;, &quot;Source Han Sans CN&quot;, &quot;Microsoft YaHei&quot;, &quot;Wenquanyi Micro Hei&quot;, &quot;WenQuanYi Zen Hei&quot;, &quot;ST Heiti&quot;, SimHei, &quot;WenQuanYi Zen Hei Sharp&quot;, sans-serif\" font-size=\"38\" dominant-baseline=\"middle\" text-anchor=\"middle\" transform=\"translate(202.5,28.5)\"><tspan data-type=\"field\" dy=\"\" x=\"0\" data-count=\"4\" data-max=\"90\" data-len=\"11\" y=\"0\"></tspan><tspan data-type=\"field-placeholder4\" data-max=\"90\" data-len=\"11\" fill=\"transparent\" x=\"0\" y=\"0\">十</tspan></text></g><g id=\"nefHptYTVfedzpcrIaHMG\" transform=\"translate(24,551)\"><text x=\"0\" y=\"0\" fill=\"#000000\" font-weight=\"normal\" font-style=\"normal\" font-family=\"-apple-system, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, &quot;Nimbus Sans L&quot;, Arial, &quot;Liberation Sans&quot;, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Noto Sans CJK SC&quot;, &quot;Source Han Sans SC&quot;, &quot;Source Han Sans CN&quot;, &quot;Microsoft YaHei&quot;, &quot;Wenquanyi Micro Hei&quot;, &quot;WenQuanYi Zen Hei&quot;, &quot;ST Heiti&quot;, SimHei, &quot;WenQuanYi Zen Hei Sharp&quot;, sans-serif\" font-size=\"38\" dominant-baseline=\"middle\" text-anchor=\"middle\" transform=\"translate(201.5,28.5)\"><tspan data-type=\"field\" dy=\"\" x=\"0\" data-count=\"4\" data-max=\"90\" data-len=\"11\" y=\"0\"></tspan><tspan data-type=\"field-placeholder4\" data-max=\"90\" data-len=\"11\" fill=\"transparent\" x=\"0\" y=\"0\">十</tspan></text></g><g id=\"ZhbXZiEgXkJqfmRjTDPFK\" transform=\"translate(25,609)\"><text x=\"0\" y=\"0\" fill=\"#000000\" font-weight=\"normal\" font-style=\"normal\" font-family=\"-apple-system, &quot;Noto Sans&quot;, &quot;Helvetica Neue&quot;, Helvetica, &quot;Nimbus Sans L&quot;, Arial, &quot;Liberation Sans&quot;, &quot;PingFang SC&quot;, &quot;Hiragino Sans GB&quot;, &quot;Noto Sans CJK SC&quot;, &quot;Source Han Sans SC&quot;, &quot;Source Han Sans CN&quot;, &quot;Microsoft YaHei&quot;, &quot;Wenquanyi Micro Hei&quot;, &quot;WenQuanYi Zen Hei&quot;, &quot;ST Heiti&quot;, SimHei, &quot;WenQuanYi Zen Hei Sharp&quot;, sans-serif\" font-size=\"38\" dominant-baseline=\"middle\" text-anchor=\"middle\" transform=\"translate(200,28.5)\"><tspan data-type=\"field\" dy=\"\" x=\"0\" data-count=\"4\" data-max=\"89\" data-len=\"11\" y=\"0\"></tspan><tspan data-type=\"field-placeholder4\" data-max=\"89\" data-len=\"11\" fill=\"transparent\" x=\"0\" y=\"0\">十</tspan></text></g></g></svg>",
+          "svgDemo": "https://dl-edisk.effio.cn/ptest/1522473217429340160.svg",
+          "defaultColor": "#FFFFFF",
+          "defaultWidth": 150,
+          "defaultHeight": 225,
+          "hasLogo": false,
+          "hasTitle": false,
+          "hasSubTitle": false,
+          "tagCount": 4,
+        },
       ]),
     }
   },
@@ -37,7 +63,7 @@ export default {
 
 <template>
   <div class="w-full h-full p-4 flex flex-wrap gap-10">
-    <div v-for="t of qrCodeTemplates" :key="t.id" :style="{ 'width': `${t.width}mm` }" >
+    <div v-for="t of qrCodeTemplates" :key="t.id" :style="{ 'width': `${t.defaultWidth}mm` }">
       <QrCodeTemplate :templateInfo="t" />
     </div>
   </div>
