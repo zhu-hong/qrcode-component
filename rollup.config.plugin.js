@@ -2,7 +2,6 @@ import Commonjs from '@rollup/plugin-commonjs'
 import NodeResolve from '@rollup/plugin-node-resolve'
 import Postcss from 'rollup-plugin-postcss'
 import Vue from 'rollup-plugin-vue'
-import Url from '@rollup/plugin-url'
 import CssNano from 'cssnano'
 
 export default [
@@ -16,11 +15,6 @@ export default [
     plugins: [
       CssNano(),
     ],
-  }),
-  Url({
-    include: ['**/*.ttf', '**/*.woff', '**/*.svg', '**/*.png'],
-    fileName: '[name][extname]',
-    destDir: 'dist/fonts',
   }),
 ]
 
