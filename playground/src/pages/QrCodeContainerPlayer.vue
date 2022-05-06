@@ -42,7 +42,7 @@ export default {
 
 <template>
   <div class="w-full h-full flex justify-center items-center">
-    <div>
+    <div class="w-900px h-600px">
       <QrCodeContainer :qrCodeInfo="qrCodeInfo" />
     </div>
   </div>

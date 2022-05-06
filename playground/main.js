@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import App from './src/App.vue'
-import router from './router'
+import router from './src/router'
 
 import QrCodeContainer from '../dist/lib.js'
 // import '../dist/style.css'
