@@ -9,8 +9,8 @@
     "devBuild": "npm run clear && rollup -w -c rollup.config.dev.js",
     "dev": "vite",
     "clear": "rimraf -- dist",
-    "build": "rollup -c rollup.config.prod.js",
-    "prepublishOnly": "npm run clear && npm run build"
+    "build": "npm run clear && rollup -c rollup.config.prod.js",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",
