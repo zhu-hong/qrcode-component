@@ -1,6 +1,6 @@
 <script>
 import QrCode from 'qrcode.vue'
-import { renderText } from '../utils'
+import { encodeSvg, renderText } from '../utils'
 
 export default {
   name: 'QrCodeContainer',
@@ -19,12 +19,17 @@ export default {
       return `https://dl-mobileres.effio.cn/yiyunapp/?qrid=${this.qrCodeInfo.id}`
     },
   },
-  mounted() {
+  async mounted() {
+    await this.$nextTick()
+
     const qrCodeContainer = this.$refs.qrCodeContainer
     qrCodeContainer.innerHTML = this.tplInfo.svg
 
-    const qrCanvas = this.$refs.qrCodeCanvas.$el.querySelector('canvas')
-    qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', qrCanvas.toDataURL())
+    const qrCanvas = this.$refs.qrCodeCanvas.$el.querySelector('canvas').toDataURL()
+    qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', qrCanvas)
+
+    // const qrSvg = this.$refs.qrCodesvg.$el.innerHTML
+    // qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', 'data:image/svg+xml;utf8,' + encodeSvg(qrSvg))
 
     if(this.tplInfo.hasLogo) {
       qrCodeContainer.querySelector('[data-type=logo]').setAttribute('href', this.tplData.logo)
@@ -60,6 +65,7 @@ export default {
 <template>
   <div style="width: 100%; height: 100%;">
     <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
-    <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="500" />
+    <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="300" />
+    <!-- <QrCode render-as="svg" :value="qrCodeText" style="display: none;" ref="qrCodesvg" :size="300" /> -->
   </div>
 </template>
