@@ -64,12 +64,8 @@ export default {
 </script>
 
 <template>
-  <div class="w-full h-full">
-    <div ref="qrCodeContainer" class="w-full h-full"></div>
-    <QrCode :value="qrCodeText" class="hidden" ref="qrCodeCanvas" :size="500" />
+  <div style="width: 100; height: 100%;">
+    <div ref="qrCodeContainer" style="width: 100; height: 100%;"></div>
+    <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="500" />
   </div>
 </template>
-
-<style>
-
-</style>
