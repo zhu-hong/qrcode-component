@@ -14,7 +14,7 @@ export default {
           "hasLogo": true,
           "hasTitle": true,
           "hasSubTitle": true,
-          "tagCount": 4
+          "tagCount": 4,
         },
         {
           "id": "4Xvkq8FMnpf",
@@ -27,7 +27,7 @@ export default {
           "hasLogo": true,
           "hasTitle": true,
           "hasSubTitle": false,
-          "tagCount": 0
+          "tagCount": 0,
         },
         {
           "id": "4XyTkqjZmeF",
