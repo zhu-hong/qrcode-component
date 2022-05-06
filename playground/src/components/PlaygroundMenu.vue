@@ -2,7 +2,7 @@
 export default {
   data() {
     return {
-      showTab: true,
+      showTab: false,
     }
   },
   computed: {
@@ -12,6 +12,7 @@ export default {
   },
   methods: {
     toPath(name) {
+      this.showTab = false
       if(this.$route.name === name) return
       this.$router.push({ name })
     },
@@ -20,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <div :class="['w-full h-70px bg-white flex-none shadow-sm absolute top-0 left-0 flex justify-center items-center gap-4 transition-all transform', { '-translate-y-full': !showTab }]">
+  <div :class="['w-full h-70px z-99 bg-white flex-none shadow-sm absolute top-0 left-0 flex justify-center items-center gap-4 transition-all transform', { '-translate-y-full': !showTab }]">
     <span
       v-for="r of routes" :key="r.name" 
       :class="['cursor-pointer px-4 py-2 rounded transition-all select-none hover:(opacity-80)', $route.name === r.name ? 'bg-rose-400 text-black' : 'bg-gray-900 text-white']"
