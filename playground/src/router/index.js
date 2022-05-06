@@ -18,7 +18,7 @@ export default new VueRouter({
         {
           path: 'QrCodeTemplatePlayer',
           name: 'QrCodeTemplatePlayer',
-          component: () => import('../pages/QrCodeContainerPlayer.vue'),
+          component: () => import('../pages/QrCodeTemplatePlayer.vue'),
         },
         {
           path: 'QrCodeBinderPlayer',
