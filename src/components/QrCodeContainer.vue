@@ -1,6 +1,6 @@
 <script>
 import QrCode from 'qrcode.vue'
-import { encodeSvg, renderText } from '../utils'
+import { generateQrCodeContent, renderText } from '../utils'
 
 export default {
   name: 'QrCodeContainer',
@@ -16,7 +16,7 @@ export default {
       return this.qrCodeInfo.model
     },
     qrCodeText() {
-      return `https://dl-mobileres.effio.cn/yiyunapp/?qrid=${this.qrCodeInfo.id}`
+      return generateQrCodeContent(this.qrCodeInfo.id)
     },
   },
   async mounted() {
@@ -66,6 +66,5 @@ export default {
   <div style="width: 100%; height: 100%;">
     <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
     <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="300" />
-    <!-- <QrCode render-as="svg" :value="qrCodeText" style="display: none;" ref="qrCodesvg" :size="300" /> -->
   </div>
 </template>

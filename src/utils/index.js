@@ -55,3 +55,7 @@ export function encodeSvg(svgString) {
     //  .replace('=', '%3D')
     ;
 }
+
+export function generateQrCodeContent(id) {
+  return `https://dl-mobileres.effio.cn/yiyunapp/?qrid=${id}`
+}
