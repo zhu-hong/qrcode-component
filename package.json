@@ -6,11 +6,11 @@
     "dist"
   ],
   "scripts": {
-    "devBuild": "npm run clear && rollup -w -c rollup.config.dev.js",
+    "devBuild:lib": "npm run clear && rollup -w -c rollup.config.dev.js",
     "dev": "vite",
     "clear": "rimraf -- dist",
-    "build": "npm run clear && rollup -c rollup.config.prod.js",
-    "prepublishOnly": "npm run build"
+    "build:lib": "npm run clear && rollup -c rollup.config.prod.js",
+    "prepublishOnly": "npm run build:lib"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",
