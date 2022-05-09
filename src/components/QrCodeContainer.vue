@@ -28,9 +28,6 @@ export default {
     const qrCanvas = this.$refs.qrCodeCanvas.$el.querySelector('canvas').toDataURL()
     qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', qrCanvas)
 
-    // const qrSvg = this.$refs.qrCodesvg.$el.innerHTML
-    // qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', 'data:image/svg+xml;utf8,' + encodeSvg(qrSvg))
-
     if(this.tplInfo.hasLogo) {
       qrCodeContainer.querySelector('[data-type=logo]').setAttribute('href', this.tplData.logo)
     }
@@ -63,7 +60,7 @@ export default {
 </script>
 
 <template>
-  <div style="width: 100%; height: 100%;">
+  <div>
     <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
     <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="300" />
   </div>

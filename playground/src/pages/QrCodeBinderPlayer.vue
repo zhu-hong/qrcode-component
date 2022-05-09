@@ -92,9 +92,7 @@ export default {
 <template>
   <div class="w-full h-full flex">
     <div class="flex-1 flex justify-center items-center">
-      <div :style="{ 'width': `${tplData.width}mm`, 'height': `${tplData.height}mm` }">
-        <QrCodeBinder ref="QrCodeBinder" :tplInfo="tplInfo" :tplData="tplData" focusColor="rgba(251, 113, 133, 1)" />
-      </div>
+      <QrCodeBinder :style="{ 'width': `${tplData.width}mm`, 'height': `${tplData.height}mm` }" ref="QrCodeBinder" :tplInfo="tplInfo" :tplData="tplData" focusColor="rgba(251, 113, 133, 1)" />
     </div>
     <div class="w-420px flex-none border-l p-4 flex flex-col gap-5">
       <label>标签</label>

@@ -227,8 +227,6 @@ export default {
 
 <template>
   <div class="w-full h-full flex flex-wrap overflow-auto justify-start gap-10 py-50px px-20px">
-    <div v-for="qr of qrCodes" :key="qr.id" class="relative transition-all cursor-pointer text-shadow-lg transform hover:(shadow-xl scale-101)" :style="{ 'width': `${qr.model.width}mm`, 'height': `${qr.model.height}mm` }">
-      <QrCodeContainer :qrCodeInfo="qr" />
-    </div>
+    <QrCodeContainer :qrCodeInfo="qr" v-for="qr of qrCodes" :key="qr.id" class="relative transition-all cursor-pointer text-shadow-lg transform hover:(shadow-xl scale-101)" :style="{ 'width': `${qr.model.width}mm`, 'height': `${qr.model.height}mm` }" />
   </div>
 </template>

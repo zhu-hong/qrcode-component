@@ -140,7 +140,7 @@ export default {
 </script>
 
 <template>
-  <div style="width: 100%; height: 100%;">
+  <div>
     <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
     <QrCode render-as="svg" :value="qrCodeText" style="display: none;" ref="qrCodesvg" />
     <span v-show="focusVisible" class="qrcode-binder-focuser" ref="focuser" :style="{ 'border-color': focusColor }">
