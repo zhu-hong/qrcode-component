@@ -28,7 +28,7 @@ export default new VueRouter({
         {
           path: 'QrCodeTemplateEditorPlayer',
           name: 'QrCodeTemplateEditorPlayer',
-          component: () => import('../pages/QrCodeContainerPlayer.vue'),
+          component: () => import('../pages/QrCodeTemplateEditorPlayer.vue'),
         },
       ],
     },

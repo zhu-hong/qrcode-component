@@ -6,7 +6,9 @@ import CssNano from 'cssnano'
 
 export default [
   Commonjs(),
-  NodeResolve(),
+  NodeResolve({
+    browser: true,
+  }),
   Vue({
     css: false,
   }),
