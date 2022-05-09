@@ -18,6 +18,16 @@ export default {
 
 <style>
 ::-webkit-scrollbar {
-  display: none;
+  width: 5px;
+  height: 5px;
+  background-color: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #CFD1D4;
+  border-radius: 5px;
+}
+::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track {
+  background: transparent;
 }
 </style>

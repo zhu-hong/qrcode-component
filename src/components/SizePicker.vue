@@ -40,20 +40,25 @@ export default {
   .tpl-size-title {
     width: 100%;
     color: rgba(156, 163, 175, 1);
-    padding-left: 4px;
-    font-size: 12px;
+    font-size: 14px;
   }
 
   .tpl-size-option {
     width: 94px;
     height: 34px;
-    font-size: 10px !important;
+    font-size: 12px !important;
     margin-top: 4px !important;
     display: flex;
     justify-content: center;
     align-items: center;
     border-radius: 4px;
     border: #e5e7eb solid 1px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    &:hover {
+      color: #0B58D2 !important;
+    }
     
     &.active {
       border: 1px solid #0B58D2;
@@ -68,7 +73,7 @@ export default {
         color: white;
         font-weight: 500;
         font-size: .7rem;
-        transform: rotateY(180deg) rotate(-35deg) translateX(1px) translateY(4px);
+        transform: rotateY(180deg) rotate(-35deg) translateX(-5px) translateY(10px);
       }
 
       &::before {

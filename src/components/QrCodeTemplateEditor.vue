@@ -217,7 +217,7 @@ export default {
     addControlByDrop(controlInfo, e) {
       const type = controlInfo.type
       if(!this.canIAddThis(type)) {
-        Message.info('当前控件已达到上限')
+        this.$message.info('当前控件已达到上限')
         return
       }
 
@@ -287,7 +287,7 @@ export default {
 
       const type = controlInfo.type
       if(!this.canIAddThis(type)) {
-        Message.info('当前控件已达到上限')
+        this.$message.info('当前控件已达到上限')
         return false
       }
 
@@ -1240,12 +1240,12 @@ export default {
     },
     // saveTpl() {
     //   if(this.tplName.length === 0) {
-    //     Message.error('标签名称不能为空')
+    //     this.$message.error('标签名称不能为空')
     //     return
     //   }
 
     //   if(!this.controls.find(({ type }) => type === 'qr')) {
-    //     Message.error('当前标签模板未添加二维码控件')
+    //     this.$message.error('当前标签模板未添加二维码控件')
     //     return
     //   }
 
@@ -1257,7 +1257,7 @@ export default {
     //   svgBlob.name = getId(10) + '.svg'
     //   const url = await upLoadFile(svgBlob)
     //   if(!url) {
-    //     Message.error('模版缩略图上传失败')
+    //     this.$message.error('模版缩略图上传失败')
     //     return
     //   }
 
@@ -1278,21 +1278,21 @@ export default {
     //   if(this.mode === 'create') {
     //     const code = await Qr.createTpl(tpl)
     //     if(code === 1000) {
-    //       Message.success('保存成功')
+    //       this.$message.success('保存成功')
     //       this.$router.go(-1)
     //     } else if (code === 12020) {
-    //       Message.error('模板名称重复')
+    //       this.$message.error('模板名称重复')
     //     }
     //   } else {
     //     tpl.id = this.id
     //     const code = await Qr.editTpl(tpl)
     //     if(code === 1000) {
-    //       Message.success('保存成功')
+    //       this.$message.success('保存成功')
     //       this.$router.go(-1)
     //     } else if (code === 12020) {
-    //       Message.error('模板名称重复')
+    //       this.$message.error('模板名称重复')
     //     } else if(code === 1009) {
-    //       Message.error('模板不存在')
+    //       this.$message.error('模板不存在')
     //     }
     //   }
 
@@ -1558,35 +1558,33 @@ export default {
 </script>
 
 <template>
-  <div class="flex flex-col bg-[#EEF1F5] w-full h-full">
+  <div class="template-editor-container">
     <!-- 头部 -->
-    <div class="w-full h-56px flex px-24px items-center justify-center bg-white flex-none relative" style="box-shadow: 0px 4px 4px 0px rgba(34, 51, 97, 0.05);">
-      <div class="flex items-center gap-32px">
-        <el-tooltip effect="dark" content="撤销" placement="bottom" :manual="true" v-model="tooltipControl.cx">
-          <svg @mouseenter="showTip('cx')" @mouseleave="hiddenTip('cx')" @click="tryUndo" width="18px" height="18px" :class="[undoHub.canUndo ? 'cursor-pointer group' : 'opacity-20 cursor-not-allowed']" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#155ED4]) fill-[#70767E]" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
-        </el-tooltip>
-        <el-tooltip effect="dark" content="前进" placement="bottom" :manual="true" v-model="tooltipControl.qj">
-          <svg @mouseenter="showTip('qj')" @mouseleave="hiddenTip('qj')" @click="tryUnundo" width="18px" height="18px" :class="[undoHub.canUnundo ? 'cursor-pointer group' : 'opacity-20 cursor-not-allowed']" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#155ED4]) fill-[#70767E]" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z" transform="translate(9.000000, 8.960000) scale(-1, 1) translate(-9.000000, -8.960000) "></path></svg>
-        </el-tooltip>
-        <span class="bg-[#EEEEEE] w-1px h-15px"></span>
-        <el-tooltip effect="dark" content="复制" placement="bottom" :manual="true" v-model="tooltipControl.fz">
-          <svg @mouseenter="showTip('fz')" @mouseleave="hiddenTip('fz')" width="18px" height="18px" viewBox="0 0 18 18" @click="cloneControl" :class="[currentNode.type !== 'bg' ? 'cursor-pointer group' : 'opacity-20 cursor-not-allowed']" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#155ED4]) fill-[#70767E]" d="M11.25,5.25 C12.0784271,5.25 12.75,5.92157288 12.75,6.75 L12.75,15.75 C12.75,16.5784271 12.0784271,17.25 11.25,17.25 L2.25,17.25 C1.42157288,17.25 0.75,16.5784271 0.75,15.75 L0.75,6.75 C0.75,5.92157288 1.42157288,5.25 2.25,5.25 L11.25,5.25 Z M11.25,6.75 L2.25,6.75 L2.25,15.75 L11.25,15.75 L11.25,6.75 Z M15.75,0.75 C16.5784271,0.75 17.25,1.42157288 17.25,2.25 L17.25,11.25 C17.25,12.0784271 16.5784271,12.75 15.75,12.75 L13.5,12.75 L13.5,11.25 L15.75,11.25 L15.75,2.25 L6.75,2.25 L6.75,4.499 L5.25,4.499 L5.25,2.25 C5.25,1.42157288 5.92157288,0.75 6.75,0.75 L15.75,0.75 Z"></path></svg>
-        </el-tooltip>
-        <el-tooltip effect="dark" content="粘贴" placement="bottom" :manual="true" v-model="tooltipControl.nt">
-          <svg @mouseenter="showTip('nt')" @mouseleave="hiddenTip('nt')" width="18px" height="18px" viewBox="0 0 18 18" @click="pasteControl" :class="[cloneControlCache !== null ? 'cursor-pointer group' : 'opacity-20 cursor-not-allowed']" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="group-hover:(fill-[#155ED4]) fill-[#70767E]"><path d="M11.25,0.75 C12.0784271,0.75 12.75,1.42157288 12.75,2.25 L12.75,11.25 C12.75,12.0784271 12.0784271,12.75 11.25,12.75 L2.25,12.75 C1.42157288,12.75 0.75,12.0784271 0.75,11.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L11.25,0.75 Z M11.25,2.25 L2.25,2.25 L2.25,11.25 L11.25,11.25 L11.25,2.25 Z"></path><path d="M5.25,14.25 L6.75,14.25 L6.75,15.75 L8.25,15.75 L8.25,17.25 L6.75,17.25 C5.92157288,17.25 5.25,16.5784271 5.25,15.75 L5.25,14.25 Z M12.75,15.75 L12.75,17.25 L9.75,17.25 L9.75,15.75 L12.75,15.75 Z M17.24925,14.24925 L17.25,15.75 C17.25,16.5784271 16.5784271,17.25 15.75,17.25 L14.25,17.25 L14.25,15.75 L15.75,15.75 L15.74925,14.24925 L17.24925,14.24925 Z M17.24925,9.74925 L17.24925,12.74925 L15.74925,12.74925 L15.74925,9.74925 L17.24925,9.74925 Z M15.75,5.25 C16.5784271,5.25 17.25,5.92157288 17.25,6.75 L17.25,8.24925 L15.75,8.24925 L15.75,6.75 L14.25,6.75 L14.25,5.25 L15.75,5.25 Z"></path></g></svg>
-        </el-tooltip>
-        <span class="bg-[#EEEEEE] w-1px h-15px"></span>
-        <el-tooltip effect="dark" content="最佳视图" placement="bottom" :manual="true" v-model="tooltipControl.zjst">
-          <svg @mouseenter="showTip('zjst')" @mouseleave="hiddenTip('zjst')" @click="calcBestScale" class="cursor-pointer group" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#155ED4]) fill-[#70767E]" d="M16.5,1.5 C17.3284271,1.5 18,2.17157288 18,3 L18,15 C18,15.8284271 17.3284271,16.5 16.5,16.5 L1.5,16.5 C0.671572875,16.5 0,15.8284271 0,15 L0,3 C0,2.17157288 0.671572875,1.5 1.5,1.5 L16.5,1.5 Z M16.5,3 L1.5,3 L1.5,15 L16.5,15 L16.5,3 Z M5.25,5.25 L5.25,12.75 L3.75,12.75 L3.75,5.25 L5.25,5.25 Z M14.25,5.25 L14.25,12.75 L12.75,12.75 L12.75,5.25 L14.25,5.25 Z M9,9.75 C9.62132034,9.75 10.125,10.2536797 10.125,10.875 C10.125,11.4963203 9.62132034,12 9,12 C8.37867966,12 7.875,11.4963203 7.875,10.875 C7.875,10.2536797 8.37867966,9.75 9,9.75 Z M9,6 C9.62132034,6 10.125,6.50367966 10.125,7.125 C10.125,7.74632034 9.62132034,8.25 9,8.25 C8.37867966,8.25 7.875,7.74632034 7.875,7.125 C7.875,6.50367966 8.37867966,6 9,6 Z"></path></svg>
-        </el-tooltip>
-        <el-tooltip effect="dark" content="缩小画布" placement="bottom" :manual="true" v-model="tooltipControl.sxhb">
-          <svg @mouseenter="showTip('sxhb')" @mouseleave="hiddenTip('sxhb')" @click="modifyScale(-10)" class="cursor-pointer group" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#155ED4]) fill-[#70767E]" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L10.5,6.75 Z"></path></svg>
-        </el-tooltip>
-        <span class="text-xs text-[#646A73]">{{ `${scale}%` }}</span>
-        <el-tooltip effect="dark" content="放大画布" placement="bottom" :manual="true" v-model="tooltipControl.fdhb">
-          <svg @mouseenter="showTip('fdhb')" @mouseleave="hiddenTip('fdhb')" @click="modifyScale(10)" class="cursor-pointer group" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#155ED4]) fill-[#70767E]" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
-        </el-tooltip>
-      </div>
+    <div class="template-editor-header">
+      <el-tooltip effect="dark" content="撤销" placement="bottom" :manual="true" v-model="tooltipControl.cx">
+        <svg @mouseenter="showTip('cx')" @mouseleave="hiddenTip('cx')" @click="tryUndo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="前进" placement="bottom" :manual="true" v-model="tooltipControl.qj">
+        <svg @mouseenter="showTip('qj')" @mouseleave="hiddenTip('qj')" @click="tryUnundo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUnundo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z" transform="translate(9.000000, 8.960000) scale(-1, 1) translate(-9.000000, -8.960000) "></path></svg>
+      </el-tooltip>
+      <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
+      <el-tooltip effect="dark" content="复制" placement="bottom" :manual="true" v-model="tooltipControl.fz">
+        <svg @mouseenter="showTip('fz')" @mouseleave="hiddenTip('fz')" width="18px" height="18px" viewBox="0 0 18 18" @click="cloneControl" :class="['template-container-control', { 'disabled': currentNode.type === 'bg' }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M11.25,5.25 C12.0784271,5.25 12.75,5.92157288 12.75,6.75 L12.75,15.75 C12.75,16.5784271 12.0784271,17.25 11.25,17.25 L2.25,17.25 C1.42157288,17.25 0.75,16.5784271 0.75,15.75 L0.75,6.75 C0.75,5.92157288 1.42157288,5.25 2.25,5.25 L11.25,5.25 Z M11.25,6.75 L2.25,6.75 L2.25,15.75 L11.25,15.75 L11.25,6.75 Z M15.75,0.75 C16.5784271,0.75 17.25,1.42157288 17.25,2.25 L17.25,11.25 C17.25,12.0784271 16.5784271,12.75 15.75,12.75 L13.5,12.75 L13.5,11.25 L15.75,11.25 L15.75,2.25 L6.75,2.25 L6.75,4.499 L5.25,4.499 L5.25,2.25 C5.25,1.42157288 5.92157288,0.75 6.75,0.75 L15.75,0.75 Z"></path></svg>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="粘贴" placement="bottom" :manual="true" v-model="tooltipControl.nt">
+        <svg @mouseenter="showTip('nt')" @mouseleave="hiddenTip('nt')" width="18px" height="18px" viewBox="0 0 18 18" @click="pasteControl" :class="['template-container-control', { 'disabled': cloneControlCache === null }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="template-container-control-item"><path d="M11.25,0.75 C12.0784271,0.75 12.75,1.42157288 12.75,2.25 L12.75,11.25 C12.75,12.0784271 12.0784271,12.75 11.25,12.75 L2.25,12.75 C1.42157288,12.75 0.75,12.0784271 0.75,11.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L11.25,0.75 Z M11.25,2.25 L2.25,2.25 L2.25,11.25 L11.25,11.25 L11.25,2.25 Z"></path><path d="M5.25,14.25 L6.75,14.25 L6.75,15.75 L8.25,15.75 L8.25,17.25 L6.75,17.25 C5.92157288,17.25 5.25,16.5784271 5.25,15.75 L5.25,14.25 Z M12.75,15.75 L12.75,17.25 L9.75,17.25 L9.75,15.75 L12.75,15.75 Z M17.24925,14.24925 L17.25,15.75 C17.25,16.5784271 16.5784271,17.25 15.75,17.25 L14.25,17.25 L14.25,15.75 L15.75,15.75 L15.74925,14.24925 L17.24925,14.24925 Z M17.24925,9.74925 L17.24925,12.74925 L15.74925,12.74925 L15.74925,9.74925 L17.24925,9.74925 Z M15.75,5.25 C16.5784271,5.25 17.25,5.92157288 17.25,6.75 L17.25,8.24925 L15.75,8.24925 L15.75,6.75 L14.25,6.75 L14.25,5.25 L15.75,5.25 Z"></path></g></svg>
+      </el-tooltip>
+      <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
+      <el-tooltip effect="dark" content="最佳视图" placement="bottom" :manual="true" v-model="tooltipControl.zjst">
+        <svg @mouseenter="showTip('zjst')" @mouseleave="hiddenTip('zjst')" @click="calcBestScale" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M16.5,1.5 C17.3284271,1.5 18,2.17157288 18,3 L18,15 C18,15.8284271 17.3284271,16.5 16.5,16.5 L1.5,16.5 C0.671572875,16.5 0,15.8284271 0,15 L0,3 C0,2.17157288 0.671572875,1.5 1.5,1.5 L16.5,1.5 Z M16.5,3 L1.5,3 L1.5,15 L16.5,15 L16.5,3 Z M5.25,5.25 L5.25,12.75 L3.75,12.75 L3.75,5.25 L5.25,5.25 Z M14.25,5.25 L14.25,12.75 L12.75,12.75 L12.75,5.25 L14.25,5.25 Z M9,9.75 C9.62132034,9.75 10.125,10.2536797 10.125,10.875 C10.125,11.4963203 9.62132034,12 9,12 C8.37867966,12 7.875,11.4963203 7.875,10.875 C7.875,10.2536797 8.37867966,9.75 9,9.75 Z M9,6 C9.62132034,6 10.125,6.50367966 10.125,7.125 C10.125,7.74632034 9.62132034,8.25 9,8.25 C8.37867966,8.25 7.875,7.74632034 7.875,7.125 C7.875,6.50367966 8.37867966,6 9,6 Z"></path></svg>
+      </el-tooltip>
+      <el-tooltip effect="dark" content="缩小画布" placement="bottom" :manual="true" v-model="tooltipControl.sxhb">
+        <svg @mouseenter="showTip('sxhb')" @mouseleave="hiddenTip('sxhb')" @click="modifyScale(-10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L10.5,6.75 Z"></path></svg>
+      </el-tooltip>
+      <span class="text-xs text-[#646A73]">{{ `${scale}%` }}</span>
+      <el-tooltip effect="dark" content="放大画布" placement="bottom" :manual="true" v-model="tooltipControl.fdhb">
+        <svg @mouseenter="showTip('fdhb')" @mouseleave="hiddenTip('fdhb')" @click="modifyScale(10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
+      </el-tooltip>
       <!-- <el-button size="small" type="primary" class="absolute right-24px" @click="saveTpl" :disabled="!isChanged.changed">
         <div class="flex justify-between items-center gap-10px transform -translate-y-2px">
           <img src="../assets/save_tpl.svg">
@@ -1595,17 +1593,15 @@ export default {
       </el-button> -->
     </div>
 
-    <div class="flex-1 flex justify-between overflow-hidden">
-      <div class="w-344px border-t bg-white px-24px py-20px flex-none">
-        <span class="text-sm font-medium text-normal inline-block mb-16px">控件库</span>
-        <div class="flex justify-between flex-wrap gap-x-16px gap-y-15px text-sm text-[#646A73]">
-          <div v-for="(c, i) of nativeControls" :key="i" class="w-140px h-36px border rounded cursor-pointer px-16px flex items-center gap-10px control-item" @dragstart.stop="handleDrag(c, $event)" draggable="true">
-            <div v-html="c.svg"></div>
-            <span>{{ c.text }}</span>
-          </div>
+    <div class="template-editor-main-wrapper">
+      <div class="template-editor-control-lib">
+        <span class="template-editor-control-lib-title">控件库</span>
+        <div v-for="(c, i) of nativeControls" :key="i" class="template-editor-control-lib-item" @dragstart.stop="handleDrag(c, $event)" draggable="true">
+          <div v-html="c.svg"></div>
+          <span>{{ c.text }}</span>
         </div>
       </div>
-      <div class="flex-1 flex justify-center items-center z-1 relative" @mousedown.self="setDefaultNode" @mousemove="handleMouseMove" ref="container">
+      <div class="template-editor-template-wrapper" @mousedown.self="setDefaultNode" @mousemove="handleMouseMove" ref="container">
         <div :style="{ 'height': `${tplInfo.height * 3 * scale / 100}px`, width: `${tplInfo.width * 3 * scale / 100}px`, }" 
              style="box-shadow: 0px 3px 20px 0px rgba(0, 0, 0, 0.1); z-index: 10;" class="bg-white">
           <svg
@@ -1622,92 +1618,96 @@ export default {
         </div>
         <div v-for="p of placeholds" :id="p.id" :key="p.id" class="tpl-control-placeholder" @mousedown.stop="handleMouseDown"></div>
       </div>
-      <div class="w-344px border-t bg-white flex-none flex flex-col children:(px-24px)">
-        <div class="h-55px flex items-center border-b text-sm text-normal">
+      <div class="template-editor-control-attribute-wrapper">
+        <div class="template-editor-control-attribute-title">
           <template v-if="currentNode.type === 'bg'">
             <span>模板编辑</span>
           </template>
           <template v-else>
             <template v-for="(c, i) of nativeControls">
-              <div class="flex items-center gap-10px" :key="i" v-show="c.ctx.type === currentNode.type">
-                <div v-html="c.svg"></div>
+              <div :key="i" v-show="c.ctx.type === currentNode.type" style="display: flex; align-items: center;">
+                <div v-html="c.svg" style="margin-right: 10px;"></div>
                 <span>{{ c.text }}</span>
               </div>
             </template>
           </template>
         </div>
-        <div class="pt-10px flex items-center gap-20px px-24px" v-if="currentNode.type !== 'bg'">
-            <div class="w-full flex justify-between items-center rounded bg-[#F6F6F6] px-32px h-40px">  
-              <div @click="toEdge('top')" :class="['control-ctrl', { 'edged': currentNodeLevel === controls.length - 1 }]">
-                <el-tooltip effect="dark" content="置顶" placement="bottom" :manual="true" v-model="tooltipControl.zd">
-                  <svg @mouseenter="showTip('zd')" @mouseleave="hiddenTip('zd')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-68.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(27.000000, 11.000000)"><path d="M14.25,13.5 C15.4926407,13.5 16.5,14.5073593 16.5,15.75 C16.5,16.9926407 15.4926407,18 14.25,18 L3.75,18 C2.50735931,18 1.5,16.9926407 1.5,15.75 C1.5,14.5073593 2.50735931,13.5 3.75,13.5 L14.25,13.5 Z M14.25,15 L3.75,15 C3.33578644,15 3,15.3357864 3,15.75 C3,16.1346269 3.28953014,16.4516304 3.66253416,16.4949542 L3.75,16.5 L14.25,16.5 C14.6642136,16.5 15,16.1642136 15,15.75 C15,15.3653731 14.7104699,15.0483696 14.3374658,15.0050458 L14.25,15 Z" fill-rule="nonzero"></path><path d="M14.25,7.5 C15.4926407,7.5 16.5,8.50735931 16.5,9.75 C16.5,10.9926407 15.4926407,12 14.25,12 L3.75,12 C2.50735931,12 1.5,10.9926407 1.5,9.75 C1.5,8.50735931 2.50735931,7.5 3.75,7.5 L14.25,7.5 Z M14.25,9 L3.75,9 C3.33578644,9 3,9.33578644 3,9.75 C3,10.1346269 3.28953014,10.4516304 3.66253416,10.4949542 L3.75,10.5 L14.25,10.5 C14.6642136,10.5 15,10.1642136 15,9.75 C15,9.36537312 14.7104699,9.04836963 14.3374658,9.0050458 L14.25,9 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="11.25" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
-                </el-tooltip>
-              </div>
-              <div :class="['control-ctrl', { 'edged': currentNodeLevel === controls.length - 1 }]" @click="moveLevel('up')">
-                <el-tooltip effect="dark" content="上移" placement="bottom" :manual="true" v-model="tooltipControl.sy">
-                  <svg @mouseenter="showTip('sy')" @mouseleave="hiddenTip('sy')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-124.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(83.000000, 11.000000)"><path d="M14.25,12.75 C15.4926407,12.75 16.5,13.7573593 16.5,15 C16.5,16.2426407 15.4926407,17.25 14.25,17.25 L3.75,17.25 C2.50735931,17.25 1.5,16.2426407 1.5,15 C1.5,13.7573593 2.50735931,12.75 3.75,12.75 L14.25,12.75 Z M14.25,14.25 L3.75,14.25 C3.33578644,14.25 3,14.5857864 3,15 C3,15.3846269 3.28953014,15.7016304 3.66253416,15.7449542 L3.75,15.75 L14.25,15.75 C14.6642136,15.75 15,15.4142136 15,15 C15,14.6153731 14.7104699,14.2983696 14.3374658,14.2550458 L14.25,14.25 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="7.5" width="1.5" height="6.75" rx="0.75"></rect><rect x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
-                </el-tooltip>
-              </div>
-              <div :class="['control-ctrl', { 'edged': currentNodeLevel === 0 }]" @click="moveLevel('dowm')">
-                <el-tooltip effect="dark" content="下移" placement="bottom" :manual="true" v-model="tooltipControl.xy">
-                  <svg @mouseenter="showTip('xy')" @mouseleave="hiddenTip('xy')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-180.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(139.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M9.53033009,9.47702923 L13.0229708,12.9696699 C13.315864,13.2625631 13.315864,13.7374369 13.0229708,14.0303301 C12.7300776,14.3232233 12.2552038,14.3232233 11.9623106,14.0303301 L9.74935931,11.8178593 L9.75,16.5 C9.75,16.9142136 9.41421356,17.25 9,17.25 C8.58578644,17.25 8.25,16.9142136 8.25,16.5 L8.24935931,11.8178593 L6.0376894,14.0303301 C5.74479618,14.3232233 5.26992245,14.3232233 4.97702923,14.0303301 C4.68413601,13.7374369 4.68413601,13.2625631 4.97702923,12.9696699 L8.46966991,9.47702923 C8.76256313,9.18413601 9.23743687,9.18413601 9.53033009,9.47702923 Z" transform="translate(9.000000, 13.253680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -13.253680) "></path><rect transform="translate(9.000000, 7.125000) rotate(-180.000000) translate(-9.000000, -7.125000) " x="8.25" y="3.75" width="1.5" height="6.75" rx="0.75"></rect><rect transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) " x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
-                </el-tooltip>
-              </div>
-              <div @click="toEdge('bottom')" :class="['control-ctrl', { 'edged': currentNodeLevel === 0 }]">
-                <el-tooltip effect="dark" content="置底" placement="bottom" :manual="true" v-model="tooltipControl.zdd">
-                  <svg @mouseenter="showTip('zdd')" @mouseleave="hiddenTip('zdd')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-236.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(195.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M14.25,6.75 C15.4926407,6.75 16.5,7.75735931 16.5,9 C16.5,10.2426407 15.4926407,11.25 14.25,11.25 L3.75,11.25 C2.50735931,11.25 1.5,10.2426407 1.5,9 C1.5,7.75735931 2.50735931,6.75 3.75,6.75 L14.25,6.75 Z M14.25,8.25 L3.75,8.25 C3.33578644,8.25 3,8.58578644 3,9 C3,9.38462688 3.28953014,9.70163037 3.66253416,9.7449542 L3.75,9.75 L14.25,9.75 C14.6642136,9.75 15,9.41421356 15,9 C15,8.61537312 14.7104699,8.29836963 14.3374658,8.2550458 L14.25,8.25 Z" fill-rule="nonzero" transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) "></path><path d="M9.53033009,10.2270292 L13.0229708,13.7196699 C13.315864,14.0125631 13.315864,14.4874369 13.0229708,14.7803301 C12.7300776,15.0732233 12.2552038,15.0732233 11.9623106,14.7803301 L9.74935931,12.5678593 L9.75,17.25 C9.75,17.6642136 9.41421356,18 9,18 C8.58578644,18 8.25,17.6642136 8.25,17.25 L8.24935931,12.5678593 L6.0376894,14.7803301 C5.74479618,15.0732233 5.26992245,15.0732233 4.97702923,14.7803301 C4.68413601,14.4874369 4.68413601,14.0125631 4.97702923,13.7196699 L8.46966991,10.2270292 C8.76256313,9.93413601 9.23743687,9.93413601 9.53033009,10.2270292 Z" transform="translate(9.000000, 14.003680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -14.003680) "></path><rect transform="translate(9.000000, 5.625000) rotate(-180.000000) translate(-9.000000, -5.625000) " x="8.25" y="3.75" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
-                </el-tooltip>
-              </div>
-              <el-tooltip effect="dark" content="删除" placement="bottom" :manual="true" v-model="tooltipControl.sc">
-                <svg @mouseenter="showTip('sc')" @mouseleave="hiddenTip('sc')" @click="removeNode" class="group cursor-pointer" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="group-hover:(fill-[#F54A45])" d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
-              </el-tooltip>
-            </div>
+        <div class="template-editor-control-attribute-level" v-if="currentNode.type !== 'bg'">
+          <div @click="toEdge('top')" :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === controls.length - 1 }]">
+            <el-tooltip effect="dark" content="置顶" placement="bottom" :manual="true" v-model="tooltipControl.zd">
+              <svg @mouseenter="showTip('zd')" @mouseleave="hiddenTip('zd')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-68.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(27.000000, 11.000000)"><path d="M14.25,13.5 C15.4926407,13.5 16.5,14.5073593 16.5,15.75 C16.5,16.9926407 15.4926407,18 14.25,18 L3.75,18 C2.50735931,18 1.5,16.9926407 1.5,15.75 C1.5,14.5073593 2.50735931,13.5 3.75,13.5 L14.25,13.5 Z M14.25,15 L3.75,15 C3.33578644,15 3,15.3357864 3,15.75 C3,16.1346269 3.28953014,16.4516304 3.66253416,16.4949542 L3.75,16.5 L14.25,16.5 C14.6642136,16.5 15,16.1642136 15,15.75 C15,15.3653731 14.7104699,15.0483696 14.3374658,15.0050458 L14.25,15 Z" fill-rule="nonzero"></path><path d="M14.25,7.5 C15.4926407,7.5 16.5,8.50735931 16.5,9.75 C16.5,10.9926407 15.4926407,12 14.25,12 L3.75,12 C2.50735931,12 1.5,10.9926407 1.5,9.75 C1.5,8.50735931 2.50735931,7.5 3.75,7.5 L14.25,7.5 Z M14.25,9 L3.75,9 C3.33578644,9 3,9.33578644 3,9.75 C3,10.1346269 3.28953014,10.4516304 3.66253416,10.4949542 L3.75,10.5 L14.25,10.5 C14.6642136,10.5 15,10.1642136 15,9.75 C15,9.36537312 14.7104699,9.04836963 14.3374658,9.0050458 L14.25,9 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="11.25" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
+            </el-tooltip>
+          </div>
+          <div :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === controls.length - 1 }]" @click="moveLevel('up')">
+            <el-tooltip effect="dark" content="上移" placement="bottom" :manual="true" v-model="tooltipControl.sy">
+              <svg @mouseenter="showTip('sy')" @mouseleave="hiddenTip('sy')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-124.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(83.000000, 11.000000)"><path d="M14.25,12.75 C15.4926407,12.75 16.5,13.7573593 16.5,15 C16.5,16.2426407 15.4926407,17.25 14.25,17.25 L3.75,17.25 C2.50735931,17.25 1.5,16.2426407 1.5,15 C1.5,13.7573593 2.50735931,12.75 3.75,12.75 L14.25,12.75 Z M14.25,14.25 L3.75,14.25 C3.33578644,14.25 3,14.5857864 3,15 C3,15.3846269 3.28953014,15.7016304 3.66253416,15.7449542 L3.75,15.75 L14.25,15.75 C14.6642136,15.75 15,15.4142136 15,15 C15,14.6153731 14.7104699,14.2983696 14.3374658,14.2550458 L14.25,14.25 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="7.5" width="1.5" height="6.75" rx="0.75"></rect><rect x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
+            </el-tooltip>
+          </div>
+          <div :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === 0 }]" @click="moveLevel('dowm')">
+            <el-tooltip effect="dark" content="下移" placement="bottom" :manual="true" v-model="tooltipControl.xy">
+              <svg @mouseenter="showTip('xy')" @mouseleave="hiddenTip('xy')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-180.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(139.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M9.53033009,9.47702923 L13.0229708,12.9696699 C13.315864,13.2625631 13.315864,13.7374369 13.0229708,14.0303301 C12.7300776,14.3232233 12.2552038,14.3232233 11.9623106,14.0303301 L9.74935931,11.8178593 L9.75,16.5 C9.75,16.9142136 9.41421356,17.25 9,17.25 C8.58578644,17.25 8.25,16.9142136 8.25,16.5 L8.24935931,11.8178593 L6.0376894,14.0303301 C5.74479618,14.3232233 5.26992245,14.3232233 4.97702923,14.0303301 C4.68413601,13.7374369 4.68413601,13.2625631 4.97702923,12.9696699 L8.46966991,9.47702923 C8.76256313,9.18413601 9.23743687,9.18413601 9.53033009,9.47702923 Z" transform="translate(9.000000, 13.253680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -13.253680) "></path><rect transform="translate(9.000000, 7.125000) rotate(-180.000000) translate(-9.000000, -7.125000) " x="8.25" y="3.75" width="1.5" height="6.75" rx="0.75"></rect><rect transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) " x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
+            </el-tooltip>
+          </div>
+          <div @click="toEdge('bottom')" :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === 0 }]">
+            <el-tooltip effect="dark" content="置底" placement="bottom" :manual="true" v-model="tooltipControl.zdd">
+              <svg @mouseenter="showTip('zdd')" @mouseleave="hiddenTip('zdd')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-236.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(195.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M14.25,6.75 C15.4926407,6.75 16.5,7.75735931 16.5,9 C16.5,10.2426407 15.4926407,11.25 14.25,11.25 L3.75,11.25 C2.50735931,11.25 1.5,10.2426407 1.5,9 C1.5,7.75735931 2.50735931,6.75 3.75,6.75 L14.25,6.75 Z M14.25,8.25 L3.75,8.25 C3.33578644,8.25 3,8.58578644 3,9 C3,9.38462688 3.28953014,9.70163037 3.66253416,9.7449542 L3.75,9.75 L14.25,9.75 C14.6642136,9.75 15,9.41421356 15,9 C15,8.61537312 14.7104699,8.29836963 14.3374658,8.2550458 L14.25,8.25 Z" fill-rule="nonzero" transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) "></path><path d="M9.53033009,10.2270292 L13.0229708,13.7196699 C13.315864,14.0125631 13.315864,14.4874369 13.0229708,14.7803301 C12.7300776,15.0732233 12.2552038,15.0732233 11.9623106,14.7803301 L9.74935931,12.5678593 L9.75,17.25 C9.75,17.6642136 9.41421356,18 9,18 C8.58578644,18 8.25,17.6642136 8.25,17.25 L8.24935931,12.5678593 L6.0376894,14.7803301 C5.74479618,15.0732233 5.26992245,15.0732233 4.97702923,14.7803301 C4.68413601,14.4874369 4.68413601,14.0125631 4.97702923,13.7196699 L8.46966991,10.2270292 C8.76256313,9.93413601 9.23743687,9.93413601 9.53033009,10.2270292 Z" transform="translate(9.000000, 14.003680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -14.003680) "></path><rect transform="translate(9.000000, 5.625000) rotate(-180.000000) translate(-9.000000, -5.625000) " x="8.25" y="3.75" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
+            </el-tooltip>
+          </div>
+          <el-tooltip effect="dark" content="删除" placement="bottom" :manual="true" v-model="tooltipControl.sc">
+            <svg @mouseenter="showTip('sc')" @mouseleave="hiddenTip('sc')" @click="removeNode" class="template-editor-control-attribute-level-del" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
+          </el-tooltip>
         </div>
         <div class="px-24px py-20px flex justify-around flex-col text-sm text-normal" v-if="currentNode.type !== 'qr'">
           <template v-if="currentNode.type === 'bg'">
-            <div class="flex flex-col">
-              <span class="flex items-center mb-8px">标签名称<span class="text-[#F76E6A] mx-1">*</span>：</span>
+            <div class="template-editor-control-attribute-item">
+              <span>标签名称<span style="display: inline-block; margin-left: 4px; color: #F65752;">*</span>：</span>
               <el-input size="small" v-model.trim="tplName" placeholder="请输入标签名称" :maxlength="15"></el-input>
             </div>
-            <div class="flex items-center mt-20px">
+            <div class="template-editor-control-attribute-item">
               <span>标签尺寸：</span>
-              <span class="mr-10px">{{ `${tplInfo.width}×${tplInfo.height}&nbsp;mm` }}</span>
-              <size-picker @select="changeSize" :activeSize="[tplInfo.width, tplInfo.height]"></size-picker>
+              <div style="display: flex;">
+                <span style="margin-right: 10px;">{{ `${tplInfo.width}×${tplInfo.height}&nbsp;mm` }}</span>
+                <size-picker @select="changeSize" :activeSize="[tplInfo.width, tplInfo.height]"></size-picker>
+              </div>
             </div>
-            <div class="flex items-center mt-20px">
+            <div class="template-editor-control-attribute-item">
               <span>标签背景：</span>
-              <span class="w-32px h-32px inline-block border rounded mr-10px p-3px">
-                <span class="inline-block w-full h-full rounded" :style="{ 'background-color': tplInfo.bgColor }"></span>
-              </span>
-              <color-picker :activeColor="tplInfo.bgColor" @select="changeColor"></color-picker>
+              <div style="display: flex;align-items:center;">
+                <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': tplInfo.bgColor }"></span>
+                </span>
+                <color-picker :activeColor="tplInfo.bgColor" @select="changeColor"></color-picker>
+              </div>
             </div>
           </template>
           <template v-if="currentNode.type === 'rect'">
-            <span>矩形颜色</span>
-            <div class="flex items-center mt-8px">
-              <span class="w-32px h-32px inline-block border rounded mr-10px p-3px">
-                <span class="inline-block w-full h-full rounded" :style="{ 'background-color': currentNode.dynamic.fill }"></span>
-              </span>
-              <color-picker :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
+            <div class="template-editor-control-attribute-item">
+              <span>矩形颜色</span>
+              <div style="display: flex;align-items:center;">
+                <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': currentNode.dynamic.fill }"></span>
+                </span>
+                <color-picker :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
+              </div>
             </div>
-            <span class="mt-20px">圆角大小</span>
-            <div class="border mt-8px border-[#DFE3E9] rounded h-32px flex items-center px-16px justify-between">
-              <el-slider v-model="currentNode.dynamic.rx" @change="setRecord" class="w-230px" :max="50" :show-tooltip="false"></el-slider>
-              <span>{{ currentNode.dynamic.rx }}</span>
+            <div class="template-editor-control-attribute-item" style="gap: 0;">
+              <span>圆角大小：{{ currentNode.dynamic.rx }}</span>
+              <el-slider v-model="currentNode.dynamic.rx" @change="setRecord" style="margin: 0 8px;" :max="50" :show-tooltip="false"></el-slider>
             </div>
           </template>
           <template v-if="['title', 'subTitle', 'field'].includes(currentNode.type)">
-            <span>字体设置</span>
-            <div class="flex items-center justify-between mt-10px">
-              <el-select size="small" v-model="currentNode.children[1].dynamic['font-family']" class="w-190px placeholder-[#000c25]" @change="setRecord">
+            <div class="template-editor-control-attribute-item">
+              <span>字体设置</span>
+
+              <el-select size="small" v-model="currentNode.children[1].dynamic['font-family']" @change="setRecord">
                 <el-option v-for="f of fonts" :key="f.value" :label="f.name" :value="f.value"></el-option>
               </el-select>
-              <el-select size="small" v-model="currentNode.dynamic.size" class="w-96px placeholder-[#000c25]" @change="setRecord">
+
+              <el-select size="small" v-model="currentNode.dynamic.size" @change="setRecord">
                 <el-option v-for="s of [12, 14, 18, 24, 30, 36, 48, 60, 72]" :key="s" :label="s" :value="s"></el-option>
               </el-select>
-            </div>
-            <div class="rounded w-295px h-32px mt-10px flex items-center justify-between">
-              <div class="flex items-center gap-14px w-190px">
+
+              <div style="display:flex;align-items:center;gap:14px">
                 <el-tooltip effect="dark" content="左对齐" placement="bottom" :manual="true" v-model="tooltipControl.zdq">
                   <div @mouseenter="showTip('zdq')" @mouseleave="hiddenTip('zdq')" @click="setTextAlign('left')" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.dynamic.align === 'left' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="0" y="4" width="6" height="1.6"></rect><rect x="0" y="8" width="9" height="1.6"></rect></g></svg></div>
                 </el-tooltip>
@@ -1719,7 +1719,7 @@ export default {
                 </el-tooltip>
               </div>
 
-              <div class="flex items-center gap-14px w-96px">
+              <div style="display:flex;align-items:center;gap:14px">
                 <el-tooltip effect="dark" content="粗体" placement="bottom" :manual="true" v-model="tooltipControl.ct">
                   <div @mouseenter="showTip('ct')" @mouseleave="hiddenTip('ct')" @click="toggleBold" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.children[1].dynamic['font-weight'] === 'bold' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path transform="translate(-1,-1)" d="M12.512605,18 C13.789916,18 14.7983193,17.7647059 15.5042017,17.2941176 C16.3277311,16.7226891 16.7478992,15.8319328 16.7478992,14.6218487 C16.7478992,13.8151261 16.5462185,13.1596639 16.1596639,12.6890756 C15.7563025,12.2016807 15.1680672,11.8823529 14.3781513,11.7310924 C14.9831933,11.4957983 15.4369748,11.1764706 15.7563025,10.7394958 C16.0756303,10.2689076 16.2436975,9.69747899 16.2436975,9.02521008 C16.2436975,8.11764706 15.9243697,7.39495798 15.302521,6.85714286 C14.6302521,6.28571429 13.6890756,6 12.4957983,6 L7,6 L7,18 L12.512605,18 Z M11.9747899,11.0420168 L8.96638655,11.0420168 L8.96638655,7.61344538 L12.0084034,7.61344538 C12.8151261,7.61344538 13.3865546,7.74789916 13.7563025,8.01680672 C14.092437,8.26890756 14.2773109,8.68907563 14.2773109,9.2605042 C14.2773109,9.88235294 14.092437,10.3361345 13.7563025,10.6218487 C13.4033613,10.8907563 12.8151261,11.0420168 11.9747899,11.0420168 Z M12.2268908,16.3865546 L8.96638655,16.3865546 L8.96638655,12.6554622 L12.2773109,12.6554622 C13.1512605,12.6554622 13.789916,12.8067227 14.1932773,13.1092437 C14.5798319,13.4117647 14.7815126,13.8991597 14.7815126,14.5882353 C14.7815126,15.2605042 14.512605,15.7310924 13.9747899,16.0336134 C13.5546218,16.2689076 12.9663866,16.3865546 12.2268908,16.3865546 Z" fill="#646A73"></path></svg></div>
                 </el-tooltip>
@@ -1728,58 +1728,68 @@ export default {
                 </el-tooltip>
               </div>
             </div>
-            <span class="mt-20px">字体颜色</span>
-            <div class="flex items-center mt-8px">
-              <span class="w-32px h-32px inline-block border rounded mr-10px p-3px">
-                <span class="inline-block w-full h-full rounded" :style="{ 'background-color': currentNode.children[1].dynamic.fill }"></span>
-              </span>
-              <color-picker :activeColor="currentNode.children[1].dynamic.fill" @select="changeColor"></color-picker>
+
+            <div class="template-editor-control-attribute-item">
+              <span>字体颜色</span>
+              <div style="display: flex;align-items:center;">
+                <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': currentNode.children[1].dynamic.fill }"></span>
+                </span>
+                <color-picker :activeColor="currentNode.children[1].dynamic.fill" @select="changeColor"></color-picker>
+              </div>
             </div>
           </template>
           <template v-if="currentNode.type === 'line'">
-            <span>线条颜色</span>
-            <div class="flex items-center mt-8px">
-              <span class="w-32px h-32px inline-block border rounded mr-10px p-3px">
-                <span class="inline-block w-full h-full rounded" :style="{ 'background-color': currentNode.children[1].dynamic.stroke }"></span>
-              </span>
-              <color-picker :activeColor="currentNode.children[1].dynamic.stroke" @select="changeColor"></color-picker>
+            <div class="template-editor-control-attribute-item">
+              <span>线条颜色</span>
+              <div style="display: flex;align-items:center;">
+                <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': currentNode.children[1].dynamic.stroke }"></span>
+                </span>
+                <color-picker :activeColor="currentNode.children[1].dynamic.stroke" @select="changeColor"></color-picker>
+              </div>
             </div>
-            <span class="mt-20px">线条样式</span>
-            <div class="w-295px h-32px rounded border flex justify-between items-center cursor-pointer px-10px relative mt-8px" @click="showLineDashSelect = !showLineDashSelect">
-              <template v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']">
-                <svg
-                  width="252px" height="4px" version="1.1" :key="i" v-show="currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ')"
-                  xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                >
-                  <line x1="0" y1="0" x2="252" y2="0" stroke-width="4px" stroke="#000000" :stroke-dasharray="t.split(' ').map((i) => i * 4).join(' ')"></line>
-                </svg>
-              </template>
+            <div class="template-editor-control-attribute-item">
+              <span>线条样式</span>
+              <div class="line-style-select" @click="showLineDashSelect = !showLineDashSelect">
+                <template v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']">
+                  <svg
+                    width="80px" height="4px" version="1.1" :key="i" v-show="currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ')"
+                    xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                  >
+                    <line x1="0" y1="0" x2="80" y2="0" stroke-width="4px" stroke="#000000" :stroke-dasharray="t.split(' ').map((i) => i * 4).join(' ')"></line>
+                  </svg>
+                </template>
 
-              <i :class="['el-icon-arrow-down text-[#70767E] text-xs transition transform', { 'rotate-180': showLineDashSelect }]"></i>
+                <i :class="['el-icon-arrow-down', { 'show-dash-select': showLineDashSelect }]"></i>
 
-              <transition name="el-zoom-in-top">
-                <div class="absolute border border-[#DFE3E9] rounded w-295px h-220px top-38px bg-white left-0 flex flex-col justify-center items-center" v-show="showLineDashSelect">
-                  <div :class="['w-294px h-34px flex items-center justify-center hover:(bg-[#F6F6F6] cursor-pointer)', { 'bg-[#EEF1F5]': currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ') }]"
-                      v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']" :key="i" @click="setLineDash(t)">
-                    <svg
-                      width="252px" height="4px" version="1.1"
-                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                    >
-                      <line x1="0" y1="0" x2="252" y2="0" stroke-width="4px" stroke="#000000" :stroke-dasharray="t.split(' ').map((i) => i * 4).join(' ')"></line>
-                    </svg>
+                <transition name="el-zoom-in-top">
+                  <div class="line-style-select-wrapper" v-show="showLineDashSelect">
+                    <div :class="['line-style-select-item', { 'active': currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ') }]"
+                        v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']" :key="i" @click="setLineDash(t)">
+                      <svg
+                        width="260px" height="4px" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                      >
+                        <line x1="0" y1="0" x2="260" y2="0" stroke-width="4px" stroke="#000000" :stroke-dasharray="t.split(' ').map((i) => i * 4).join(' ')"></line>
+                      </svg>
+                    </div>
                   </div>
-                </div>
-              </transition>
+                </transition>
+              </div>
             </div>
           </template>
           <template v-if="currentNode.type === 'logo'">
-            <span>尺寸</span>
-            <div class="flex items-center mt-10px gap-8px">
-              <span>宽</span>
-              <el-input @focus="canDelControls = false" @blur="canDelControls = true" v-model.number="logoWidth" size="small" class="w-94px"></el-input>
-              <span>高</span>
-              <el-input @focus="canDelControls = false" @blur="canDelControls = true" v-model.number="logoHeight" size="small" class="w-94px"></el-input>
-              <span>mm</span>
+            <div class="template-editor-control-attribute-item">
+              <span>尺寸</span>
+              <div>
+                <span>宽</span>
+                <el-input @focus="canDelControls = false" @blur="canDelControls = true" v-model.number="logoWidth" size="small" style="margin-top: 6px;"></el-input>
+              </div>
+              <div>
+                <span>高</span>
+                <el-input @focus="canDelControls = false" @blur="canDelControls = true" v-model.number="logoHeight" size="small" style="margin-top: 6px;"></el-input>
+              </div>
             </div>
           </template>
         </div>
@@ -1806,42 +1816,220 @@ export default {
 </template>
 
 <style lang="scss">
+.template-editor {
+  &-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #eef1f5;
+    color: #000c25;
+  }
+
+  &-header {
+    flex: none;
+    width: 100%;
+    height: 56px;
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 24px;
+    background-color: white;
+    position: relative;
+    box-shadow: 0px 4px 4px 0px rgba(34, 51, 97, 0.05);
+
+    .template-container {
+      &-control:not(.disabled) {
+        cursor: pointer;
+        &:hover {
+          .template-container-control-item {
+            fill: #155ED4;
+          }
+        }
+      }
+
+      &-control-item {
+        fill: #70767E;
+      }
+
+      &-control.disabled {
+        cursor: not-allowed;
+        opacity: .4;
+      }
+
+    }
+
+  }
+
+  &-main-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+  }
+
+  &-control-lib {
+    flex: none;
+    width: 168px;
+    background-color: white;
+    border-top: solid #DFE3E9 1px;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    &-title {
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    &-item {
+      width: 128px;
+      height: 36px;
+      border: #e5e7eb solid 1px;
+      cursor: pointer;
+      border-radius: 4px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #646A73;
+      font-size: 14px;
+
+      &:hover {
+        color: #0B58D2;
+      
+        path[fill], rect[fill], circle[fill] {
+          fill: #0B58D2;
+        }
+      
+        path[stroke], rect[stroke], circle[stroke] {
+          stroke: #0B58D2;
+        }
+      }
+    }
+  }
+
+  &-template-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+    position: relative;
+  }
+
+  &-control-attribute {
+    &-wrapper {
+      flex: none;
+      width: 168px;
+      border-top: solid 1px #e5e7eb;
+      background-color: white;
+      display: flex;
+      flex-direction: column;
+      font-size: 14px;
+
+      > * {
+        padding: 0 20px;
+      }
+    }
+
+    &-title {
+      padding: 14px 20px;
+      font-weight: 500;
+      border-bottom: #e5e7eb 1px solid;
+    }
+
+    &-level {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: start;
+      align-items: center;
+      padding: 16px;
+      margin: 20px 20px 0;
+      border-radius: 4px;
+      gap: 20px;
+      background-color: #f6f6f6;
+
+      &-del:hover {
+        cursor: pointer;
+        path {
+          fill: #F54A45;
+        }
+      }
+
+      &-item:not(.edged):hover {
+        cursor: pointer;
+        color: #0B58D2;
+      
+        path, g, rect, circle {
+          fill: #0B58D2;
+        }
+      }
+      .edged {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    }
+
+    &-item {
+      margin-top: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .line-style-select {
+        width: 100%;
+        height: 32px;
+        border-radius: 4px;
+        border: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        padding: 0 10px;
+        position: relative;
+
+        .show-dash-select {
+          transform: rotate(180deg);
+        }
+
+        &-wrapper {
+          position: absolute;
+          width: 280px;
+          height: 210px;
+          top: 38px;
+          right: 0;
+          border: 1px solid #DFE3E9;
+          border-radius: 4px;
+          background-color: white;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+        }
+
+        &-item {
+          width: 278px;
+          height: 34px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          &.active {
+            background-color: #EEF1F5;
+          }
+          &:hover {
+            background-color: #f6f6f6;
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}
 text, tspan {
   user-select: none;
-}
-.el-slider__bar {
-  background-color: #0B58D2;
-}
-.el-slider__button {
-  border-color: #0B58D2;
-}
-.control-item:hover {
-  color: #0B58D2;
-
-  path[fill], rect[fill], circle[fill] {
-    fill: #0B58D2;
-  }
-
-  path[stroke], rect[stroke], circle[stroke] {
-    stroke: #0B58D2;
-  }
-}
-.active-style {
-  path {
-    fill: #0B58D2;
-  }
-}
-.control-ctrl:not(.edged):hover {
-  cursor: pointer;
-  color: #0B58D2;
-
-  path, g, rect, circle {
-    fill: #0B58D2;
-  }
-}
-.edged {
-  opacity: 0.4;
-  cursor: not-allowed;
 }
 
 .tpl-control-placeholder {
@@ -1850,6 +2038,7 @@ text, tspan {
   border-radius: 4px;
   z-index: 5;
 }
+
 .tpl-size-dialog {
   border-radius: 8px !important;
   overflow: hidden;
@@ -1862,10 +2051,6 @@ text, tspan {
     color: #646A73 !important;
     transform: translateY(-5px);
   }
-}
-.el-input__inner {
-  color: #000c25;
-  font-size: 14px;
 }
 
 .text-control-attribute {

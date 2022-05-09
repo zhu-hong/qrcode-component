@@ -30,7 +30,7 @@ export default {
       {{ r.name }}
     </span>
 
-    <span class="absolute top-full px-2 py-1 border rounded-b border-t-transparent cursor-pointer bg-white" @click="showTab = !showTab">
+    <span class="absolute top-full right-200px px-2 py-1 border rounded-b border-t-transparent cursor-pointer bg-white" @click="showTab = !showTab">
       <svg t="1651805230614" :class="['transition-all transform', { 'rotate-180': !showTab }]" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1894" width="16" height="16"><path d="M512 378.24l-418.88 418.88L0 704l512-512 512 512-93.12 93.12z" fill="#262626" p-id="1895"></path></svg>
     </span>
   </div>
