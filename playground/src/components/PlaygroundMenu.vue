@@ -25,7 +25,7 @@ export default {
     <span
       v-for="r of routes" :key="r.name" 
       :class="['cursor-pointer px-4 py-2 rounded select-none z-99 hover:(opacity-65) active:(opacity-85)', $route.name === r.name ? 'bg-rose-400 text-black' : 'bg-gray-900 text-white']"
-      @click="toPath(r.name)" style="font-family: 'Fira Code', 'monospace';"
+      @click="toPath(r.name)" style="font-family: 'Fira Code', 'JetBrains Mono', 'monospace';"
     >
       {{ r.name }}
     </span>
