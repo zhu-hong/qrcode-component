@@ -25,7 +25,9 @@ export default {
         :class="['color-picker-option', { 'active': activeColor === color }, { 'white-option': color === '#FFFFFF' }]"
       >
       </span>
+
     </div>
+    <div v-show="this.showOptions" style="position:fixed;width:100vw;height:100vh;top:0;left:0;z-index:10;" @click="showOptions = false"></div>
   </div>
 </template>
 

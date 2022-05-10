@@ -48,6 +48,8 @@ export default {
         自定义尺寸
       </span>
     </div>
+    
+    <div v-show="this.showOptions" style="position:fixed;width:100vw;height:100vh;top:0;left:0;z-index:10;" @click="showOptions = false"></div>
   </div>
 </template>
 
@@ -136,64 +138,4 @@ export default {
     }
   }
 }
-// .tpl-size-option-wrapper {
-//   width: 210px;
-//   display: flex;
-//   flex-wrap: wrap;
-//   justify-content: space-between;
-//   padding: 8px !important;
-
-//   .tpl-size-title {
-//     width: 100%;
-//     color: rgba(156, 163, 175, 1);
-//     font-size: 14px;
-//   }
-
-//   .tpl-size-option {
-//     width: 94px;
-//     height: 34px;
-//     font-size: 12px !important;
-//     margin-top: 4px !important;
-//     display: flex;
-//     justify-content: center;
-//     align-items: center;
-//     border-radius: 4px;
-//     border: #e5e7eb solid 1px;
-//     overflow: hidden;
-//     text-overflow: ellipsis;
-//     white-space: nowrap;
-//     &:hover {
-//       color: var(--template-editor-primary-color) !important;
-//     }
-    
-//     &.active {
-//       border: 1px solid var(--template-editor-primary-color);
-//       position: relative;
-//       overflow: hidden;
-
-//       &::after {
-//         content: 'L';
-//         position: absolute;
-//         bottom: 0;
-//         right: 0;
-//         color: white;
-//         font-weight: 500;
-//         font-size: .7rem;
-//         transform: rotateY(180deg) rotate(-35deg) translateX(-5px) translateY(10px);
-//       }
-
-//       &::before {
-//         content: '';
-//         position: absolute;
-//         bottom: 0;
-//         right: 0;
-//         width: 18px;
-//         height: 28px;
-//         background-color: var(--template-editor-primary-color);
-//         transform-origin: left bottom;
-//         transform: rotate(45deg);
-//       }
-//     }
-//   }
-// }
 </style>
