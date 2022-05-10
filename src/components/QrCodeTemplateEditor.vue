@@ -4,6 +4,7 @@ import { generateControl, reRenderDynamicAttrs, getId } from '../utils'
 import ColorPicker from './ColorPicker.vue'
 import EventTsfMask from './EventTsfMask.vue'
 import SizePicker from './SizePicker.vue'
+import ToolTip from './ToolTip.vue'
 
 let inDrag = false
 let moved = false
@@ -34,6 +35,7 @@ export default {
     ColorPicker,
     EventTsfMask,
     SizePicker,
+    ToolTip,
   },
   data() {
     return {
@@ -70,26 +72,6 @@ export default {
         stackIndex: 0,
         canUndo: false,
         canUnundo: false,
-      },
-      tooltipControl: {
-        timer: null,
-        cx: false,
-        qj: false,
-        fz: false,
-        nt: false,
-        zjst: false,
-        sxhb: false,
-        fdhb: false,
-        zd: false,
-        sy: false,
-        xy: false,
-        zdd: false,
-        sc: false,
-        zdq: false,
-        jzdq: false,
-        ydq: false,
-        ct: false,
-        xt: false,
       },
     }
   },
@@ -163,8 +145,6 @@ export default {
   },
   methods: {
     modifyScale(scale) {
-      this.hiddenTip('fdhb')
-      this.hiddenTip('sxhb')
       const scaled = this.scale + scale
       const scaledHeight = this.tplInfo.height * scaled / 100
       const scaledwidth = this.tplInfo.width * scaled / 100
@@ -209,7 +189,6 @@ export default {
       return can
     },
     calcBestScale() {
-      this.hiddenTip('zjst')
       let longerEdge = this.tplInfo.width > this.tplInfo.height ? this.tplInfo.width : this.tplInfo.height
       let scale = 150 / longerEdge
       this.scale = Math.round(scale * 100)
@@ -521,7 +500,6 @@ export default {
       this.setRecord()
     },
     removeNode() {
-      this.hiddenTip('sc')
       if(this.currentNode.type === 'bg') return
 
       const curId = this.currentNode.id
@@ -566,14 +544,12 @@ export default {
       }
     },
     toggleBold() {
-      this.hiddenTip('ct')
       const style = this.currentNode.children[1].dynamic['font-weight']
       style === 'bold' ? this.currentNode.children[1].dynamic['font-weight'] = 'normal' : this.currentNode.children[1].dynamic['font-weight'] = 'bold'
       // console.log('text bold')
       this.setRecord()
     },
     toggleItalic() {
-      this.hiddenTip('xt')
       const style = this.currentNode.children[1].dynamic['font-style']
       style === 'italic' ? this.currentNode.children[1].dynamic['font-style'] = 'normal' : this.currentNode.children[1].dynamic['font-style'] = 'italic'
       // console.log('text italic')
@@ -581,7 +557,6 @@ export default {
     },
     toEdge(type) {
       if(type === 'top') {
-        this.hiddenTip('zd')
         if(this.currentNodeLevel === this.controls.length - 1) return
 
         const currentEl = document.getElementById(this.currentNode.id)
@@ -591,7 +566,6 @@ export default {
         const currentNode = this.controls.splice(this.currentNodeLevel, 1)
         this.controls.push(...currentNode)
       } else {
-        this.hiddenTip('zdd')
         if(this.currentNodeLevel === 0) return
 
         const currentEl = document.getElementById(this.currentNode.id)
@@ -606,7 +580,6 @@ export default {
     },
     moveLevel(type) {
       if(type === 'up') {
-      this.hiddenTip('sy')
         if(this.currentNodeLevel === this.controls.length - 1) return
 
         const currentEl = document.getElementById(this.currentNode.id)
@@ -618,7 +591,6 @@ export default {
         const currentNode = this.controls.splice(this.currentNodeLevel, 1)
         this.controls.splice(level + 1, 0, ...currentNode)
       } else {
-      this.hiddenTip('xy')
         if(this.currentNodeLevel === 0) return
 
         const currentEl = document.getElementById(this.currentNode.id)
@@ -1354,7 +1326,6 @@ export default {
       this.setRecord()
     },
     cloneControl() {
-      this.hiddenTip('fz')
       if(this.currentNode.type === 'bg') return
 
       let clonedControl = JSON.parse(JSON.stringify(this.currentNode))
@@ -1364,7 +1335,6 @@ export default {
       this.cloneControlCache = clonedControl
     },
     pasteControl() {
-      this.hiddenTip('nt')
       if(this.cloneControlCache === null) return
       let state = this.initControl(this.cloneControlCache)
       this.cloneControlCache.transform.x += 10
@@ -1376,7 +1346,6 @@ export default {
       }
     },
     async tryUndo() {
-      this.hiddenTip('cx')
       if(!this.undoHub.canUndo) return
 
       this.setDefaultNode()
@@ -1393,7 +1362,6 @@ export default {
       }
     },
     tryUnundo() {
-      this.hiddenTip('qj')
       if(!this.undoHub.canUnundo) return
 
       this.setDefaultNode()
@@ -1446,9 +1414,6 @@ export default {
       })
     },
     setTextAlign(type) {
-      this.hiddenTip('zdq')
-      this.hiddenTip('jzdq')
-      this.hiddenTip('ydq')
       if(this.currentNode.dynamic.align === type) return
 
       this.currentNode.dynamic.align = type
@@ -1466,22 +1431,6 @@ export default {
       textControls.forEach((c) => {
         reRenderDynamicAttrs(c, document.getElementById(c.id), this.tplInfo.width * 3)
       })
-    },
-    showTip(key) {
-      if(this.tooltipControl.timer) {
-        clearTimeout(this.tooltipControl.timer)
-      }
-
-      this.tooltipControl.timer = setTimeout(() => {
-        this.tooltipControl[key] = true
-      }, 1500)
-    },
-    hiddenTip(key) {
-      if(this.tooltipControl.timer) {
-        clearTimeout(this.tooltipControl.timer)
-      }
-
-      this.tooltipControl[key] = false
     },
   },
   watch: {
@@ -1577,30 +1526,30 @@ export default {
   <div class="template-editor-container">
     <!-- 头部 -->
     <div class="template-editor-header">
-      <el-tooltip effect="dark" content="撤销" placement="bottom" :manual="true" v-model="tooltipControl.cx">
-        <svg @mouseenter="showTip('cx')" @mouseleave="hiddenTip('cx')" @click="tryUndo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
-      </el-tooltip>
-      <el-tooltip effect="dark" content="前进" placement="bottom" :manual="true" v-model="tooltipControl.qj">
-        <svg @mouseenter="showTip('qj')" @mouseleave="hiddenTip('qj')" @click="tryUnundo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUnundo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z" transform="translate(9.000000, 8.960000) scale(-1, 1) translate(-9.000000, -8.960000) "></path></svg>
-      </el-tooltip>
+      <tool-tip content="撤销">
+        <svg @click="tryUndo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
+      </tool-tip>
+      <tool-tip content="前进">
+        <svg @click="tryUnundo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUnundo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z" transform="translate(9.000000, 8.960000) scale(-1, 1) translate(-9.000000, -8.960000) "></path></svg>
+      </tool-tip>
       <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
-      <el-tooltip effect="dark" content="复制" placement="bottom" :manual="true" v-model="tooltipControl.fz">
-        <svg @mouseenter="showTip('fz')" @mouseleave="hiddenTip('fz')" width="18px" height="18px" viewBox="0 0 18 18" @click="cloneControl" :class="['template-container-control', { 'disabled': currentNode.type === 'bg' }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M11.25,5.25 C12.0784271,5.25 12.75,5.92157288 12.75,6.75 L12.75,15.75 C12.75,16.5784271 12.0784271,17.25 11.25,17.25 L2.25,17.25 C1.42157288,17.25 0.75,16.5784271 0.75,15.75 L0.75,6.75 C0.75,5.92157288 1.42157288,5.25 2.25,5.25 L11.25,5.25 Z M11.25,6.75 L2.25,6.75 L2.25,15.75 L11.25,15.75 L11.25,6.75 Z M15.75,0.75 C16.5784271,0.75 17.25,1.42157288 17.25,2.25 L17.25,11.25 C17.25,12.0784271 16.5784271,12.75 15.75,12.75 L13.5,12.75 L13.5,11.25 L15.75,11.25 L15.75,2.25 L6.75,2.25 L6.75,4.499 L5.25,4.499 L5.25,2.25 C5.25,1.42157288 5.92157288,0.75 6.75,0.75 L15.75,0.75 Z"></path></svg>
-      </el-tooltip>
-      <el-tooltip effect="dark" content="粘贴" placement="bottom" :manual="true" v-model="tooltipControl.nt">
-        <svg @mouseenter="showTip('nt')" @mouseleave="hiddenTip('nt')" width="18px" height="18px" viewBox="0 0 18 18" @click="pasteControl" :class="['template-container-control', { 'disabled': cloneControlCache === null }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="template-container-control-item"><path d="M11.25,0.75 C12.0784271,0.75 12.75,1.42157288 12.75,2.25 L12.75,11.25 C12.75,12.0784271 12.0784271,12.75 11.25,12.75 L2.25,12.75 C1.42157288,12.75 0.75,12.0784271 0.75,11.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L11.25,0.75 Z M11.25,2.25 L2.25,2.25 L2.25,11.25 L11.25,11.25 L11.25,2.25 Z"></path><path d="M5.25,14.25 L6.75,14.25 L6.75,15.75 L8.25,15.75 L8.25,17.25 L6.75,17.25 C5.92157288,17.25 5.25,16.5784271 5.25,15.75 L5.25,14.25 Z M12.75,15.75 L12.75,17.25 L9.75,17.25 L9.75,15.75 L12.75,15.75 Z M17.24925,14.24925 L17.25,15.75 C17.25,16.5784271 16.5784271,17.25 15.75,17.25 L14.25,17.25 L14.25,15.75 L15.75,15.75 L15.74925,14.24925 L17.24925,14.24925 Z M17.24925,9.74925 L17.24925,12.74925 L15.74925,12.74925 L15.74925,9.74925 L17.24925,9.74925 Z M15.75,5.25 C16.5784271,5.25 17.25,5.92157288 17.25,6.75 L17.25,8.24925 L15.75,8.24925 L15.75,6.75 L14.25,6.75 L14.25,5.25 L15.75,5.25 Z"></path></g></svg>
-      </el-tooltip>
+      <tool-tip content="复制">
+        <svg width="18px" height="18px" viewBox="0 0 18 18" @click="cloneControl" :class="['template-container-control', { 'disabled': currentNode.type === 'bg' }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M11.25,5.25 C12.0784271,5.25 12.75,5.92157288 12.75,6.75 L12.75,15.75 C12.75,16.5784271 12.0784271,17.25 11.25,17.25 L2.25,17.25 C1.42157288,17.25 0.75,16.5784271 0.75,15.75 L0.75,6.75 C0.75,5.92157288 1.42157288,5.25 2.25,5.25 L11.25,5.25 Z M11.25,6.75 L2.25,6.75 L2.25,15.75 L11.25,15.75 L11.25,6.75 Z M15.75,0.75 C16.5784271,0.75 17.25,1.42157288 17.25,2.25 L17.25,11.25 C17.25,12.0784271 16.5784271,12.75 15.75,12.75 L13.5,12.75 L13.5,11.25 L15.75,11.25 L15.75,2.25 L6.75,2.25 L6.75,4.499 L5.25,4.499 L5.25,2.25 C5.25,1.42157288 5.92157288,0.75 6.75,0.75 L15.75,0.75 Z"></path></svg>
+      </tool-tip>
+      <tool-tip content="粘贴">
+        <svg width="18px" height="18px" viewBox="0 0 18 18" @click="pasteControl" :class="['template-container-control', { 'disabled': cloneControlCache === null }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="template-container-control-item"><path d="M11.25,0.75 C12.0784271,0.75 12.75,1.42157288 12.75,2.25 L12.75,11.25 C12.75,12.0784271 12.0784271,12.75 11.25,12.75 L2.25,12.75 C1.42157288,12.75 0.75,12.0784271 0.75,11.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L11.25,0.75 Z M11.25,2.25 L2.25,2.25 L2.25,11.25 L11.25,11.25 L11.25,2.25 Z"></path><path d="M5.25,14.25 L6.75,14.25 L6.75,15.75 L8.25,15.75 L8.25,17.25 L6.75,17.25 C5.92157288,17.25 5.25,16.5784271 5.25,15.75 L5.25,14.25 Z M12.75,15.75 L12.75,17.25 L9.75,17.25 L9.75,15.75 L12.75,15.75 Z M17.24925,14.24925 L17.25,15.75 C17.25,16.5784271 16.5784271,17.25 15.75,17.25 L14.25,17.25 L14.25,15.75 L15.75,15.75 L15.74925,14.24925 L17.24925,14.24925 Z M17.24925,9.74925 L17.24925,12.74925 L15.74925,12.74925 L15.74925,9.74925 L17.24925,9.74925 Z M15.75,5.25 C16.5784271,5.25 17.25,5.92157288 17.25,6.75 L17.25,8.24925 L15.75,8.24925 L15.75,6.75 L14.25,6.75 L14.25,5.25 L15.75,5.25 Z"></path></g></svg>
+      </tool-tip>
+      <tool-tip content="最佳视图">
+        <svg @click="calcBestScale" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M16.5,1.5 C17.3284271,1.5 18,2.17157288 18,3 L18,15 C18,15.8284271 17.3284271,16.5 16.5,16.5 L1.5,16.5 C0.671572875,16.5 0,15.8284271 0,15 L0,3 C0,2.17157288 0.671572875,1.5 1.5,1.5 L16.5,1.5 Z M16.5,3 L1.5,3 L1.5,15 L16.5,15 L16.5,3 Z M5.25,5.25 L5.25,12.75 L3.75,12.75 L3.75,5.25 L5.25,5.25 Z M14.25,5.25 L14.25,12.75 L12.75,12.75 L12.75,5.25 L14.25,5.25 Z M9,9.75 C9.62132034,9.75 10.125,10.2536797 10.125,10.875 C10.125,11.4963203 9.62132034,12 9,12 C8.37867966,12 7.875,11.4963203 7.875,10.875 C7.875,10.2536797 8.37867966,9.75 9,9.75 Z M9,6 C9.62132034,6 10.125,6.50367966 10.125,7.125 C10.125,7.74632034 9.62132034,8.25 9,8.25 C8.37867966,8.25 7.875,7.74632034 7.875,7.125 C7.875,6.50367966 8.37867966,6 9,6 Z"></path></svg>
+      </tool-tip>
       <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
-      <el-tooltip effect="dark" content="最佳视图" placement="bottom" :manual="true" v-model="tooltipControl.zjst">
-        <svg @mouseenter="showTip('zjst')" @mouseleave="hiddenTip('zjst')" @click="calcBestScale" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M16.5,1.5 C17.3284271,1.5 18,2.17157288 18,3 L18,15 C18,15.8284271 17.3284271,16.5 16.5,16.5 L1.5,16.5 C0.671572875,16.5 0,15.8284271 0,15 L0,3 C0,2.17157288 0.671572875,1.5 1.5,1.5 L16.5,1.5 Z M16.5,3 L1.5,3 L1.5,15 L16.5,15 L16.5,3 Z M5.25,5.25 L5.25,12.75 L3.75,12.75 L3.75,5.25 L5.25,5.25 Z M14.25,5.25 L14.25,12.75 L12.75,12.75 L12.75,5.25 L14.25,5.25 Z M9,9.75 C9.62132034,9.75 10.125,10.2536797 10.125,10.875 C10.125,11.4963203 9.62132034,12 9,12 C8.37867966,12 7.875,11.4963203 7.875,10.875 C7.875,10.2536797 8.37867966,9.75 9,9.75 Z M9,6 C9.62132034,6 10.125,6.50367966 10.125,7.125 C10.125,7.74632034 9.62132034,8.25 9,8.25 C8.37867966,8.25 7.875,7.74632034 7.875,7.125 C7.875,6.50367966 8.37867966,6 9,6 Z"></path></svg>
-      </el-tooltip>
-      <el-tooltip effect="dark" content="缩小画布" placement="bottom" :manual="true" v-model="tooltipControl.sxhb">
-        <svg @mouseenter="showTip('sxhb')" @mouseleave="hiddenTip('sxhb')" @click="modifyScale(-10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L10.5,6.75 Z"></path></svg>
-      </el-tooltip>
+      <tool-tip content="缩小画布">
+        <svg @click="modifyScale(-10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L10.5,6.75 Z"></path></svg>
+      </tool-tip>
       <span class="text-xs text-[#646A73]">{{ `${scale}%` }}</span>
-      <el-tooltip effect="dark" content="放大画布" placement="bottom" :manual="true" v-model="tooltipControl.fdhb">
-        <svg @mouseenter="showTip('fdhb')" @mouseleave="hiddenTip('fdhb')" @click="modifyScale(10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
-      </el-tooltip>
+      <tool-tip content="放大画布">
+        <svg @click="modifyScale(10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
+      </tool-tip>
       <!-- <el-button size="small" type="primary" class="absolute right-24px" @click="saveTpl" :disabled="!isChanged.changed">
         <div class="flex justify-between items-center gap-10px transform -translate-y-2px">
           <img src="../assets/save_tpl.svg">
@@ -1650,28 +1599,28 @@ export default {
         </div>
         <div class="template-editor-control-attribute-level" v-if="currentNode.type !== 'bg'">
           <div @click="toEdge('top')" :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === controls.length - 1 }]">
-            <el-tooltip effect="dark" content="置顶" placement="bottom" :manual="true" v-model="tooltipControl.zd">
-              <svg @mouseenter="showTip('zd')" @mouseleave="hiddenTip('zd')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-68.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(27.000000, 11.000000)"><path d="M14.25,13.5 C15.4926407,13.5 16.5,14.5073593 16.5,15.75 C16.5,16.9926407 15.4926407,18 14.25,18 L3.75,18 C2.50735931,18 1.5,16.9926407 1.5,15.75 C1.5,14.5073593 2.50735931,13.5 3.75,13.5 L14.25,13.5 Z M14.25,15 L3.75,15 C3.33578644,15 3,15.3357864 3,15.75 C3,16.1346269 3.28953014,16.4516304 3.66253416,16.4949542 L3.75,16.5 L14.25,16.5 C14.6642136,16.5 15,16.1642136 15,15.75 C15,15.3653731 14.7104699,15.0483696 14.3374658,15.0050458 L14.25,15 Z" fill-rule="nonzero"></path><path d="M14.25,7.5 C15.4926407,7.5 16.5,8.50735931 16.5,9.75 C16.5,10.9926407 15.4926407,12 14.25,12 L3.75,12 C2.50735931,12 1.5,10.9926407 1.5,9.75 C1.5,8.50735931 2.50735931,7.5 3.75,7.5 L14.25,7.5 Z M14.25,9 L3.75,9 C3.33578644,9 3,9.33578644 3,9.75 C3,10.1346269 3.28953014,10.4516304 3.66253416,10.4949542 L3.75,10.5 L14.25,10.5 C14.6642136,10.5 15,10.1642136 15,9.75 C15,9.36537312 14.7104699,9.04836963 14.3374658,9.0050458 L14.25,9 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="11.25" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
-            </el-tooltip>
+            <tool-tip content="置顶">
+              <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-68.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(27.000000, 11.000000)"><path d="M14.25,13.5 C15.4926407,13.5 16.5,14.5073593 16.5,15.75 C16.5,16.9926407 15.4926407,18 14.25,18 L3.75,18 C2.50735931,18 1.5,16.9926407 1.5,15.75 C1.5,14.5073593 2.50735931,13.5 3.75,13.5 L14.25,13.5 Z M14.25,15 L3.75,15 C3.33578644,15 3,15.3357864 3,15.75 C3,16.1346269 3.28953014,16.4516304 3.66253416,16.4949542 L3.75,16.5 L14.25,16.5 C14.6642136,16.5 15,16.1642136 15,15.75 C15,15.3653731 14.7104699,15.0483696 14.3374658,15.0050458 L14.25,15 Z" fill-rule="nonzero"></path><path d="M14.25,7.5 C15.4926407,7.5 16.5,8.50735931 16.5,9.75 C16.5,10.9926407 15.4926407,12 14.25,12 L3.75,12 C2.50735931,12 1.5,10.9926407 1.5,9.75 C1.5,8.50735931 2.50735931,7.5 3.75,7.5 L14.25,7.5 Z M14.25,9 L3.75,9 C3.33578644,9 3,9.33578644 3,9.75 C3,10.1346269 3.28953014,10.4516304 3.66253416,10.4949542 L3.75,10.5 L14.25,10.5 C14.6642136,10.5 15,10.1642136 15,9.75 C15,9.36537312 14.7104699,9.04836963 14.3374658,9.0050458 L14.25,9 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="11.25" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
+            </tool-tip>
           </div>
           <div :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === controls.length - 1 }]" @click="moveLevel('up')">
-            <el-tooltip effect="dark" content="上移" placement="bottom" :manual="true" v-model="tooltipControl.sy">
-              <svg @mouseenter="showTip('sy')" @mouseleave="hiddenTip('sy')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-124.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(83.000000, 11.000000)"><path d="M14.25,12.75 C15.4926407,12.75 16.5,13.7573593 16.5,15 C16.5,16.2426407 15.4926407,17.25 14.25,17.25 L3.75,17.25 C2.50735931,17.25 1.5,16.2426407 1.5,15 C1.5,13.7573593 2.50735931,12.75 3.75,12.75 L14.25,12.75 Z M14.25,14.25 L3.75,14.25 C3.33578644,14.25 3,14.5857864 3,15 C3,15.3846269 3.28953014,15.7016304 3.66253416,15.7449542 L3.75,15.75 L14.25,15.75 C14.6642136,15.75 15,15.4142136 15,15 C15,14.6153731 14.7104699,14.2983696 14.3374658,14.2550458 L14.25,14.25 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="7.5" width="1.5" height="6.75" rx="0.75"></rect><rect x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
-            </el-tooltip>
+            <tool-tip content="上移">
+              <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-124.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(83.000000, 11.000000)"><path d="M14.25,12.75 C15.4926407,12.75 16.5,13.7573593 16.5,15 C16.5,16.2426407 15.4926407,17.25 14.25,17.25 L3.75,17.25 C2.50735931,17.25 1.5,16.2426407 1.5,15 C1.5,13.7573593 2.50735931,12.75 3.75,12.75 L14.25,12.75 Z M14.25,14.25 L3.75,14.25 C3.33578644,14.25 3,14.5857864 3,15 C3,15.3846269 3.28953014,15.7016304 3.66253416,15.7449542 L3.75,15.75 L14.25,15.75 C14.6642136,15.75 15,15.4142136 15,15 C15,14.6153731 14.7104699,14.2983696 14.3374658,14.2550458 L14.25,14.25 Z" fill-rule="nonzero"></path><path d="M9.53033009,0.969669914 L13.0229708,4.4623106 C13.315864,4.75520382 13.315864,5.23007755 13.0229708,5.52297077 C12.7300776,5.81586399 12.2552038,5.81586399 11.9623106,5.52297077 L9.74935931,3.3105 L9.75,7.99264069 C9.75,8.40685425 9.41421356,8.74264069 9,8.74264069 C8.58578644,8.74264069 8.25,8.40685425 8.25,7.99264069 L8.24935931,3.3105 L6.0376894,5.52297077 C5.74479618,5.81586399 5.26992245,5.81586399 4.97702923,5.52297077 C4.68413601,5.23007755 4.68413601,4.75520382 4.97702923,4.4623106 L8.46966991,0.969669914 C8.76256313,0.676776695 9.23743687,0.676776695 9.53033009,0.969669914 Z" transform="translate(9.000000, 4.746320) scale(-1, 1) translate(-9.000000, -4.746320) "></path><rect x="8.25" y="7.5" width="1.5" height="6.75" rx="0.75"></rect><rect x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
+            </tool-tip>
           </div>
           <div :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === 0 }]" @click="moveLevel('dowm')">
-            <el-tooltip effect="dark" content="下移" placement="bottom" :manual="true" v-model="tooltipControl.xy">
-              <svg @mouseenter="showTip('xy')" @mouseleave="hiddenTip('xy')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-180.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(139.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M9.53033009,9.47702923 L13.0229708,12.9696699 C13.315864,13.2625631 13.315864,13.7374369 13.0229708,14.0303301 C12.7300776,14.3232233 12.2552038,14.3232233 11.9623106,14.0303301 L9.74935931,11.8178593 L9.75,16.5 C9.75,16.9142136 9.41421356,17.25 9,17.25 C8.58578644,17.25 8.25,16.9142136 8.25,16.5 L8.24935931,11.8178593 L6.0376894,14.0303301 C5.74479618,14.3232233 5.26992245,14.3232233 4.97702923,14.0303301 C4.68413601,13.7374369 4.68413601,13.2625631 4.97702923,12.9696699 L8.46966991,9.47702923 C8.76256313,9.18413601 9.23743687,9.18413601 9.53033009,9.47702923 Z" transform="translate(9.000000, 13.253680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -13.253680) "></path><rect transform="translate(9.000000, 7.125000) rotate(-180.000000) translate(-9.000000, -7.125000) " x="8.25" y="3.75" width="1.5" height="6.75" rx="0.75"></rect><rect transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) " x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
-            </el-tooltip>
+            <tool-tip content="下移">
+              <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-180.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(139.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M9.53033009,9.47702923 L13.0229708,12.9696699 C13.315864,13.2625631 13.315864,13.7374369 13.0229708,14.0303301 C12.7300776,14.3232233 12.2552038,14.3232233 11.9623106,14.0303301 L9.74935931,11.8178593 L9.75,16.5 C9.75,16.9142136 9.41421356,17.25 9,17.25 C8.58578644,17.25 8.25,16.9142136 8.25,16.5 L8.24935931,11.8178593 L6.0376894,14.0303301 C5.74479618,14.3232233 5.26992245,14.3232233 4.97702923,14.0303301 C4.68413601,13.7374369 4.68413601,13.2625631 4.97702923,12.9696699 L8.46966991,9.47702923 C8.76256313,9.18413601 9.23743687,9.18413601 9.53033009,9.47702923 Z" transform="translate(9.000000, 13.253680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -13.253680) "></path><rect transform="translate(9.000000, 7.125000) rotate(-180.000000) translate(-9.000000, -7.125000) " x="8.25" y="3.75" width="1.5" height="6.75" rx="0.75"></rect><rect transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) " x="2.25" y="8.25" width="13.5" height="1.5" rx="0.75"></rect></g></g></g></g></g></svg>
+            </tool-tip>
           </div>
           <div @click="toEdge('bottom')" :class="['template-editor-control-attribute-level-item', { 'edged': currentNodeLevel === 0 }]">
-            <el-tooltip effect="dark" content="置底" placement="bottom" :manual="true" v-model="tooltipControl.zdd">
-              <svg @mouseenter="showTip('zdd')" @mouseleave="hiddenTip('zdd')" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-236.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(195.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M14.25,6.75 C15.4926407,6.75 16.5,7.75735931 16.5,9 C16.5,10.2426407 15.4926407,11.25 14.25,11.25 L3.75,11.25 C2.50735931,11.25 1.5,10.2426407 1.5,9 C1.5,7.75735931 2.50735931,6.75 3.75,6.75 L14.25,6.75 Z M14.25,8.25 L3.75,8.25 C3.33578644,8.25 3,8.58578644 3,9 C3,9.38462688 3.28953014,9.70163037 3.66253416,9.7449542 L3.75,9.75 L14.25,9.75 C14.6642136,9.75 15,9.41421356 15,9 C15,8.61537312 14.7104699,8.29836963 14.3374658,8.2550458 L14.25,8.25 Z" fill-rule="nonzero" transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) "></path><path d="M9.53033009,10.2270292 L13.0229708,13.7196699 C13.315864,14.0125631 13.315864,14.4874369 13.0229708,14.7803301 C12.7300776,15.0732233 12.2552038,15.0732233 11.9623106,14.7803301 L9.74935931,12.5678593 L9.75,17.25 C9.75,17.6642136 9.41421356,18 9,18 C8.58578644,18 8.25,17.6642136 8.25,17.25 L8.24935931,12.5678593 L6.0376894,14.7803301 C5.74479618,15.0732233 5.26992245,15.0732233 4.97702923,14.7803301 C4.68413601,14.4874369 4.68413601,14.0125631 4.97702923,13.7196699 L8.46966991,10.2270292 C8.76256313,9.93413601 9.23743687,9.93413601 9.53033009,10.2270292 Z" transform="translate(9.000000, 14.003680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -14.003680) "></path><rect transform="translate(9.000000, 5.625000) rotate(-180.000000) translate(-9.000000, -5.625000) " x="8.25" y="3.75" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
-            </el-tooltip>
+            <tool-tip content="置底">
+              <svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"><g transform="translate(-236.000000, -576.000000)" fill="#646A73"><g transform="translate(41.000000, 463.000000)"><g transform="translate(0.000000, 102.000000)"><g transform="translate(195.000000, 11.000000)"><path d="M14.25,0.75 C15.4926407,0.75 16.5,1.75735931 16.5,3 C16.5,4.24264069 15.4926407,5.25 14.25,5.25 L3.75,5.25 C2.50735931,5.25 1.5,4.24264069 1.5,3 C1.5,1.75735931 2.50735931,0.75 3.75,0.75 L14.25,0.75 Z M14.25,2.25 L3.75,2.25 C3.33578644,2.25 3,2.58578644 3,3 C3,3.38462688 3.28953014,3.70163037 3.66253416,3.7449542 L3.75,3.75 L14.25,3.75 C14.6642136,3.75 15,3.41421356 15,3 C15,2.61537312 14.7104699,2.29836963 14.3374658,2.2550458 L14.25,2.25 Z" fill-rule="nonzero" transform="translate(9.000000, 3.000000) rotate(-180.000000) translate(-9.000000, -3.000000) "></path><path d="M14.25,6.75 C15.4926407,6.75 16.5,7.75735931 16.5,9 C16.5,10.2426407 15.4926407,11.25 14.25,11.25 L3.75,11.25 C2.50735931,11.25 1.5,10.2426407 1.5,9 C1.5,7.75735931 2.50735931,6.75 3.75,6.75 L14.25,6.75 Z M14.25,8.25 L3.75,8.25 C3.33578644,8.25 3,8.58578644 3,9 C3,9.38462688 3.28953014,9.70163037 3.66253416,9.7449542 L3.75,9.75 L14.25,9.75 C14.6642136,9.75 15,9.41421356 15,9 C15,8.61537312 14.7104699,8.29836963 14.3374658,8.2550458 L14.25,8.25 Z" fill-rule="nonzero" transform="translate(9.000000, 9.000000) rotate(-180.000000) translate(-9.000000, -9.000000) "></path><path d="M9.53033009,10.2270292 L13.0229708,13.7196699 C13.315864,14.0125631 13.315864,14.4874369 13.0229708,14.7803301 C12.7300776,15.0732233 12.2552038,15.0732233 11.9623106,14.7803301 L9.74935931,12.5678593 L9.75,17.25 C9.75,17.6642136 9.41421356,18 9,18 C8.58578644,18 8.25,17.6642136 8.25,17.25 L8.24935931,12.5678593 L6.0376894,14.7803301 C5.74479618,15.0732233 5.26992245,15.0732233 4.97702923,14.7803301 C4.68413601,14.4874369 4.68413601,14.0125631 4.97702923,13.7196699 L8.46966991,10.2270292 C8.76256313,9.93413601 9.23743687,9.93413601 9.53033009,10.2270292 Z" transform="translate(9.000000, 14.003680) scale(-1, 1) rotate(-180.000000) translate(-9.000000, -14.003680) "></path><rect transform="translate(9.000000, 5.625000) rotate(-180.000000) translate(-9.000000, -5.625000) " x="8.25" y="3.75" width="1.5" height="3.75" rx="0.75"></rect></g></g></g></g></g></svg>
+            </tool-tip>
           </div>
-          <el-tooltip effect="dark" content="删除" placement="bottom" :manual="true" v-model="tooltipControl.sc">
-            <svg @mouseenter="showTip('sc')" @mouseleave="hiddenTip('sc')" @click="removeNode" class="template-editor-control-attribute-level-del" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
-          </el-tooltip>
+          <tool-tip content="删除">
+            <svg @click="removeNode" class="template-editor-control-attribute-level-del" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
+          </tool-tip>
         </div>
         <template v-if="currentNode.type !== 'qr'">
           <template v-if="currentNode.type === 'bg'">
@@ -1726,24 +1675,24 @@ export default {
               </el-select>
 
               <div style="display:flex;align-items:center;gap:14px">
-                <el-tooltip effect="dark" content="左对齐" placement="bottom" :manual="true" v-model="tooltipControl.zdq">
-                  <div @mouseenter="showTip('zdq')" @mouseleave="hiddenTip('zdq')" @click="setTextAlign('left')" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.dynamic.align === 'left' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="0" y="4" width="6" height="1.6"></rect><rect x="0" y="8" width="9" height="1.6"></rect></g></svg></div>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="居中对齐" placement="bottom" :manual="true" v-model="tooltipControl.jzdq">
-                  <div @mouseenter="showTip('jzdq')" @mouseleave="hiddenTip('jzdq')" @click="setTextAlign('center')" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.dynamic.align === 'center' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="3" y="4" width="6" height="1.6"></rect><rect x="2" y="8" width="8" height="1.6"></rect></g></svg></div>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="右对齐" placement="bottom" :manual="true" v-model="tooltipControl.ydq">
-                  <div @mouseenter="showTip('ydq')" @mouseleave="hiddenTip('ydq')" @click="setTextAlign('right')" style="cursor: pointer;" :class="['text-control-attribute ', { 'active': currentNode.dynamic.align === 'right' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="0" y="4" width="6" height="1.6"></rect><rect x="0" y="8" width="9" height="1.6"></rect></g></svg></div>
-                </el-tooltip>
+                <tool-tip content="左对齐">
+                  <div @click="setTextAlign('left')" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.dynamic.align === 'left' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="0" y="4" width="6" height="1.6"></rect><rect x="0" y="8" width="9" height="1.6"></rect></g></svg></div>
+                </tool-tip>
+                <tool-tip content="居中对齐">
+                  <div @click="setTextAlign('center')" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.dynamic.align === 'center' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="3" y="4" width="6" height="1.6"></rect><rect x="2" y="8" width="8" height="1.6"></rect></g></svg></div>
+                </tool-tip>
+                <tool-tip content="右对齐">
+                  <div @click="setTextAlign('right')" style="cursor: pointer;" :class="['text-control-attribute ', { 'active': currentNode.dynamic.align === 'right' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g transform="translate(5,6)" fill="#646A73"><rect x="0" y="0" width="12" height="1.6"></rect><rect x="0" y="4" width="6" height="1.6"></rect><rect x="0" y="8" width="9" height="1.6"></rect></g></svg></div>
+                </tool-tip>
               </div>
 
               <div style="display:flex;align-items:center;gap:14px">
-                <el-tooltip effect="dark" content="粗体" placement="bottom" :manual="true" v-model="tooltipControl.ct">
-                  <div @mouseenter="showTip('ct')" @mouseleave="hiddenTip('ct')" @click="toggleBold" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.children[1].dynamic['font-weight'] === 'bold' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path transform="translate(-1,-1)" d="M12.512605,18 C13.789916,18 14.7983193,17.7647059 15.5042017,17.2941176 C16.3277311,16.7226891 16.7478992,15.8319328 16.7478992,14.6218487 C16.7478992,13.8151261 16.5462185,13.1596639 16.1596639,12.6890756 C15.7563025,12.2016807 15.1680672,11.8823529 14.3781513,11.7310924 C14.9831933,11.4957983 15.4369748,11.1764706 15.7563025,10.7394958 C16.0756303,10.2689076 16.2436975,9.69747899 16.2436975,9.02521008 C16.2436975,8.11764706 15.9243697,7.39495798 15.302521,6.85714286 C14.6302521,6.28571429 13.6890756,6 12.4957983,6 L7,6 L7,18 L12.512605,18 Z M11.9747899,11.0420168 L8.96638655,11.0420168 L8.96638655,7.61344538 L12.0084034,7.61344538 C12.8151261,7.61344538 13.3865546,7.74789916 13.7563025,8.01680672 C14.092437,8.26890756 14.2773109,8.68907563 14.2773109,9.2605042 C14.2773109,9.88235294 14.092437,10.3361345 13.7563025,10.6218487 C13.4033613,10.8907563 12.8151261,11.0420168 11.9747899,11.0420168 Z M12.2268908,16.3865546 L8.96638655,16.3865546 L8.96638655,12.6554622 L12.2773109,12.6554622 C13.1512605,12.6554622 13.789916,12.8067227 14.1932773,13.1092437 C14.5798319,13.4117647 14.7815126,13.8991597 14.7815126,14.5882353 C14.7815126,15.2605042 14.512605,15.7310924 13.9747899,16.0336134 C13.5546218,16.2689076 12.9663866,16.3865546 12.2268908,16.3865546 Z" fill="#646A73"></path></svg></div>
-                </el-tooltip>
-                <el-tooltip effect="dark" content="斜体" placement="bottom" :manual="true" v-model="tooltipControl.xt">
-                  <div @mouseenter="showTip('xt')" @mouseleave="hiddenTip('xt')" @click="toggleItalic" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.children[1].dynamic['font-style'] === 'italic' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path transform="translate(4,4)" d="M5.67792969,0.873632812 L5.55078125,1.49980469 C6.74433594,1.45332031 7.21601562,1.82382812 6.96445312,2.61269531 L5.18710937,11.309375 C5.09824219,12.1912109 4.47207031,12.5849609 3.30449219,12.4919922 L3.17734375,13.1181641 L8.30429687,13.1181641 L8.43144531,12.4919922 C7.18183594,12.5849609 6.715625,12.1912109 7.0328125,11.309375 L8.81015625,2.61269531 C8.83476562,1.82382812 9.45683594,1.45332031 10.6777344,1.49980469 L10.8048828,0.873632812 L5.67792969,0.873632812 Z" fill="#646A73"></path></svg></div>
-                </el-tooltip>
+                <tool-tip content="粗体">
+                  <div @click="toggleBold" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.children[1].dynamic['font-weight'] === 'bold' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path transform="translate(-1,-1)" d="M12.512605,18 C13.789916,18 14.7983193,17.7647059 15.5042017,17.2941176 C16.3277311,16.7226891 16.7478992,15.8319328 16.7478992,14.6218487 C16.7478992,13.8151261 16.5462185,13.1596639 16.1596639,12.6890756 C15.7563025,12.2016807 15.1680672,11.8823529 14.3781513,11.7310924 C14.9831933,11.4957983 15.4369748,11.1764706 15.7563025,10.7394958 C16.0756303,10.2689076 16.2436975,9.69747899 16.2436975,9.02521008 C16.2436975,8.11764706 15.9243697,7.39495798 15.302521,6.85714286 C14.6302521,6.28571429 13.6890756,6 12.4957983,6 L7,6 L7,18 L12.512605,18 Z M11.9747899,11.0420168 L8.96638655,11.0420168 L8.96638655,7.61344538 L12.0084034,7.61344538 C12.8151261,7.61344538 13.3865546,7.74789916 13.7563025,8.01680672 C14.092437,8.26890756 14.2773109,8.68907563 14.2773109,9.2605042 C14.2773109,9.88235294 14.092437,10.3361345 13.7563025,10.6218487 C13.4033613,10.8907563 12.8151261,11.0420168 11.9747899,11.0420168 Z M12.2268908,16.3865546 L8.96638655,16.3865546 L8.96638655,12.6554622 L12.2773109,12.6554622 C13.1512605,12.6554622 13.789916,12.8067227 14.1932773,13.1092437 C14.5798319,13.4117647 14.7815126,13.8991597 14.7815126,14.5882353 C14.7815126,15.2605042 14.512605,15.7310924 13.9747899,16.0336134 C13.5546218,16.2689076 12.9663866,16.3865546 12.2268908,16.3865546 Z" fill="#646A73"></path></svg></div>
+                </tool-tip>
+                <tool-tip content="斜体">
+                  <div @click="toggleItalic" style="cursor: pointer;" :class="['text-control-attribute', { 'active': currentNode.children[1].dynamic['font-style'] === 'italic' }]"><svg width="26px" height="26px" viewBox="0 0 26 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path transform="translate(4,4)" d="M5.67792969,0.873632812 L5.55078125,1.49980469 C6.74433594,1.45332031 7.21601562,1.82382812 6.96445312,2.61269531 L5.18710937,11.309375 C5.09824219,12.1912109 4.47207031,12.5849609 3.30449219,12.4919922 L3.17734375,13.1181641 L8.30429687,13.1181641 L8.43144531,12.4919922 C7.18183594,12.5849609 6.715625,12.1912109 7.0328125,11.309375 L8.81015625,2.61269531 C8.83476562,1.82382812 9.45683594,1.45332031 10.6777344,1.49980469 L10.8048828,0.873632812 L5.67792969,0.873632812 Z" fill="#646A73"></path></svg></div>
+                </tool-tip>
               </div>
             </div>
 
