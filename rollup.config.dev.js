@@ -1,6 +1,5 @@
 import { defineConfig } from 'rollup'
-import commonPlugin, { BabelPluginComponent } from './rollup.config.plugin'
-import { babel } from '@rollup/plugin-babel'
+import commonPlugin from './rollup.config.plugin'
 
 export default defineConfig({
   input: './src/index.js',
@@ -10,10 +9,5 @@ export default defineConfig({
   },
   plugins: [
     ...commonPlugin,
-    babel({
-      exclude: 'node_modules/**',
-      plugins: [BabelPluginComponent],
-      babelHelpers: 'bundled',
-    }),
   ],
 })

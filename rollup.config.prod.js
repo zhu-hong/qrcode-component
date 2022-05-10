@@ -1,5 +1,5 @@
 import { defineConfig } from 'rollup'
-import commonPlugin, { BabelPluginComponent } from './rollup.config.plugin'
+import commonPlugin from './rollup.config.plugin'
 import { babel } from '@rollup/plugin-babel'
 import { terser } from 'rollup-plugin-terser'
 
@@ -25,7 +25,6 @@ export default defineConfig({
       ],
       plugins: [
         ['@babel/plugin-transform-runtime'],
-        BabelPluginComponent,
       ],
       babelHelpers: 'runtime',
     }),

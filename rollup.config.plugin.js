@@ -19,11 +19,3 @@ export default [
     ],
   }),
 ]
-
-export const BabelPluginComponent = [
-  'component',
-  {
-    'libraryName': 'element-ui',
-    'styleLibraryName': '~src/theme',
-  }
-]
