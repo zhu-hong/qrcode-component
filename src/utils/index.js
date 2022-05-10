@@ -190,13 +190,6 @@ export const reRenderDynamicAttrs = (control, node, wrapperWidth) => {
       const len = controlCloned.children[1].children[0].static.textContent.length
       let minWidth = size * len + 14
 
-      const fontFamily = controlCloned.children[1].dynamic['font-family']
-      if(!fontFamilys.find(({ value }) => value === fontFamily)) {
-        console.log(1)
-        control.children[1].dynamic['font-family'] = fontFamilys[0].value
-        controlCloned.children[1].dynamic['font-family'] = fontFamilys[0].value
-      }
-
       if(control.children[0].dynamic.width < minWidth) {
         control.children[0].dynamic.width = minWidth
       }

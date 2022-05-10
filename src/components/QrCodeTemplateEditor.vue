@@ -1,5 +1,5 @@
 <script>
-import { nativeControls, fontFamilys } from '../data'
+import { nativeControls, fontFamilys as nativeFonts, nativeColors } from '../data'
 import { generateControl, reRenderDynamicAttrs, getId } from '../utils'
 import ColorPicker from './ColorPicker.vue'
 import EventTsfMask from './EventTsfMask.vue'
@@ -30,6 +30,14 @@ export default {
       type: String,
       default: '#0B58D2',
     },
+    fonts: {
+      type: Array,
+      default: () => [],
+    },
+    colors: {
+      type: Array,
+      default: () => [],
+    },
   },
   components: {
     ColorPicker,
@@ -47,7 +55,6 @@ export default {
         height: 100,
       },
       nativeControls: Object.freeze(nativeControls),
-      fonts: Object.freeze(fontFamilys),
       currentNode: {},
       mask: {
         id: 'mask',
@@ -1518,6 +1525,12 @@ export default {
         this.setRecord()
       },
     },
+    nanoFonts() {
+      return nativeFonts.concat(this.fontFamilys)
+    },
+    nanoColors() {
+      return nativeColors.concat(this.colors)
+    },
   },
 }
 </script>
@@ -1641,7 +1654,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': tplInfo.bgColor === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': tplInfo.bgColor }"></span>
                 </span>
-                <color-picker :activeColor="tplInfo.bgColor" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="tplInfo.bgColor" @select="changeColor"></color-picker>
               </div>
             </div>
           </template>
@@ -1652,7 +1665,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.dynamic.fill === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.dynamic.fill }"></span>
                 </span>
-                <color-picker :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
               </div>
             </div>
             <div class="template-editor-control-attribute-item">
@@ -1667,7 +1680,7 @@ export default {
               <span>字体设置</span>
 
               <el-select class="template-editor-input" size="small" v-model="currentNode.children[1].dynamic['font-family']" @change="setRecord">
-                <el-option class="template-editor-option" v-for="f of fonts" :key="f.value" :label="f.name" :value="f.value"></el-option>
+                <el-option class="template-editor-option" v-for="f of nanoFonts" :key="f.value" :label="f.name" :value="f.value"></el-option>
               </el-select>
 
               <el-select class="template-editor-input" size="small" v-model="currentNode.dynamic.size" @change="setRecord">
@@ -1702,7 +1715,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.children[1].dynamic.fill === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.children[1].dynamic.fill }"></span>
                 </span>
-                <color-picker :activeColor="currentNode.children[1].dynamic.fill" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="currentNode.children[1].dynamic.fill" @select="changeColor"></color-picker>
               </div>
             </div>
           </template>
@@ -1713,7 +1726,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.children[1].dynamic.stroke === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.children[1].dynamic.stroke }"></span>
                 </span>
-                <color-picker :activeColor="currentNode.children[1].dynamic.stroke" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="currentNode.children[1].dynamic.stroke" @select="changeColor"></color-picker>
               </div>
             </div>
             <div class="template-editor-control-attribute-item">

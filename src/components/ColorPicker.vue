@@ -1,6 +1,6 @@
 <script>
 export default {
-  props: ['activeColor'],
+  props: ['activeColor', 'colors'],
   data() {
     return {
       showOptions: false,
@@ -20,7 +20,7 @@ export default {
     <span class="color-picker-tip" @click="showOptions = !showOptions">修改</span>
     <div :class="['color-picker-option-wrapper', { 'show-color-options': this.showOptions }]">
       <span
-        v-for="color of ['#FFFFFF', '#000000', '#254569', '#2B2A6F', '#2D65B7', '#3B75A9', '#67717C', '#838276', '#2F674C', '#148B64', '#586531', '#66383A', '#B52B2B', '#E68448', '#DC8C00', '#F9BD00']" :key="color"
+        v-for="color of colors" :key="color"
         :style="{ backgroundColor: color }" @click="changeColor(color)"
         :class="['color-picker-option', { 'active': activeColor === color }, { 'white-option': color === '#FFFFFF' }]"
       >
