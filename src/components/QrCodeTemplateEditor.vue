@@ -24,7 +24,12 @@ let dragMode, dragPosition, dragNode
 
 export default {
   name: 'QrCodeTemplateEditor',
-  props: ['primaryColor'],
+  props: {
+    primaryColor: {
+      type: String,
+      default: '#0B58D2',
+    },
+  },
   components: {
     ColorPicker,
     EventTsfMask,
@@ -1826,6 +1831,37 @@ export default {
 
 <style lang="scss">
 .template-editor {
+  input {
+    font-family: inherit;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+    padding: 0;
+    line-height: inherit;
+    color: inherit;
+    
+    &::placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+    &::webkit-input-placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+    &::-moz-placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+    &:-ms-input-placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+    &::-ms-input-placeholder {
+      opacity: 1;
+      color: #9ca3af;
+    }
+  }
+
   &-container {
     width: 100%;
     height: 100%;
