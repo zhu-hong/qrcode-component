@@ -52,7 +52,7 @@ export default {
 
 <style lang="scss">
 .template-editor-event-tsfmask {
-  border: 2px solid #FF9B04;
+  border: 2px solid var(--template-editor-primary-color);
   position: fixed;
   cursor: move;
   box-sizing: border-box;

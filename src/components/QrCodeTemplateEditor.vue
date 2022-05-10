@@ -24,6 +24,7 @@ let dragMode, dragPosition, dragNode
 
 export default {
   name: 'QrCodeTemplateEditor',
+  props: ['primaryColor'],
   components: {
     ColorPicker,
     EventTsfMask,
@@ -487,7 +488,10 @@ export default {
 
     },
     reTplSize() {
-      if(this.tplInfo.width === this.tplReadySize.width && this.tplInfo.height === this.tplReadySize.height) return
+      if(this.tplInfo.width === this.tplReadySize.width && this.tplInfo.height === this.tplReadySize.height) {
+        this.tplReadySize.v = false
+        return
+      }
       this.tplInfo.width = this.tplReadySize.width
       this.tplInfo.height = this.tplReadySize.height
 
@@ -1521,6 +1525,12 @@ export default {
     tplName() {
       this.isChanged.changed = true
     },
+    primaryColor: {
+      immediate: true,
+      handler() {
+        document.body.style.setProperty('--template-editor-primary-color', this.primaryColor)
+      },
+    },
   },
   computed: {
     currentNodeLevel() {
@@ -1600,7 +1610,7 @@ export default {
       </div>
       <div class="template-editor-template-wrapper" @mousedown.self="setDefaultNode" @mousemove="handleMouseMove" ref="container">
         <div :style="{ 'height': `${tplInfo.height * 3 * scale / 100}px`, width: `${tplInfo.width * 3 * scale / 100}px`, }" 
-             style="box-shadow: 0px 3px 20px 0px rgba(0, 0, 0, 0.1); z-index: 10;" class="bg-white">
+             style="box-shadow: 0px 3px 20px 0px rgba(0, 0, 0, 0.1);z-index: 10;background-color:white;">
           <svg
             width="100%" height="100%"
             version="1.1" :viewBox="`0 0 ${tplInfo.width * 3} ${tplInfo.height * 3}`"
@@ -1654,11 +1664,11 @@ export default {
             <svg @mouseenter="showTip('sc')" @mouseleave="hiddenTip('sc')" @click="removeNode" class="template-editor-control-attribute-level-del" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
           </el-tooltip>
         </div>
-        <div class="px-24px py-20px flex justify-around flex-col text-sm text-normal" v-if="currentNode.type !== 'qr'">
+        <template v-if="currentNode.type !== 'qr'">
           <template v-if="currentNode.type === 'bg'">
             <div class="template-editor-control-attribute-item">
               <span>标签名称<span style="display: inline-block; margin-left: 4px; color: #F65752;">*</span>：</span>
-              <el-input size="small" v-model.trim="tplName" placeholder="请输入标签名称" :maxlength="15"></el-input>
+              <el-input class="template-editor-input" size="small" v-model.trim="tplName" placeholder="请输入标签名称" :maxlength="15"></el-input>
             </div>
             <div class="template-editor-control-attribute-item">
               <span>标签尺寸：</span>
@@ -1690,7 +1700,7 @@ export default {
             <div class="template-editor-control-attribute-item">
               <span>圆角大小：{{ currentNode.dynamic.rx }}</span>
               <div style="border-radius: 4px; border: 1px solid #DFE3E9; padding: 0 10px;">
-                <el-slider v-model="currentNode.dynamic.rx" @change="setRecord" style="margin: 0 8px;" :max="50" :show-tooltip="false"></el-slider>
+                <el-slider class="template-editor-slider" v-model="currentNode.dynamic.rx" @change="setRecord" style="margin: 0 8px;" :max="50" :show-tooltip="false"></el-slider>
               </div>
             </div>
           </template>
@@ -1698,12 +1708,12 @@ export default {
             <div class="template-editor-control-attribute-item">
               <span>字体设置</span>
 
-              <el-select size="small" v-model="currentNode.children[1].dynamic['font-family']" @change="setRecord">
-                <el-option v-for="f of fonts" :key="f.value" :label="f.name" :value="f.value"></el-option>
+              <el-select class="template-editor-input" size="small" v-model="currentNode.children[1].dynamic['font-family']" @change="setRecord">
+                <el-option class="template-editor-option" v-for="f of fonts" :key="f.value" :label="f.name" :value="f.value"></el-option>
               </el-select>
 
-              <el-select size="small" v-model="currentNode.dynamic.size" @change="setRecord">
-                <el-option v-for="s of [12, 14, 18, 24, 30, 36, 48, 60, 72]" :key="s" :label="s" :value="s"></el-option>
+              <el-select class="template-editor-input" size="small" v-model="currentNode.dynamic.size" @change="setRecord">
+                <el-option class="template-editor-option" v-for="s of [12, 14, 18, 24, 30, 36, 48, 60, 72]" :key="s" :label="s" :value="s"></el-option>
               </el-select>
 
               <div style="display:flex;align-items:center;gap:14px">
@@ -1783,31 +1793,31 @@ export default {
               <span>尺寸</span>
               <div>
                 <span>宽</span>
-                <el-input v-model.number="logoWidth" size="small" style="margin-top: 6px;"></el-input>
+                <el-input class="template-editor-input" v-model.number="logoWidth" size="small" style="width:100px;margin-left:10px;"></el-input>
               </div>
               <div>
                 <span>高</span>
-                <el-input v-model.number="logoHeight" size="small" style="margin-top: 6px;"></el-input>
+                <el-input class="template-editor-input" v-model.number="logoHeight" size="small" style="width:100px;margin-left:10px;"></el-input>
               </div>
             </div>
           </template>
-        </div>
+        </template>
       </div>
     </div>
 
     <el-dialog :visible.sync="tplReadySize.v" custom-class="tpl-size-dialog" width="340px" top="40vh" :close-on-click-modal="false">
-      <div class="px-27px py-20px flex flex-col">
-        <span class="text-normal text-sm font-medium">请输入标签尺寸</span>
-        <div class="flex items-center text-normal gap-12px mt-19px">
+      <div style="padding: 20px 26px;display: flex;flex-direction: column;color:#000c25;">
+        <span style="font-size: 14px;font-weight:500;">请输入标签尺寸</span>
+        <div class="flex items-center text-normal gap-12px mt-19px" style="display:flex;align-items:center;gap:12px;margin-top:18px;">
           <span>宽</span>
-          <el-input v-model.number="tplReadySize.width" @blur="checkReadySize" size="small" class="w-92px"></el-input>
+          <el-input class="template-editor-input" v-model.number="tplReadySize.width" @blur="checkReadySize" size="small" style="width:92px;"></el-input>
           <span>高</span>
-          <el-input v-model.number="tplReadySize.height" @blur="checkReadySize" size="small" class="w-92px"></el-input>
+          <el-input class="template-editor-input" v-model.number="tplReadySize.height" @blur="checkReadySize" size="small" style="width:92px;"></el-input>
           <span>mm</span>
         </div>
-        <div class="flex items-center justify-end mt-27px">
-          <el-button size="small" class="text-[#646A73]" @click="tplReadySize.v = false">取消</el-button>
-          <el-button size="small" type="primary" @click="reTplSize">确定</el-button>
+        <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:18px;">
+          <el-button class="template-editor-button" size="small" @click="tplReadySize.v = false">取消</el-button>
+          <el-button class="template-editor-button" size="small" type="primary" @click="reTplSize">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -1843,7 +1853,7 @@ export default {
         cursor: pointer;
         &:hover {
           .template-container-control-item {
-            fill: #155ED4;
+            fill: var(--template-editor-primary-color);
           }
         }
       }
@@ -1866,6 +1876,13 @@ export default {
     display: flex;
     justify-content: space-between;
     overflow: hidden;
+
+    .tpl-control-placeholder {
+      position: fixed;
+      border: 1px #B4B8C5 dashed;
+      border-radius: 4px;
+      z-index: 5;
+    }
   }
 
   &-control-lib {
@@ -1897,14 +1914,14 @@ export default {
       font-size: 14px;
 
       &:hover {
-        color: #0B58D2;
+        color: var(--template-editor-primary-color);
       
         path[fill], rect[fill], circle[fill] {
-          fill: #0B58D2;
+          fill: var(--template-editor-primary-color);
         }
       
         path[stroke], rect[stroke], circle[stroke] {
-          stroke: #0B58D2;
+          stroke: var(--template-editor-primary-color);
         }
       }
     }
@@ -1960,10 +1977,10 @@ export default {
 
       &-item:not(.edged):hover {
         cursor: pointer;
-        color: #0B58D2;
+        color: var(--template-editor-primary-color);
       
         path, g, rect, circle {
-          fill: #0B58D2;
+          fill: var(--template-editor-primary-color);
         }
       }
       .edged {
@@ -2026,16 +2043,87 @@ export default {
       }
     }
   }
+
+  &-input {
+    .el-input__inner {
+      color: #000c25;
+    }
+
+    input.el-input__inner:focus {
+      border-color: var(--template-editor-primary-color) !important;
+    }
+    .is-focus .el-input__inner {
+      border-color: var(--template-editor-primary-color) !important;
+    }
+  }
+
+  &-option {
+    &.selected {
+      color: var(--template-editor-primary-color) !important;
+    }
+  }
+
+  &-slider {
+    .el-slider__bar {
+      background-color: var(--template-editor-primary-color) !important;
+    }
+    .el-slider__button {
+      border-color: var(--template-editor-primary-color) !important;
+    }
+  }
+
+  &-button {
+    font-size: 14px;
+    height: 32px;
+    line-height: 12px;
+
+    &.el-button {
+      &:hover:not(.el-button--primary) {
+        color: var(--template-editor-primary-color) !important;
+        background-color: transparent !important;
+        border-color: var(--template-editor-primary-color) !important;
+        opacity: .8;
+      }
+      &:active:not(.el-button--primary), &:focus:not(.el-button--primary) {
+        color: var(--template-editor-primary-color) !important;
+        background-color: transparent !important;
+        border-color: var(--template-editor-primary-color) !important;
+        opacity: .9;
+      }
+
+      &--primary {
+      background-color: var(--template-editor-primary-color) !important;
+      border-color: var(--template-editor-primary-color) !important;
+
+      &:hover {
+        opacity: .8;
+      }
+
+      &:active {
+        opacity: .9;
+      }
+    }
+    }
+  }
 }
+
 text, tspan {
   user-select: none;
 }
 
-.tpl-control-placeholder {
-  position: fixed;
-  border: 1px #B4B8C5 dashed;
+.text-control-attribute {
+  width: 26px;
+  height: 26px;
+  border: solid 2px #DFE3E9;
   border-radius: 4px;
-  z-index: 5;
+
+  &.active {
+    border-color: var(--template-editor-primary-color);
+
+    g, path {
+      fill: var(--template-editor-primary-color);
+    }
+  }
 }
 
 .tpl-size-dialog {
@@ -2049,22 +2137,6 @@ text, tspan {
     font-size: 16px;
     color: #646A73 !important;
     transform: translateY(-5px);
-  }
-}
-
-.text-control-attribute {
-  width: 26px;
-  height: 26px;
-  border: solid 2px #DFE3E9;
-  border-radius: 4px;
-
-  &.active {
-    border-color: #0B58D2;
-    background-color: #E6EEFA;
-
-    g, path {
-      fill: #0B58D2;
-    }
   }
 }
 </style>

@@ -11,7 +11,7 @@ export default {
 
 <template>
   <el-dropdown trigger="click" @command="changeSize">
-    <span style="cursor: pointer;">修改</span>
+    <span style="cursor: pointer;color: var(--template-editor-primary-color);">修改</span>
     <el-dropdown-menu class="tpl-size-option-wrapper" slot="dropdown">
       <span class="tpl-size-title">标签尺寸</span>
       <el-dropdown-item v-for="(s, i) of [[45, 30], [60, 40], [90, 60], [120, 80], [150, 100], [225, 150], [30, 45], [40, 60], [60, 90], [80, 120], [100, 150], [150, 225]]" :key="i"
@@ -57,11 +57,11 @@ export default {
     text-overflow: ellipsis;
     white-space: nowrap;
     &:hover {
-      color: #0B58D2 !important;
+      color: var(--template-editor-primary-color) !important;
     }
     
     &.active {
-      border: 1px solid #0B58D2;
+      border: 1px solid var(--template-editor-primary-color);
       position: relative;
       overflow: hidden;
 
@@ -83,7 +83,7 @@ export default {
         right: 0;
         width: 18px;
         height: 28px;
-        background-color: #0B58D2;
+        background-color: var(--template-editor-primary-color);
         transform-origin: left bottom;
         transform: rotate(45deg);
       }
