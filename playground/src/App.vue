@@ -8,9 +8,9 @@ export default {
 </script>
 
 <template>
-  <div class="w-screen h-screen relative flex flex-col min-w-6xl">
+  <div class="w-screen h-screen relative flex flex-col">
     <PlaygroundMenu />
-    <div class="flex-1 bg-[#fdfdfd] overflow-auto">
+    <div class="flex-1 bg-[#fdfdfd]">
       <router-view></router-view>
     </div>
   </div>

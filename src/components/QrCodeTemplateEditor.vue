@@ -105,6 +105,8 @@ export default {
 
     window.addEventListener('resize', this.renderMask)
     window.addEventListener('resize', this.renderPlaceholder)
+    window.addEventListener('scroll', this.renderMask)
+    window.addEventListener('scroll', this.renderPlaceholder)
     document.addEventListener('keydown', this.handleKeyboard)
     window.addEventListener('mouseup', this.stopDrag)
 
@@ -154,7 +156,9 @@ export default {
   destroyed() {
     window.removeEventListener('resize', this.renderMask)
     window.removeEventListener('resize', this.renderPlaceholder)
-    window.removeEventListener('keydown', this.handleKeyboard)
+    window.removeEventListener('scroll', this.renderMask)
+    window.removeEventListener('scroll', this.renderPlaceholder)
+    document.removeEventListener('keydown', this.handleKeyboard)
     window.removeEventListener('mouseup', this.stopDrag)
   },
   methods: {
@@ -1615,7 +1619,7 @@ export default {
       </div>
       <div class="template-editor-template-wrapper" @mousedown.self="setDefaultNode" @mousemove="handleMouseMove" ref="container">
         <div :style="{ 'height': `${tplInfo.height * 3 * scale / 100}px`, width: `${tplInfo.width * 3 * scale / 100}px`, }" 
-             style="box-shadow: 0px 3px 20px 0px rgba(0, 0, 0, 0.1);z-index: 10;background-color:white;">
+             style="box-shadow: 0px 3px 20px 0px rgba(0, 0, 0, 0.1);z-index: 10;background-color:white;flex:none;">
           <svg
             width="100%" height="100%"
             version="1.1" :viewBox="`0 0 ${tplInfo.width * 3} ${tplInfo.height * 3}`"
@@ -1869,6 +1873,9 @@ export default {
     flex-direction: column;
     background-color: #eef1f5;
     color: #000c25;
+    min-width: 790px;
+    min-height: 510px;
+    overflow: hidden;
   }
 
   &-header {

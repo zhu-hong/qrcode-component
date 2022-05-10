@@ -1,3 +1,3 @@
 <template>
-  <QrCodeTemplateEditor primaryColor="#fb7185" />  
+  <QrCodeTemplateEditor />  
 </template>
