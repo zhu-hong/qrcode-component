@@ -1526,7 +1526,7 @@ export default {
       },
     },
     nanoFonts() {
-      return nativeFonts.concat(this.fontFamilys)
+      return nativeFonts.concat(this.fonts)
     },
     nanoColors() {
       return nativeColors.concat(this.colors)
