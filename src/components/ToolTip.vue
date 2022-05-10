@@ -9,7 +9,6 @@ export default {
   },
   methods: {
     showToolTip() {
-      console.log(1)
       if(this.timer) {
         clearTimeout(this.timer)
       }
