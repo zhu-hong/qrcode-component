@@ -43,6 +43,10 @@ export default {
   }
 
   &-option-wrapper {
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
     position: absolute;
     top: 100%;
     right: 50%;
@@ -57,6 +61,8 @@ export default {
     box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
     border-radius: 4px;
     z-index: 99;
+    max-height: 125px;
+    overflow: auto;
 
     opacity: 0;
     transition: all .3s ease-in-out;
