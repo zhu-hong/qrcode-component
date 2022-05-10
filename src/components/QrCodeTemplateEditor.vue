@@ -1686,7 +1686,7 @@ export default {
               <span>标签背景：</span>
               <div style="display: flex;align-items:center;">
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
-                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': tplInfo.bgColor }"></span>
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': tplInfo.bgColor === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': tplInfo.bgColor }"></span>
                 </span>
                 <color-picker :activeColor="tplInfo.bgColor" @select="changeColor"></color-picker>
               </div>
@@ -1697,7 +1697,7 @@ export default {
               <span>矩形颜色</span>
               <div style="display: flex;align-items:center;">
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
-                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': currentNode.dynamic.fill }"></span>
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.dynamic.fill === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.dynamic.fill }"></span>
                 </span>
                 <color-picker :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
               </div>
@@ -1747,7 +1747,7 @@ export default {
               <span>字体颜色</span>
               <div style="display: flex;align-items:center;">
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
-                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': currentNode.children[1].dynamic.fill }"></span>
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.children[1].dynamic.fill === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.children[1].dynamic.fill }"></span>
                 </span>
                 <color-picker :activeColor="currentNode.children[1].dynamic.fill" @select="changeColor"></color-picker>
               </div>
@@ -1758,7 +1758,7 @@ export default {
               <span>线条颜色</span>
               <div style="display: flex;align-items:center;">
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
-                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'background-color': currentNode.children[1].dynamic.stroke }"></span>
+                  <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.children[1].dynamic.stroke === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.children[1].dynamic.stroke }"></span>
                 </span>
                 <color-picker :activeColor="currentNode.children[1].dynamic.stroke" @select="changeColor"></color-picker>
               </div>
