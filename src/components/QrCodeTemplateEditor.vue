@@ -65,7 +65,6 @@ export default {
         canUndo: false,
         canUnundo: false,
       },
-      canDelControls: true,
       tooltipControl: {
         timer: null,
         cx: false,
@@ -100,7 +99,7 @@ export default {
 
     window.addEventListener('resize', this.renderMask)
     window.addEventListener('resize', this.renderPlaceholder)
-    window.addEventListener('keydown', this.handleKeyboard)
+    document.addEventListener('keydown', this.handleKeyboard)
     window.addEventListener('mouseup', this.stopDrag)
 
     // const tpls = await Qr.getTemplates()
@@ -535,7 +534,7 @@ export default {
         this.removeNode()
       }
       if(e.code === 'Backspace') {
-        if(!this.canDelControls) return
+        if(e.target.tagName === 'INPUT') return
         this.removeNode()
       }
       if(['ArrowLeft', 'ArrowUp', 'ArrowDown', 'ArrowRight'].includes(e.code)) {
@@ -1320,8 +1319,6 @@ export default {
       } else {
         this.tplReadySize.height = this.tplReadySize.height
       }
-
-      this.canDelControls = true
     },
     moveControlByKey(key) {
       if(this.currentNode.type === 'bg') return
@@ -1690,9 +1687,11 @@ export default {
                 <color-picker :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
               </div>
             </div>
-            <div class="template-editor-control-attribute-item" style="gap: 0;">
+            <div class="template-editor-control-attribute-item">
               <span>圆角大小：{{ currentNode.dynamic.rx }}</span>
-              <el-slider v-model="currentNode.dynamic.rx" @change="setRecord" style="margin: 0 8px;" :max="50" :show-tooltip="false"></el-slider>
+              <div style="border-radius: 4px; border: 1px solid #DFE3E9; padding: 0 10px;">
+                <el-slider v-model="currentNode.dynamic.rx" @change="setRecord" style="margin: 0 8px;" :max="50" :show-tooltip="false"></el-slider>
+              </div>
             </div>
           </template>
           <template v-if="['title', 'subTitle', 'field'].includes(currentNode.type)">
@@ -1784,11 +1783,11 @@ export default {
               <span>尺寸</span>
               <div>
                 <span>宽</span>
-                <el-input @focus="canDelControls = false" @blur="canDelControls = true" v-model.number="logoWidth" size="small" style="margin-top: 6px;"></el-input>
+                <el-input v-model.number="logoWidth" size="small" style="margin-top: 6px;"></el-input>
               </div>
               <div>
                 <span>高</span>
-                <el-input @focus="canDelControls = false" @blur="canDelControls = true" v-model.number="logoHeight" size="small" style="margin-top: 6px;"></el-input>
+                <el-input v-model.number="logoHeight" size="small" style="margin-top: 6px;"></el-input>
               </div>
             </div>
           </template>
@@ -1801,9 +1800,9 @@ export default {
         <span class="text-normal text-sm font-medium">请输入标签尺寸</span>
         <div class="flex items-center text-normal gap-12px mt-19px">
           <span>宽</span>
-          <el-input v-model.number="tplReadySize.width" @focus="canDelControls = false" @blur="checkReadySize" size="small" class="w-92px"></el-input>
+          <el-input v-model.number="tplReadySize.width" @blur="checkReadySize" size="small" class="w-92px"></el-input>
           <span>高</span>
-          <el-input v-model.number="tplReadySize.height" @focus="canDelControls = false" @blur="checkReadySize" size="small" class="w-92px"></el-input>
+          <el-input v-model.number="tplReadySize.height" @blur="checkReadySize" size="small" class="w-92px"></el-input>
           <span>mm</span>
         </div>
         <div class="flex items-center justify-end mt-27px">

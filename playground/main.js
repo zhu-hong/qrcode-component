@@ -4,7 +4,8 @@ import router from './src/router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
-import YiYunQrCode from '../dist/lib.js'
+// import YiYunQrCode from '../dist/lib.js'
+import YiYunQrCode from '../src'
 import '../dist/style.css'
 
 import 'virtual:windi.css'
