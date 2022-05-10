@@ -10,7 +10,8 @@
     "dev": "vite",
     "clear": "rimraf -- dist",
     "build:lib": "npm run clear && rollup -c rollup.config.prod.js",
-    "prepublishOnly": "npm run build:lib"
+    "prepublishOnly": "npm run build:lib",
+    "build": "vite build"
   },
   "devDependencies": {
     "@babel/core": "7.17.9",
