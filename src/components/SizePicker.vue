@@ -16,23 +16,6 @@ export default {
 </script>
 
 <template>
-  <!-- <el-dropdown trigger="click" @command="changeSize">
-    <span style="cursor: pointer;color: var(--template-editor-primary-color);">修改</span>
-    <el-dropdown-menu class="tpl-size-option-wrapper" slot="dropdown">
-      <span class="tpl-size-title">标签尺寸</span>
-      <el-dropdown-item v-for="(s, i) of [[45, 30], [60, 40], [90, 60], [120, 80], [150, 100], [225, 150], [30, 45], [40, 60], [60, 90], [80, 120], [100, 150], [150, 225]]" :key="i"
-        :class="['tpl-size-option', { 'active': s[0] === activeSize[0] && s[1] === activeSize[1] }]"
-        style="background-color: #F6F6F6;" :command="s"
-      >
-        {{ `${s[0]}×${s[1]}&nbsp;mm` }}
-      </el-dropdown-item>
-      <el-dropdown-item class="tpl-size-option"
-        style="background-color: #F6F6F6;" :command="'custom'"
-      >
-        自定义尺寸
-      </el-dropdown-item>
-    </el-dropdown-menu>
-  </el-dropdown> -->
   <div class="size-picker-wrapper">
     <span class="size-picker-tip" @click="showOptions = !showOptions">修改</span>
     <div :class="['size-picker-option-wrapper', { 'show-size-options': this.showOptions }]">
@@ -49,7 +32,7 @@ export default {
       </span>
     </div>
     
-    <div v-show="this.showOptions" style="position:fixed;width:100vw;height:100vh;top:0;left:0;z-index:10;" @click="showOptions = false"></div>
+    <div v-show="showOptions" style="position:fixed;width:100vw;height:100vh;top:0;left:0;z-index:10;" @click="showOptions = false"></div>
   </div>
 </template>
 
