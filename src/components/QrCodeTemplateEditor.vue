@@ -2,6 +2,7 @@
 import { nativeControls, fontFamilys as nativeFonts, nativeColors } from '../data'
 import { generateControl, reRenderDynamicAttrs, getId } from '../utils'
 import ColorPicker from './ColorPicker.vue'
+import CSelect from './CSelect.vue'
 import EventTsfMask from './EventTsfMask.vue'
 import SizePicker from './SizePicker.vue'
 import ToolTip from './ToolTip.vue'
@@ -44,6 +45,7 @@ export default {
     EventTsfMask,
     SizePicker,
     ToolTip,
+    CSelect,
   },
   data() {
     return {
@@ -1541,6 +1543,7 @@ export default {
         return Math.ceil(size.width / 3)
       },
       set: function(val) {
+        if(isNaN(val)) return
         this.currentNode.dynamic.width = val * 3
         // console.log('logo size')
         this.setRecord()
@@ -1553,6 +1556,7 @@ export default {
         return Math.ceil(size.height / 3)
       },
       set: function(val) {
+        if(isNaN(val)) return
         this.currentNode.dynamic.height = val * 3
         // console.log('logo size')
         this.setRecord()
@@ -1596,12 +1600,6 @@ export default {
       <tool-tip content="放大画布">
         <svg @click="modifyScale(10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
       </tool-tip>
-      <!-- <el-button size="small" type="primary" class="absolute right-24px" @click="saveTpl" :disabled="!isChanged.changed">
-        <div class="flex justify-between items-center gap-10px transform -translate-y-2px">
-          <img src="../assets/save_tpl.svg">
-          <span>保存</span>
-        </div>
-      </el-button> -->
     </div>
 
     <div class="template-editor-main-wrapper">
@@ -1680,6 +1678,23 @@ export default {
                 <span style="margin-right: 10px;">{{ `${tplInfo.width}×${tplInfo.height}&nbsp;mm` }}</span>
                 <size-picker @select="changeSize" :activeSize="[tplInfo.width, tplInfo.height]"></size-picker>
               </div>
+
+              <div v-show="tplReadySize.v" class="tpl-size-dialog">
+                <div class="tpl-size-dialog-body" style="padding: 20px 26px;display: flex;flex-direction: column;color:#000c25;">
+                  <span style="font-size: 14px;font-weight:500;">请输入标签尺寸</span>
+                  <div class="flex items-center text-normal gap-12px mt-19px" style="display:flex;align-items:center;gap:12px;margin-top:18px;">
+                    <span>宽</span>
+                    <input class="template-editor-input" v-model.number="tplReadySize.width" @blur="checkReadySize" style="width:92px;">
+                    <span>高</span>
+                    <input class="template-editor-input" v-model.number="tplReadySize.height" @blur="checkReadySize" style="width:92px;">
+                    <span>mm</span>
+                  </div>
+                  <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:18px;">
+                    <button class="template-editor-button" @click="tplReadySize.v = false" style="margin-right:10px;">取消</button>
+                    <button class="template-editor-button template-editor-button--primary" @click="reTplSize">确定</button>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="template-editor-control-attribute-item">
               <span>标签背景：</span>
@@ -1711,14 +1726,8 @@ export default {
           <template v-if="['title', 'subTitle', 'field'].includes(currentNode.type)">
             <div class="template-editor-control-attribute-item">
               <span>字体设置</span>
-
-              <el-select class="template-editor-input" size="small" v-model="currentNode.children[1].dynamic['font-family']" @change="setRecord">
-                <el-option class="template-editor-option" v-for="f of nanoFonts" :key="f.value" :label="f.name" :value="f.value"></el-option>
-              </el-select>
-
-              <el-select class="template-editor-input" size="small" v-model="currentNode.dynamic.size" @change="setRecord">
-                <el-option class="template-editor-option" v-for="s of [12, 14, 18, 24, 30, 36, 48, 60, 72]" :key="s" :label="s" :value="s"></el-option>
-              </el-select>
+              <c-select :val.sync="currentNode.children[1].dynamic['font-family']" :options="nanoFonts" @change="setRecord"></c-select>
+              <c-select :val.sync="currentNode.dynamic.size" :options="[12, 14, 18, 24, 30, 36, 48, 60, 72]" @change="setRecord"></c-select>
 
               <div style="display:flex;align-items:center;gap:14px">
                 <tool-tip content="左对齐">
@@ -1764,7 +1773,7 @@ export default {
             </div>
             <div class="template-editor-control-attribute-item">
               <span>线条样式</span>
-              <div class="line-style-select" @click="showLineDashSelect = !showLineDashSelect">
+              <div class="line-style-select" :style="{ 'border-color': showLineDashSelect ? 'var(--template-editor-primary-color)' : '#e5e7eb' }" @click="showLineDashSelect = !showLineDashSelect">
                 <template v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']">
                   <svg
                     width="80px" height="4px" version="1.1" :key="i" v-show="currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ')"
@@ -1774,21 +1783,19 @@ export default {
                   </svg>
                 </template>
 
-                <i :class="['el-icon-arrow-down', { 'show-dash-select': showLineDashSelect }]"></i>
+                <svg style="width:10px;height:10px;" :class="[{ 'show-dash-select': showLineDashSelect }]" t="1651805230614" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1894" width="16" height="16"><path d="M512 378.24l-418.88 418.88L0 704l512-512 512 512-93.12 93.12z" fill="#262626" p-id="1895"></path></svg>
 
-                <transition name="el-zoom-in-top">
-                  <div class="line-style-select-wrapper" v-show="showLineDashSelect">
-                    <div :class="['line-style-select-item', { 'active': currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ') }]"
-                        v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']" :key="i" @click="setLineDash(t)">
-                      <svg
-                        width="260px" height="4px" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-                      >
-                        <line x1="0" y1="0" x2="260" y2="0" stroke-width="4px" stroke="#000000" :stroke-dasharray="t.split(' ').map((i) => i * 4).join(' ')"></line>
-                      </svg>
-                    </div>
+                <div class="line-style-select-wrapper" v-show="showLineDashSelect">
+                  <div :class="['line-style-select-item', { 'active': currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ') }]"
+                      v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']" :key="i" @click="setLineDash(t)">
+                    <svg
+                      width="260px" height="4px" version="1.1"
+                      xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+                    >
+                      <line x1="0" y1="0" x2="260" y2="0" stroke-width="4px" stroke="#000000" :stroke-dasharray="t.split(' ').map((i) => i * 4).join(' ')"></line>
+                    </svg>
                   </div>
-                </transition>
+                </div>
               </div>
             </div>
           </template>
@@ -1797,34 +1804,17 @@ export default {
               <span>尺寸</span>
               <div>
                 <span>宽</span>
-                <el-input class="template-editor-input" v-model.number="logoWidth" size="small" style="width:100px;margin-left:10px;"></el-input>
+                <input class="template-editor-input" v-model.number="logoWidth" style="width:100px;margin-left:10px;">
               </div>
               <div>
                 <span>高</span>
-                <el-input class="template-editor-input" v-model.number="logoHeight" size="small" style="width:100px;margin-left:10px;"></el-input>
+                <input class="template-editor-input" v-model.number="logoHeight" style="width:100px;margin-left:10px;">
               </div>
             </div>
           </template>
         </template>
       </div>
     </div>
-
-    <el-dialog :visible.sync="tplReadySize.v" custom-class="tpl-size-dialog" width="340px" top="40vh" :close-on-click-modal="false">
-      <div style="padding: 20px 26px;display: flex;flex-direction: column;color:#000c25;">
-        <span style="font-size: 14px;font-weight:500;">请输入标签尺寸</span>
-        <div class="flex items-center text-normal gap-12px mt-19px" style="display:flex;align-items:center;gap:12px;margin-top:18px;">
-          <span>宽</span>
-          <el-input class="template-editor-input" v-model.number="tplReadySize.width" @blur="checkReadySize" size="small" style="width:92px;"></el-input>
-          <span>高</span>
-          <el-input class="template-editor-input" v-model.number="tplReadySize.height" @blur="checkReadySize" size="small" style="width:92px;"></el-input>
-          <span>mm</span>
-        </div>
-        <div style="display:flex;justify-content:flex-end;align-items:center;margin-top:18px;">
-          <el-button class="template-editor-button" size="small" @click="tplReadySize.v = false">取消</el-button>
-          <el-button class="template-editor-button" size="small" type="primary" @click="reTplSize">确定</el-button>
-        </div>
-      </div>
-    </el-dialog>
   </div>
 </template>
 
@@ -2044,6 +2034,7 @@ export default {
         cursor: pointer;
         padding: 0 10px;
         position: relative;
+        transition: border-color .3s ease-in-out;
 
         .show-dash-select {
           transform: rotate(180deg);
@@ -2119,33 +2110,31 @@ export default {
     font-size: 14px;
     height: 32px;
     line-height: 12px;
+    padding: 0 14px;
+    border-radius: 4px;
+    cursor: pointer;
 
-    &.el-button {
-      &:hover:not(.el-button--primary) {
-        color: var(--template-editor-primary-color) !important;
-        background-color: transparent !important;
-        border-color: var(--template-editor-primary-color) !important;
-        opacity: .8;
-      }
-      &:active:not(.el-button--primary), &:focus:not(.el-button--primary) {
-        color: var(--template-editor-primary-color) !important;
-        background-color: transparent !important;
-        border-color: var(--template-editor-primary-color) !important;
-        opacity: .9;
-      }
+    background-color: white;
+    color: #a6a7ac;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #b0b2b5;
+    transition: all .3s ease-in-out;
 
-      &--primary {
-      background-color: var(--template-editor-primary-color) !important;
-      border-color: var(--template-editor-primary-color) !important;
+    &:hover {
+      color: var(--template-editor-primary-color);
+      border-color: var(--template-editor-primary-color);
+    }
+
+    &--primary {
+      color: white;
+      background-color: var(--template-editor-primary-color);
+      border-color: var(--template-editor-primary-color);
 
       &:hover {
         opacity: .8;
+        color: white;
       }
-
-      &:active {
-        opacity: .9;
-      }
-    }
     }
   }
 }
@@ -2170,16 +2159,23 @@ text, tspan {
 }
 
 .tpl-size-dialog {
-  border-radius: 8px !important;
-  overflow: hidden;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  background-color: rgba(0, 0, 0, .4);
+  transition: opacity .3s ease-in-out;
 
-  .el-dialog__header, .el-dialog__body {
-    padding: 0 !important;
-  }
-  .el-dialog__close {
-    font-size: 16px;
-    color: #646A73 !important;
-    transform: translateY(-5px);
+  &-body {
+    width: 340px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
   }
 }
 </style>

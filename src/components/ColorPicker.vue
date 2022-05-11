@@ -46,6 +46,7 @@ export default {
       display: none;
     }
 
+    background-color: white;
     position: absolute;
     top: 100%;
     right: 50%;
@@ -59,7 +60,7 @@ export default {
     padding: 8px;
     box-shadow: 0 2px 12px 0 rgb(0 0 0 / 10%);
     border-radius: 4px;
-    z-index: 99;
+    z-index: 9999;
     max-height: 125px;
     overflow: auto;
 
