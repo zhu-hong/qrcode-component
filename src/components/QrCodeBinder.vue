@@ -37,7 +37,7 @@ export default {
       const qrCodeContainer = this.$refs.qrCodeContainer
       qrCodeContainer.innerHTML = this.tplInfo.svg
 
-      const qrSvg = this.$refs.qrCodesvg.$el.innerHTML
+      const qrSvg = this.$refs.qrCodeSvg.$el.innerHTML
       qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', 'data:image/svg+xml;utf8,' + encodeSvg(qrSvg))
 
       if(this.tplInfo.hasLogo) {
@@ -153,7 +153,9 @@ export default {
 <template>
   <div>
     <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
-    <QrCode render-as="svg" :value="qrCodeText" style="display: none;" ref="qrCodesvg" />
+
+    <QrCode render-as="svg" :value="qrCodeText" style="display: none;" ref="qrCodeSvg" />
+
     <span v-show="focusVisible" class="qrcode-binder-focuser" ref="focuser" :style="{ 'border-color': focusColor }">
       <span class="qrcode-binder-focuser-title" :style="{ 'background-color': focusColor }"></span>
     </span>
