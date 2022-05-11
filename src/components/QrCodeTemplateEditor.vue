@@ -161,7 +161,7 @@ export default {
     handleDrag({ ctx }, e) {
       e.dataTransfer.setData('text/plain', JSON.stringify(ctx))
     },
-    canIAddThis(type) {
+    canIAddThisControl(type) {
       let can = true
       const len = this.controls.filter((c) => c.type === type).length
 
@@ -195,7 +195,7 @@ export default {
 
       return can
     },
-    calcBestScale() {
+    fitScale() {
       let longerEdge = this.tplInfo.width > this.tplInfo.height ? this.tplInfo.width : this.tplInfo.height
       let scale = 150 / longerEdge
       this.scale = Math.round(scale * 100)
@@ -207,11 +207,11 @@ export default {
       if(!controlInfo) return
       controlInfo = JSON.parse(controlInfo)
 
-      this.addControlByDrop(controlInfo, e)
+      this.handleAddControl('drop' ,controlInfo, e)
     },
-    addControlByDrop(controlInfo, e) {
+    handleAddControl(ctrlType, controlInfo, e) {
       const type = controlInfo.type
-      if(!this.canIAddThis(type)) {
+      if(!this.canIAddThisControl(type)) {
         this.$message.info('当前控件已达到上限')
         return
       }
@@ -254,12 +254,27 @@ export default {
       }
 
       const control = generateControl(controlInfo, this.tplInfo.width * 3)
-      
-      const wrapperInfo = this.$refs.tpl.getBoundingClientRect()
-      controlInfo.transform = {
-        x: (e.clientX - wrapperInfo.left) / (this.scale / 100),
-        y: (e.clientY - wrapperInfo.top) / (this.scale / 100),
+
+      if(ctrlType === 'drop') {
+        const wrapperInfo = this.$refs.tpl.getBoundingClientRect()
+        controlInfo.transform = {
+          x: (e.clientX - wrapperInfo.left) / (this.scale / 100),
+          y: (e.clientY - wrapperInfo.top) / (this.scale / 100),
+        }
+      } else if(ctrlType === 'api') {
+        if(e) {
+          controlInfo.transform = {
+            x: e[0],
+            y: e[1],
+          }
+        } else {
+          controlInfo.transform = {
+            x: 0,
+            y: 0,
+          }
+        }
       }
+      
       control.setAttribute('transform', `translate(${controlInfo.transform.x},${controlInfo.transform.y})`)
 
       this.$refs.wrapper.append(control)
@@ -277,11 +292,20 @@ export default {
       // console.log('drag add')
       this.setRecord()
     },
+    addControl(widgetType, position) {
+      const widgets = nativeControls.map(({ ctx }) => ctx)
+      const widgetTypes = widgets.map(({ type }) => type)
+      if(!widgetTypes.includes(widgetType)) return
+      
+      const widget = JSON.parse(JSON.stringify(widgets.find(({ type }) => type === widgetType)))
+
+      this.handleAddControl('api', widget, position)
+    },
     initControl(c) {
       const controlInfo = JSON.parse(JSON.stringify(c))
 
       const type = controlInfo.type
-      if(!this.canIAddThis(type)) {
+      if(!this.canIAddThisControl(type)) {
         this.$message.info('当前控件已达到上限')
         return false
       }
@@ -465,16 +489,7 @@ export default {
     },
     changeSize(size) {
       if(size !== 'custom') {
-        if(size[0] === this.tplInfo.width && size[1] === this.tplInfo.height) return
-
-        this.tplInfo.width = size[0]
-        this.tplInfo.height = size[1]
-        // console.log('tpl size')
-        this.setRecord()
-
-        this.scale = 100
-
-        this.reRenderRightAlignText()
+        this.setTemplateSize(size)
       } else {
         this.tplReadySize.width = this.tplInfo.width
         this.tplReadySize.height = this.tplInfo.height
@@ -483,20 +498,35 @@ export default {
 
     },
     reTplSize() {
-      if(this.tplInfo.width === this.tplReadySize.width && this.tplInfo.height === this.tplReadySize.height) {
-        this.tplReadySize.v = false
-        return
-      }
-      this.tplInfo.width = this.tplReadySize.width
-      this.tplInfo.height = this.tplReadySize.height
+      this.setTemplateSize([this.tplReadySize.width, this.tplReadySize.height])
+      
+      this.tplReadySize.v = false
+    },
+    // 设置模版尺寸
+    setTemplateSize(originsize) {
+      const size = JSON.parse(JSON.stringify(originsize))
+      
+      if(size[0] === this.tplInfo.width && size[1] === this.tplInfo.height) return
 
+      if(size[0] > 250) {
+        size[0] = 250
+      } else if(size[0] < 20) {
+        size[0] = 20
+      }
+      if(size[1] > 250) {
+        size[1] = 250
+      } else if(size[1] < 20) {
+        size[1] = 20
+      }
+
+      this.tplInfo.width = size[0]
+      this.tplInfo.height = size[1]
+      // console.log('tpl size')
       this.setRecord()
-        
+
       this.scale = 100
 
       this.reRenderRightAlignText()
-      
-      this.tplReadySize.v = false
     },
     setLineDash(style) {
       const base = this.currentNode.children[1].dynamic['stroke-width']
@@ -506,7 +536,8 @@ export default {
       // console.log('line dash')
       this.setRecord()
     },
-    removeNode() {
+    // 移除当前控件
+    removeControl() {
       if(this.currentNode.type === 'bg') return
 
       const curId = this.currentNode.id
@@ -529,11 +560,11 @@ export default {
     },
     handleKeyboard(e) {
       if(e.code === 'Delete') {
-        this.removeNode()
+        this.removeControl()
       }
       if(e.code === 'Backspace') {
         if(e.target.tagName === 'INPUT') return
-        this.removeNode()
+        this.removeControl()
       }
       if(['ArrowLeft', 'ArrowUp', 'ArrowDown', 'ArrowRight'].includes(e.code)) {
         this.moveControlByKey(e.code)
@@ -545,24 +576,29 @@ export default {
         this.pasteControl()
       }
       if((e.ctrlKey || e.metaKey) && e.shiftKey && e.code === 'KeyZ') {
-        this.tryUnundo()
+        this.unUndo()
       } else if((e.ctrlKey || e.metaKey) && e.code === 'KeyZ') {
-        this.tryUndo()
+        this.undo()
       }
     },
     toggleBold() {
+      if(!['title', 'subTitle', 'field'].includes(this.currentNode.type)) return
+
       const style = this.currentNode.children[1].dynamic['font-weight']
       style === 'bold' ? this.currentNode.children[1].dynamic['font-weight'] = 'normal' : this.currentNode.children[1].dynamic['font-weight'] = 'bold'
       // console.log('text bold')
       this.setRecord()
     },
     toggleItalic() {
+      if(!['title', 'subTitle', 'field'].includes(this.currentNode.type)) return
+
       const style = this.currentNode.children[1].dynamic['font-style']
       style === 'italic' ? this.currentNode.children[1].dynamic['font-style'] = 'normal' : this.currentNode.children[1].dynamic['font-style'] = 'italic'
       // console.log('text italic')
       this.setRecord()
     },
     toEdge(type) {
+      if(this.currentNode.type === 'bg') return
       if(type === 'top') {
         if(this.currentNodeLevel === this.controls.length - 1) return
 
@@ -572,7 +608,7 @@ export default {
 
         const currentNode = this.controls.splice(this.currentNodeLevel, 1)
         this.controls.push(...currentNode)
-      } else {
+      } else if(type === 'bottom') {
         if(this.currentNodeLevel === 0) return
 
         const currentEl = document.getElementById(this.currentNode.id)
@@ -586,6 +622,7 @@ export default {
       this.setRecord()
     },
     moveLevel(type) {
+      if(this.currentNode.type === 'bg') return
       if(type === 'up') {
         if(this.currentNodeLevel === this.controls.length - 1) return
 
@@ -597,7 +634,7 @@ export default {
         const level = this.currentNodeLevel
         const currentNode = this.controls.splice(this.currentNodeLevel, 1)
         this.controls.splice(level + 1, 0, ...currentNode)
-      } else {
+      } else if(type === 'dowm') {
         if(this.currentNodeLevel === 0) return
 
         const currentEl = document.getElementById(this.currentNode.id)
@@ -1352,7 +1389,7 @@ export default {
         this.setRecord()
       }
     },
-    async tryUndo() {
+    undo() {
       if(!this.undoHub.canUndo) return
 
       this.setDefaultNode()
@@ -1368,7 +1405,7 @@ export default {
         this.undoHub.canUnundo = true
       }
     },
-    tryUnundo() {
+    unUndo() {
       if(!this.undoHub.canUnundo) return
 
       this.setDefaultNode()
@@ -1421,6 +1458,8 @@ export default {
       })
     },
     setTextAlign(type) {
+      if(!['title', 'subTitle', 'field'].includes(this.currentNode.type)) return
+
       if(this.currentNode.dynamic.align === type) return
 
       this.currentNode.dynamic.align = type
@@ -1490,12 +1529,6 @@ export default {
     tplName() {
       this.isChanged.changed = true
     },
-    primaryColor: {
-      immediate: true,
-      handler() {
-        document.body.style.setProperty('--template-editor-primary-color', this.primaryColor)
-      },
-    },
   },
   computed: {
     currentNodeLevel() {
@@ -1536,14 +1569,14 @@ export default {
 </script>
 
 <template>
-  <div class="template-editor-container">
+  <div class="template-editor-container" :style="{ '--template-editor-primary-color': primaryColor }">
     <!-- 头部 -->
     <div class="template-editor-header">
       <tool-tip content="撤销">
-        <svg @click="tryUndo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
+        <svg @click="undo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
       </tool-tip>
       <tool-tip content="前进">
-        <svg @click="tryUnundo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUnundo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z" transform="translate(9.000000, 8.960000) scale(-1, 1) translate(-9.000000, -8.960000) "></path></svg>
+        <svg @click="unUndo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUnundo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z" transform="translate(9.000000, 8.960000) scale(-1, 1) translate(-9.000000, -8.960000) "></path></svg>
       </tool-tip>
       <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
       <tool-tip content="复制">
@@ -1553,7 +1586,7 @@ export default {
         <svg width="18px" height="18px" viewBox="0 0 18 18" @click="pasteControl" :class="['template-container-control', { 'disabled': cloneControlCache === null }]" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><g class="template-container-control-item"><path d="M11.25,0.75 C12.0784271,0.75 12.75,1.42157288 12.75,2.25 L12.75,11.25 C12.75,12.0784271 12.0784271,12.75 11.25,12.75 L2.25,12.75 C1.42157288,12.75 0.75,12.0784271 0.75,11.25 L0.75,2.25 C0.75,1.42157288 1.42157288,0.75 2.25,0.75 L11.25,0.75 Z M11.25,2.25 L2.25,2.25 L2.25,11.25 L11.25,11.25 L11.25,2.25 Z"></path><path d="M5.25,14.25 L6.75,14.25 L6.75,15.75 L8.25,15.75 L8.25,17.25 L6.75,17.25 C5.92157288,17.25 5.25,16.5784271 5.25,15.75 L5.25,14.25 Z M12.75,15.75 L12.75,17.25 L9.75,17.25 L9.75,15.75 L12.75,15.75 Z M17.24925,14.24925 L17.25,15.75 C17.25,16.5784271 16.5784271,17.25 15.75,17.25 L14.25,17.25 L14.25,15.75 L15.75,15.75 L15.74925,14.24925 L17.24925,14.24925 Z M17.24925,9.74925 L17.24925,12.74925 L15.74925,12.74925 L15.74925,9.74925 L17.24925,9.74925 Z M15.75,5.25 C16.5784271,5.25 17.25,5.92157288 17.25,6.75 L17.25,8.24925 L15.75,8.24925 L15.75,6.75 L14.25,6.75 L14.25,5.25 L15.75,5.25 Z"></path></g></svg>
       </tool-tip>
       <tool-tip content="最佳视图">
-        <svg @click="calcBestScale" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M16.5,1.5 C17.3284271,1.5 18,2.17157288 18,3 L18,15 C18,15.8284271 17.3284271,16.5 16.5,16.5 L1.5,16.5 C0.671572875,16.5 0,15.8284271 0,15 L0,3 C0,2.17157288 0.671572875,1.5 1.5,1.5 L16.5,1.5 Z M16.5,3 L1.5,3 L1.5,15 L16.5,15 L16.5,3 Z M5.25,5.25 L5.25,12.75 L3.75,12.75 L3.75,5.25 L5.25,5.25 Z M14.25,5.25 L14.25,12.75 L12.75,12.75 L12.75,5.25 L14.25,5.25 Z M9,9.75 C9.62132034,9.75 10.125,10.2536797 10.125,10.875 C10.125,11.4963203 9.62132034,12 9,12 C8.37867966,12 7.875,11.4963203 7.875,10.875 C7.875,10.2536797 8.37867966,9.75 9,9.75 Z M9,6 C9.62132034,6 10.125,6.50367966 10.125,7.125 C10.125,7.74632034 9.62132034,8.25 9,8.25 C8.37867966,8.25 7.875,7.74632034 7.875,7.125 C7.875,6.50367966 8.37867966,6 9,6 Z"></path></svg>
+        <svg @click="fitScale" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M16.5,1.5 C17.3284271,1.5 18,2.17157288 18,3 L18,15 C18,15.8284271 17.3284271,16.5 16.5,16.5 L1.5,16.5 C0.671572875,16.5 0,15.8284271 0,15 L0,3 C0,2.17157288 0.671572875,1.5 1.5,1.5 L16.5,1.5 Z M16.5,3 L1.5,3 L1.5,15 L16.5,15 L16.5,3 Z M5.25,5.25 L5.25,12.75 L3.75,12.75 L3.75,5.25 L5.25,5.25 Z M14.25,5.25 L14.25,12.75 L12.75,12.75 L12.75,5.25 L14.25,5.25 Z M9,9.75 C9.62132034,9.75 10.125,10.2536797 10.125,10.875 C10.125,11.4963203 9.62132034,12 9,12 C8.37867966,12 7.875,11.4963203 7.875,10.875 C7.875,10.2536797 8.37867966,9.75 9,9.75 Z M9,6 C9.62132034,6 10.125,6.50367966 10.125,7.125 C10.125,7.74632034 9.62132034,8.25 9,8.25 C8.37867966,8.25 7.875,7.74632034 7.875,7.125 C7.875,6.50367966 8.37867966,6 9,6 Z"></path></svg>
       </tool-tip>
       <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
       <tool-tip content="缩小画布">
@@ -1632,14 +1665,14 @@ export default {
             </tool-tip>
           </div>
           <tool-tip content="删除">
-            <svg @click="removeNode" class="template-editor-control-attribute-level-del" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
+            <svg @click="removeControl" class="template-editor-control-attribute-level-del" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path d="M15,5.25 C15.3846269,5.25 15.7016304,5.53953014 15.7449542,5.91253416 L15.75,6 L15.75,15 C15.75,16.1982607 14.81331,17.1777457 13.6322046,17.2461805 L13.5,17.25 L4.5,17.25 C3.30173934,17.25 2.32225434,16.31331 2.25381952,15.1322046 L2.25,15 L2.25,6 C2.25,5.58578644 2.58578644,5.25 3,5.25 C3.38462688,5.25 3.70163037,5.53953014 3.7449542,5.91253416 L3.75,6 L3.75,15 C3.75,15.3846269 4.03953014,15.7016304 4.41253416,15.7449542 L4.5,15.75 L13.5,15.75 C13.8846269,15.75 14.2016304,15.4604699 14.2449542,15.0874658 L14.25,15 L14.25,6 C14.25,5.58578644 14.5857864,5.25 15,5.25 Z M6.75,6 C7.16421356,6 7.5,6.33578644 7.5,6.75 L7.5,13.5 C7.5,13.9142136 7.16421356,14.25 6.75,14.25 C6.33578644,14.25 6,13.9142136 6,13.5 L6,6.75 C6,6.33578644 6.33578644,6 6.75,6 Z M11.25,6 C11.6642136,6 12,6.33578644 12,6.75 L12,13.5 C12,13.9142136 11.6642136,14.25 11.25,14.25 C10.8357864,14.25 10.5,13.9142136 10.5,13.5 L10.5,6.75 C10.5,6.33578644 10.8357864,6 11.25,6 Z M10.4472244,0.75 C11.1493661,0.75 11.8081489,1.07751823 12.2321447,1.63010542 L12.3193375,1.75192456 L12.9287379,2.66602515 C13.0504498,2.84859302 13.2449529,2.96736661 13.4596698,2.99420739 L13.5527756,3 L16.5,3 C16.9142136,3 17.25,3.33578644 17.25,3.75 C17.25,4.13462688 16.9604699,4.45163037 16.5874658,4.4949542 L16.5,4.5 L13.5527756,4.5 C12.8506339,4.5 12.1918511,4.17248177 11.7678553,3.61989458 L11.6806625,3.49807544 L11.0712621,2.58397485 C10.9495502,2.40140698 10.7550471,2.28263339 10.5403302,2.25579261 L10.4472244,2.25 L7.55277564,2.25 C7.33335636,2.25 7.12663987,2.34595261 6.98520348,2.50971929 L6.92873792,2.58397485 L6.31933752,3.49807544 C5.92985939,4.08229265 5.29192078,4.44875868 4.59694988,4.4950243 L4.44722436,4.5 L1.5,4.5 C1.08578644,4.5 0.75,4.16421356 0.75,3.75 C0.75,3.36537312 1.03953014,3.04836963 1.41253416,3.0050458 L1.5,3 L4.44722436,3 C4.66664364,3 4.87336013,2.90404739 5.01479652,2.74028071 L5.07126208,2.66602515 L5.68066248,1.75192456 C6.07014061,1.16770735 6.70807922,0.801241316 7.40305012,0.754975698 L7.55277564,0.75 L10.4472244,0.75 Z" fill="#646A73"></path></svg>
           </tool-tip>
         </div>
         <template v-if="currentNode.type !== 'qr'">
           <template v-if="currentNode.type === 'bg'">
             <div class="template-editor-control-attribute-item">
               <span>标签名称<span style="display: inline-block; margin-left: 4px; color: #F65752;">*</span>：</span>
-              <el-input class="template-editor-input" size="small" v-model.trim="tplName" placeholder="请输入标签名称" :maxlength="15"></el-input>
+              <input class="template-editor-input" v-model.trim="tplName" placeholder="请输入标签名称">
             </div>
             <div class="template-editor-control-attribute-item">
               <span>标签尺寸：</span>
@@ -2050,15 +2083,20 @@ export default {
   }
 
   &-input {
-    .el-input__inner {
-      color: #000c25;
-    }
+    color: #000c25;
+    height: 34px;
+    padding: 6px 8px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #DFE3E9;
+    border-radius: 4px;
+    transition: border-color .3s ease-in-out;
 
-    input.el-input__inner:focus {
-      border-color: var(--template-editor-primary-color) !important;
+    &:hover {
+      border-color: #B4B8C5;
     }
-    .is-focus .el-input__inner {
-      border-color: var(--template-editor-primary-color) !important;
+    &:focus {
+      border-color: var(--template-editor-primary-color);
     }
   }
 
