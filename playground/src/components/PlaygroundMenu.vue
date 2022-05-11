@@ -21,7 +21,7 @@ export default {
 </script>
 
 <template>
-  <div :class="['w-full py-4 z-99 bg-white flex-none shadow-sm absolute top-0 left-0 flex flex-wrap justify-center items-center gap-4 transition-all transform', { '-translate-y-full': !showTab }]">
+  <div :class="['w-full py-4 z-99 bg-white flex-none shadow-sm fixed top-0 left-0 flex flex-wrap justify-center items-center gap-4 transition-all transform', { '-translate-y-full': !showTab }]">
     <span
       v-for="r of routes" :key="r.name" 
       :class="['cursor-pointer px-4 py-2 rounded select-none z-99 hover:(opacity-65) active:(opacity-85)', $route.name === r.name ? 'bg-rose-400 text-black' : 'bg-gray-900 text-white']"
