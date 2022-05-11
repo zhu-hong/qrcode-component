@@ -1703,7 +1703,7 @@ export default {
             </div>
             <div class="template-editor-control-attribute-item">
               <span>圆角大小：{{ currentNode.dynamic.rx }}</span>
-              <div style="border-radius:4px;border:1px solid #DFE3E9;padding:10px;">
+              <div style="border-radius:4px;border:1px solid #DFE3E9;padding:10px 15px;">
                 <Slider :val.sync="currentNode.dynamic.rx" :max="50" @change="setRecord" />
               </div>
             </div>
@@ -2079,15 +2079,6 @@ export default {
   &-option {
     &.selected {
       color: var(--template-editor-primary-color) !important;
-    }
-  }
-
-  &-slider {
-    .el-slider__bar {
-      background-color: var(--template-editor-primary-color) !important;
-    }
-    .el-slider__button {
-      border-color: var(--template-editor-primary-color) !important;
     }
   }
 
