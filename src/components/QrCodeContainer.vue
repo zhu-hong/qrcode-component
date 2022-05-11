@@ -46,7 +46,7 @@ export default {
       renderText(subTitleHost, this.tplData.subTitle, containerWidth)
     }
 
-    if(this.tplInfo.tagCount !== 0) {
+    if(this.tplInfo.tagCount > 0) {
       qrCodeContainer.querySelectorAll('[data-type=field]').forEach((fieldHost) => {
         fieldHost.textContent = ''
       })
@@ -62,6 +62,6 @@ export default {
 <template>
   <div>
     <div ref="qrCodeContainer" style="width: 100%; height: 100%;"></div>
-    <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="300" />
+    <QrCode :value="qrCodeText" style="display: none;" ref="qrCodeCanvas" :size="200" />
   </div>
 </template>

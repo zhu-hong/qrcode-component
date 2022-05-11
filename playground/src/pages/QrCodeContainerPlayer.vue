@@ -127,8 +127,8 @@ export default {
               "hasSubTitle": false,
               "tagCount": 0,
             },
-            "width": 120,
-            "height": 120,
+            "width": 250,
+            "height": 250,
             "backgroudColor": "",
             "logo": "",
             "title": "",
@@ -227,6 +227,10 @@ export default {
 
 <template>
   <div class="w-full h-full flex flex-wrap overflow-auto justify-start gap-10 py-50px px-20px">
-    <QrCodeContainer :qrCodeInfo="qr" v-for="qr of qrCodes" :key="qr.id" class="relative transition-all cursor-pointer text-shadow-lg transform hover:(shadow-xl scale-101)" :style="{ 'width': `${qr.model.width}mm`, 'height': `${qr.model.height}mm` }" />
+    <QrCodeContainer
+      :qrCodeInfo="qr" v-for="qr of qrCodes" :key="qr.id"
+      class="relative transition-all cursor-pointer text-shadow-lg transform hover:(shadow-xl)"
+      :style="{ 'width': `${qr.model.width}mm`, 'height': `${qr.model.height}mm` }"
+    />
   </div>
 </template>
