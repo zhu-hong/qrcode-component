@@ -11,10 +11,20 @@ export default {
   data() {
     return {
       focusVisible: false,
+      focusType: '',
+      focusIndex: 0,
+      focusText: '',
     }
   },
   mounted() {
     this.renderTemplate()
+
+    window.addEventListener('scroll', this.renderFocus)
+    window.addEventListener('resize', this.renderFocus)
+  },
+  destroyed() {
+    window.removeEventListener('scroll', this.renderFocus)
+    window.removeEventListener('resize', this.renderFocus)
   },
   computed: {
     qrCodeText() {
@@ -66,11 +76,21 @@ export default {
       }
     },
     showFocus(type, index, text) {
+      this.focusVisible = true
+
+      this.focusType = type
+      this.focusIndex = index
+      this.focusText = text
+      this.renderFocus()
+    },
+    renderFocus() {
+      if(!this.focusVisible) return
+
       const mask = this.$refs.focuser
       const qrCodeContainer = this.$refs.qrCodeContainer
 
-      if(['title', 'subTitle'].includes(type)) {
-        const needMask = qrCodeContainer.querySelector(`[data-type=${type}-placeholder`)
+      if(['title', 'subTitle'].includes(this.focusType)) {
+        const needMask = qrCodeContainer.querySelector(`[data-type=${this.focusType}-placeholder`)
         const len = Number(needMask.getAttribute('data-len'))
         let { top, left, height, width } = needMask.getBoundingClientRect()
         if(len) {
@@ -86,10 +106,10 @@ export default {
         mask.style.top = top + 'px'
         mask.style.left = left + 'px'
         mask.style.height = height + 10 + 'px'
-      } else {
-        const needMasks = qrCodeContainer.querySelectorAll(`[data-type=${type}-placeholder${this.tplInfo.tagCount}`)
+      } else if(this.focusType === 'field') {
+        const needMasks = qrCodeContainer.querySelectorAll(`[data-type=${this.focusType}-placeholder${this.tplInfo.tagCount}`)
         needMasks.forEach((needMask, i) => {
-          if(i === index) {
+          if(i === this.focusIndex) {
             const len = Number(needMask.getAttribute('data-len'))
             let { top, left, height, width } = needMask.getBoundingClientRect()
             if(len) {
@@ -109,14 +129,12 @@ export default {
         })
       }
 
-      if(text) {
+      if((typeof this.focusText === 'string' || typeof this.focusText === 'number') && this.focusText !== '') {
         mask.querySelector('span').style.display = 'inline-block'
-        mask.querySelector('span').textContent = text
+        mask.querySelector('span').textContent = this.focusText
       } else {
         mask.querySelector('span').style.display = 'none'
       }
-
-      this.focusVisible = true
     },
     hiddenFocus() {
       this.focusVisible = false
