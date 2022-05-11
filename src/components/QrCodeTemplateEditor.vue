@@ -1662,7 +1662,7 @@ export default {
                 <size-picker @select="changeSize" :activeSize="[tplInfo.width, tplInfo.height]"></size-picker>
               </div>
 
-              <div v-show="tplReadySize.v" class="tpl-size-dialog">
+              <div :class="['tpl-size-dialog', { 'show-dialog': tplReadySize.v}]">
                 <div class="tpl-size-dialog-body" style="padding: 20px 26px;display: flex;flex-direction: column;color:#000c25;">
                   <span style="font-size: 14px;font-weight:500;">请输入标签尺寸</span>
                   <div class="flex items-center text-normal gap-12px mt-19px" style="display:flex;align-items:center;gap:12px;margin-top:18px;">
@@ -2150,15 +2150,27 @@ text, tspan {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 999;
+  z-index: -1;
   background-color: rgba(0, 0, 0, .4);
-  transition: opacity .3s ease-in-out;
+  opacity: 0;
+  transition: all .2s ease-in-out;
+
+  &.show-dialog {
+    opacity: 1;
+    z-index: 999;
+
+    .tpl-size-dialog-body {
+      transform: translateY(0);
+    }
+  }
 
   &-body {
     width: 340px;
     background-color: white;
     border-radius: 8px;
     overflow: hidden;
+    transition: all .1s linear;
+    transform: translateY(-50%);
   }
 }
 </style>
