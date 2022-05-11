@@ -18,13 +18,6 @@ export default {
   },
   mounted() {
     this.renderTemplate()
-
-    window.addEventListener('scroll', this.renderFocus)
-    window.addEventListener('resize', this.renderFocus)
-  },
-  destroyed() {
-    window.removeEventListener('scroll', this.renderFocus)
-    window.removeEventListener('resize', this.renderFocus)
   },
   computed: {
     qrCodeText() {
