@@ -63,7 +63,7 @@ export function generateQrCodeContent(id) {
   return `https://dl-mobileres.effio.cn/yiyunapp/?qrid=${id}`
 }
 
-export const generateControl = (ctx, wrapperWidth) => {
+export function generateControl(ctx, wrapperWidth) {
   const ctxCloned = JSON.parse(JSON.stringify(ctx))
   const el = document.createElementNS('http://www.w3.org/2000/svg', ctxCloned.tag)
 
@@ -166,7 +166,7 @@ export const generateControl = (ctx, wrapperWidth) => {
   return el
 }
 
-export const reRenderDynamicAttrs = (control, node, wrapperWidth) => {
+export function reRenderDynamicAttrs(control, node, wrapperWidth) {
   const controlCloned = JSON.parse(JSON.stringify(control))
   if(controlCloned.dynamic) {
     if(controlCloned.type === 'logo') {
@@ -240,7 +240,7 @@ export const reRenderDynamicAttrs = (control, node, wrapperWidth) => {
   }
 }
 
-export const getId = () => {
+export function getId() {
   const id = customAlphabet('abcdefghijklmnopqrstuvwxyzABCDEFFGHIJKLMNOPQRSTUVWXYZ')
   return id()
 }
