@@ -5,7 +5,7 @@ export default {
 </script>
 
 <template>
-  <div draggable="false" :id="mask.id" v-show="mask.v" class="template-editor-event-tsfmask">
+  <div draggable="false" class="template-editor-event-tsfmask">
     <!-- 左上 -->
     <span draggable="false" class="vertex"
           style="cursor: nwse-resize; top: 0; left: 0; transform: translate(-50%,-50%);"

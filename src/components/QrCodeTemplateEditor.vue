@@ -39,6 +39,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    preControls: {
+      type: Array,
+      default: () => [],
+    },
+    templateName: {
+      type: String,
+      default: '',
+    },
   },
   components: {
     ColorPicker,
@@ -58,21 +66,14 @@ export default {
       },
       nativeControls: Object.freeze(nativeControls),
       currentNode: {},
-      mask: {
-        id: 'mask',
-        v: false,
-      },
+      tplName: '',
+      maskVisible: false,
       showLineDashSelect: false,
       placeholds: [],
-      mode: 'create',
       tplReadySize: {
         v: false,
         width: 0,
         height: 0,
-      },
-      tplName: '',
-      isChanged: {
-        changed: false,
       },
       cloneControlCache: null,
       startRecord: false,
@@ -90,7 +91,7 @@ export default {
     this.$refs.tpl.addEventListener('dragover', (e) => { e.preventDefault() })
     this.$refs.tpl.addEventListener('drop', this.handleDrop)
 
-    const mask = document.getElementById(this.mask.id)
+    const mask = this.$refs.mask.$el
     mask.addEventListener('mousedown', this.handleMouseDown)
     mask.addEventListener('mousemove', this.handleMouseMove)
 
@@ -125,19 +126,13 @@ export default {
     //   await this.$nextTick()
     //   this.isChanged.changed = false
     // }
+    
+    this.preControls.forEach((c) => {
+      this.initControl(c)
+    })
 
-    // if(this.mode === 'edit') {
-    //   let controls = await Qr.getTplCtrl({ id: this.id })
-    //   controls = JSON.parse(controls)
-      
-    //   controls.forEach((c) => {
-    //     this.initControl(c)
-    //   })
-
-    //   await this.$nextTick()
-    //   this.isChanged.changed = false
-    //   this.renderPlaceholder()
-    // }
+    await this.$nextTick()
+    this.renderPlaceholder()
     
     this.startRecord = true
     // console.log('mounted')
@@ -371,7 +366,7 @@ export default {
         distanceRight = elWidth - distanceLeft
   
         inDrag = true
-        this.mask.v = true
+        this.maskVisible = true
       }
     },
     handleMouseMove(e) {
@@ -435,21 +430,21 @@ export default {
     },
     async renderMask() {
       if(this.currentNode.type === 'bg') {
-        this.mask.v = false
+        this.maskVisible = false
         return
       }
 
       let currentNodeId = this.currentNode.id
 
       await this.$nextTick()
-      const mask = document.getElementById(this.mask.id)
+      const mask = this.$refs.mask.$el
       const needMask = document.getElementById(currentNodeId).getBoundingClientRect()
 
       mask.style.top = needMask.top + 'px'
       mask.style.left = needMask.left + 'px'
       mask.style.width = needMask.width + 'px'
       mask.style.height = needMask.height + 'px'
-      this.mask.v = true
+      this.maskVisible = true
     },
     setTransform() {
       if(this.currentNode.type === 'bg') return
@@ -1516,20 +1511,8 @@ export default {
     'tplInfo.height'() {
       this.renderPlaceholder()
     },
-    controls: {
-      deep: true,
-      handler() {
-        this.isChanged.changed = true
-      },
-    },
-    tplInfo: {
-      deep: true,
-      handler() {
-        this.isChanged.changed = true
-      },
-    },
     tplName() {
-      this.isChanged.changed = true
+      this.$emit('update:templateName', this.tplName)
     },
   },
   computed: {
@@ -1623,7 +1606,7 @@ export default {
             <g ref="wrapper"></g>
           </svg>
 
-          <event-tsf-mask :mask="mask" :currentNode="currentNode"></event-tsf-mask>
+          <event-tsf-mask v-show="maskVisible" :currentNode="currentNode" ref="mask"></event-tsf-mask>
         </div>
         <div v-for="p of placeholds" :id="p.id" :key="p.id" class="tpl-control-placeholder" @mousedown.stop="handleMouseDown"></div>
       </div>
