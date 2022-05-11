@@ -4,7 +4,7 @@ export default {
   data() {
     return {
       timer: null,
-      toolTipVisible: true,
+      toolTipVisible: false,
     }
   },
   methods: {
@@ -25,16 +25,47 @@ export default {
       this.toolTipVisible = false
     },
   },
-  mounted() {
-    this.toolTipVisible = false
-  },
 }
 </script>
 
 <template>
-  <el-tooltip effect="dark" :content="content" placement="bottom" :manual="true" v-model="toolTipVisible">
-    <div @mouseenter="showToolTip" @mouseleave="hiddenTip" @click="hiddenTip">
-      <slot></slot>
-    </div>
-  </el-tooltip>
+  <div class="template-editor-tooltip-wrapper" @mouseenter="showToolTip" @mouseleave="hiddenTip" @click="hiddenTip">
+    <slot></slot>
+
+    <div class="template-editor-tooltip" v-show="toolTipVisible">{{ content }}</div>
+  </div>
 </template>
+
+<style lang="scss">
+.template-editor {
+  &-tooltip-wrapper {
+    position: relative;
+  }
+  &-tooltip {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%,14px);
+    white-space: nowrap;
+    padding: 4px 14px;
+    font-size: 14px;
+    background-color: black;
+    color: white;
+    border-radius: 6px;
+    z-index: 10;
+
+    &::before {
+      content: "";
+      display: block;
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      background-color: black;
+      z-index: -1;
+      top: 0;
+      left: 50%;
+      transform: translate(-50%,-50%) rotate(45deg);
+    }
+  }
+}
+</style>
