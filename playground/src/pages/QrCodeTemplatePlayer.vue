@@ -62,9 +62,7 @@ export default {
 </script>
 
 <template>
-  <div class="w-full h-full p-4 flex flex-wrap gap-10">
-    <div v-for="t of qrCodeTemplates" :key="t.id" :style="{ 'width': `${t.defaultWidth}mm` }">
-      <QrCodeTemplate :templateInfo="t" />
-    </div>
+  <div class="w-full h-full p-4">
+    <QrCodeTemplate v-for="t of qrCodeTemplates" :key="t.id" :templateInfo="t" class="mr-2" style="height:250px;" />
   </div>
 </template>
