@@ -1,4 +1,5 @@
 <script>
+import Slider from './Slider.vue'
 import { nativeControls, fontFamilys as nativeFonts, nativeColors } from '../data'
 import { generateControl, reRenderDynamicAttrs, getId } from '../utils'
 import ColorPicker from './ColorPicker.vue'
@@ -54,6 +55,7 @@ export default {
     SizePicker,
     ToolTip,
     CSelect,
+    Slider,
   },
   data() {
     return {
@@ -1701,8 +1703,8 @@ export default {
             </div>
             <div class="template-editor-control-attribute-item">
               <span>圆角大小：{{ currentNode.dynamic.rx }}</span>
-              <div style="border-radius: 4px; border: 1px solid #DFE3E9; padding: 0 10px;">
-                <el-slider class="template-editor-slider" v-model="currentNode.dynamic.rx" @change="setRecord" style="margin: 0 8px;" :max="50" :show-tooltip="false"></el-slider>
+              <div style="border-radius:4px;border:1px solid #DFE3E9;padding:10px;">
+                <Slider :val.sync="currentNode.dynamic.rx" :max="50" @change="setRecord" />
               </div>
             </div>
           </template>
