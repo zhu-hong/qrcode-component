@@ -1,12 +1,12 @@
 <script>
-import Slider from './Slider.vue'
 import { nativeControls, fontFamilys as nativeFonts, nativeColors } from '../data'
 import { generateControl, reRenderDynamicAttrs, getId } from '../utils'
-import ColorPicker from './ColorPicker.vue'
-import CSelect from './CSelect.vue'
-import EventTsfMask from './EventTsfMask.vue'
-import SizePicker from './SizePicker.vue'
-import ToolTip from './ToolTip.vue'
+import EventTsfMask from '../widget/EventTsfMask.vue'
+import ColorPicker from '../widget/ColorPicker.vue'
+import SizePicker from '../widget/SizePicker.vue'
+import CSelect from '../widget/CSelect.vue'
+import ToolTip from '../widget/ToolTip.vue'
+import Slider from '../widget/Slider.vue'
 
 let inDrag = false
 let moved = false
