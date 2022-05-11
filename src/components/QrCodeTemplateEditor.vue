@@ -2098,10 +2098,10 @@ export default {
     cursor: pointer;
 
     background-color: white;
-    color: #a6a7ac;
+    color: #606266;
     border-width: 1px;
     border-style: solid;
-    border-color: #b0b2b5;
+    border-color: #dcdfe6;
     transition: all .3s ease-in-out;
 
     &:hover {
@@ -2153,13 +2153,14 @@ text, tspan {
   z-index: -1;
   background-color: rgba(0, 0, 0, .4);
   opacity: 0;
-  transition: all .2s ease-in-out;
+  transition: all .2s linear;
 
   &.show-dialog {
     opacity: 1;
     z-index: 999;
 
     .tpl-size-dialog-body {
+      opacity: 1;
       transform: translateY(0);
     }
   }
@@ -2169,8 +2170,9 @@ text, tspan {
     background-color: white;
     border-radius: 8px;
     overflow: hidden;
-    transition: all .1s linear;
-    transform: translateY(-50%);
+    transition: all .1s ease-in-out;
+    transform: translateY(-30%);
+    opacity: 0;
   }
 }
 </style>
