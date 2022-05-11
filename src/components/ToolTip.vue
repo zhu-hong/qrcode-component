@@ -47,7 +47,7 @@ export default {
     left: 50%;
     transform: translate(-50%,14px);
     white-space: nowrap;
-    padding: 4px 14px;
+    padding: 8px 14px;
     font-size: 14px;
     background-color: black;
     color: white;
