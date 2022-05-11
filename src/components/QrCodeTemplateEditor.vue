@@ -211,7 +211,6 @@ export default {
     handleAddControl(ctrlType, controlInfo, e) {
       const type = controlInfo.type
       if(!this.canIAddThisControl(type)) {
-        this.$message.info('当前控件已达到上限')
         return
       }
 
@@ -305,7 +304,6 @@ export default {
 
       const type = controlInfo.type
       if(!this.canIAddThisControl(type)) {
-        this.$message.info('当前控件已达到上限')
         return false
       }
 
