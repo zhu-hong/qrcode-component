@@ -1856,7 +1856,6 @@ export default {
     }
     svg {
       display: block;
-      vertical-align: middle;
     }
     text, tspan {
       user-select: none;
