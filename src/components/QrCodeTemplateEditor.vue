@@ -68,6 +68,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    nativeHotKey: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {
     ColorPicker,
@@ -121,8 +125,11 @@ export default {
     window.addEventListener('resize', this.renderPlaceholder)
     window.addEventListener('scroll', this.renderMask)
     window.addEventListener('scroll', this.renderPlaceholder)
-    document.addEventListener('keydown', this.handleKeyboard)
     window.addEventListener('mouseup', this.stopDrag)
+
+    if(this.nativeHotKey) {
+      document.addEventListener('keydown', this.handleKeyboard)
+    }
 
     this.tplInfo.bgColor = this.preTplInfo.defaultColor
     this.tplInfo.width = this.preTplInfo.defaultWidth
@@ -145,8 +152,11 @@ export default {
     window.removeEventListener('resize', this.renderPlaceholder)
     window.removeEventListener('scroll', this.renderMask)
     window.removeEventListener('scroll', this.renderPlaceholder)
-    document.removeEventListener('keydown', this.handleKeyboard)
     window.removeEventListener('mouseup', this.stopDrag)
+
+    if(this.nativeHotKey) {
+      document.removeEventListener('keydown', this.handleKeyboard)
+    }
   },
   methods: {
     modifyScale(scale) {
@@ -498,7 +508,6 @@ export default {
       
       this.tplReadySize.v = false
     },
-    // 设置模版尺寸
     setTemplateSize(originsize) {
       const size = JSON.parse(JSON.stringify(originsize))
       
@@ -532,7 +541,6 @@ export default {
       // console.log('line dash')
       this.setRecord()
     },
-    // 移除当前控件
     removeControl() {
       if(this.currentNode.type === 'bg') return
 
@@ -1293,65 +1301,6 @@ export default {
         return false
       }
     },
-    // saveTpl() {
-    //   if(this.tplName.length === 0) {
-    //     this.$message.error('标签名称不能为空')
-    //     return
-    //   }
-
-    //   if(!this.controls.find(({ type }) => type === 'qr')) {
-    //     this.$message.error('当前标签模板未添加二维码控件')
-    //     return
-    //   }
-
-    //   this.applySaveTpl()
-    // },
-    // async applySaveTpl() {
-
-    //   const svgBlob = new Blob([this.$refs.tpl.outerHTML], { type: 'image/svg+xml', })
-    //   svgBlob.name = getId(10) + '.svg'
-    //   const url = await upLoadFile(svgBlob)
-    //   if(!url) {
-    //     this.$message.error('模版缩略图上传失败')
-    //     return
-    //   }
-
-    //   const tpl = {
-    //     name: this.tplName,
-    //     svg: this.generateUseTpl(),
-    //     svgDemo: url,
-    //     width: this.tplInfo.width,
-    //     height: this.tplInfo.height,
-    //     hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
-    //     hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
-    //     hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
-    //     tagCount: this.controls.filter(({ type }) => type === 'field').length,
-    //     controls: JSON.stringify(this.controls),
-    //     defaultColor: this.tplInfo.bgColor,
-    //   }
-
-    //   if(this.mode === 'create') {
-    //     const code = await Qr.createTpl(tpl)
-    //     if(code === 1000) {
-    //       this.$message.success('保存成功')
-    //       this.$router.go(-1)
-    //     } else if (code === 12020) {
-    //       this.$message.error('模板名称重复')
-    //     }
-    //   } else {
-    //     tpl.id = this.id
-    //     const code = await Qr.editTpl(tpl)
-    //     if(code === 1000) {
-    //       this.$message.success('保存成功')
-    //       this.$router.go(-1)
-    //     } else if (code === 12020) {
-    //       this.$message.error('模板名称重复')
-    //     } else if(code === 1009) {
-    //       this.$message.error('模板不存在')
-    //     }
-    //   }
-
-    // },
     checkReadySize() {
       if(isNaN(this.tplReadySize.width)) {
         this.tplReadySize.width = 150
