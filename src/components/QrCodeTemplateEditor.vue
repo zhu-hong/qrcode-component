@@ -1515,6 +1515,18 @@ export default {
         this.tplName = this.templateName
       },
     },
+    showHotKeyBoard() {
+      this.renderMask()
+      this.renderPlaceholder()
+    },
+    showControlLib() {
+      this.renderMask()
+      this.renderPlaceholder()
+    },
+    showAttrsBoard() {
+      this.renderMask()
+      this.renderPlaceholder()
+    },
   },
   computed: {
     currentNodeLevel() {
@@ -1588,9 +1600,11 @@ export default {
     <div class="template-editor-main-wrapper">
       <div class="template-editor-control-lib" v-show="showControlLib">
         <span class="template-editor-control-lib-title">控件库</span>
-        <div v-for="(c, i) of nativeControls" :key="i" class="template-editor-control-lib-item" @dragstart.stop="handleDrag(c, $event)" draggable="true">
-          <div v-html="c.svg"></div>
-          <span>{{ c.text }}</span>
+        <div class="template-editor-control-lib-wrapper">
+          <div v-for="(c, i) of nativeControls" :key="i" class="template-editor-control-lib-item" @dragstart.stop="handleDrag(c, $event)" draggable="true">
+            <div v-html="c.svg"></div>
+            <span>{{ c.text }}</span>
+          </div>
         </div>
       </div>
       <div class="template-editor-template-wrapper" @mousedown.self="setDefaultNode" @mousemove="handleMouseMove" ref="container">
@@ -1917,14 +1931,19 @@ export default {
     width: 168px;
     background-color: white;
     border-top: solid #DFE3E9 1px;
-    padding: 14px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
+    padding: 0 20px;
 
     &-title {
+      display: block;
       font-size: 14px;
       font-weight: 500;
+      margin: 14px 0;
+    }
+
+    &-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
     }
 
     &-item {
