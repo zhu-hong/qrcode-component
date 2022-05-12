@@ -14,7 +14,7 @@ export default {
   mounted() {
     const templateEditor = this.$refs.templateEditor
     const eventStack = [
-      [templateEditor.setTemplateSize, [350, 200]],
+      [templateEditor.setTemplateSize, [300, 200]],
       [templateEditor.changeColor, '#12aa9c'],
       [templateEditor.undo],
       [templateEditor.unUndo],
@@ -24,9 +24,11 @@ export default {
       [templateEditor.fitScale],
       [templateEditor.addControl, 'qr'],
       [templateEditor.addControl, 'title', [50,50]],
-      [templateEditor.changeColor, '#fb7185'],
       [templateEditor.setTemplateSize, [150, 100]],
-      [templateEditor.incrementScale, 20],
+      [templateEditor.incrementScale, 10],
+      [templateEditor.incrementScale, 10],
+      [templateEditor.incrementScale, 10],
+      [templateEditor.incrementScale, 10],
     ]
 
     eventStack.forEach((e, index) => {
@@ -38,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <QrCodeTemplateEditor ref="templateEditor" style="width:100%;height:100%;"
+  <QrCodeTemplateEditor ref="templateEditor" style="width:100%;height:100%;" primaryColor="#fb7185"
     :fonts="[{ name: 'Fira Code', value: 'Fira Code' }, { name: 'JetBrains Mono', value: 'JetBrains Mono' }]"
     :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48', '#9b1e64']" :hotKey="true" :fieldMaxCount="5" :rectMaxCount="5"
     :preControls="preControls" :showHotKeyBoard="true" :templateName.sync="templateName" :preTplInfo="preTplInfo"
