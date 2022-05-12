@@ -72,6 +72,18 @@ export default {
       type: Boolean,
       default: true,
     },
+    fieldMaxCount: {
+      type: Number,
+      default: 8,
+    },
+    rectMaxCount: {
+      type: Number,
+      default: 10,
+    },
+    lineMaxCount: {
+      type: Number,
+      default: 3,
+    },
   },
   components: {
     ColorPicker,
@@ -153,7 +165,7 @@ export default {
     window.removeEventListener('mouseup', this.stopDrag)
   },
   methods: {
-    modifyScale(scale) {
+    incrementScale(scale) {
       const scaled = this.scale + scale
       const scaledHeight = this.tplInfo.height * scaled / 100
       const scaledwidth = this.tplInfo.width * scaled / 100
@@ -177,17 +189,17 @@ export default {
           }
           break;
         case 'field':
-          if(len >= 8) {
+          if(len >= this.fieldMaxCount) {
             can = false
           }
           break;
         case 'line':
-          if(len >= 3) {
+          if(len >= this.lineMaxCount) {
             can = false
           }
           break;
         case 'rect':
-          if(len >= 10) {
+          if(len >= this.rectMaxCount) {
             can = false
           }
           break;
@@ -214,6 +226,7 @@ export default {
     handleAddControl(ctrlType, controlInfo, e) {
       const type = controlInfo.type
       if(!this.canIAddThisControl(type)) {
+        this.$emit('addControlFail')
         return
       }
 
@@ -495,7 +508,6 @@ export default {
         this.tplReadySize.height = this.tplInfo.height
         this.tplReadySize.v = true
       }
-
     },
     reTplSize() {
       this.setTemplateSize([this.tplReadySize.width, this.tplReadySize.height])
@@ -1538,7 +1550,7 @@ export default {
 
 <template>
   <div class="template-editor-container" :style="{ '--template-editor-primary-color': primaryColor }">
-    <div class="template-editor-header" v-show="showHotKeyBoard">
+    <div class="template-editor-hotkey-board" v-show="showHotKeyBoard">
       <tool-tip content="撤销">
         <svg @click="undo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
       </tool-tip>
@@ -1557,11 +1569,11 @@ export default {
       </tool-tip>
       <span style="background-color: #EEEEEE; width: 1px; height: 15px;"></span>
       <tool-tip content="缩小画布">
-        <svg @click="modifyScale(-10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L10.5,6.75 Z"></path></svg>
+        <svg @click="incrementScale(-10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L10.5,6.75 Z"></path></svg>
       </tool-tip>
       <span class="text-xs text-[#646A73]">{{ `${scale}%` }}</span>
       <tool-tip content="放大画布">
-        <svg @click="modifyScale(10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
+        <svg @click="incrementScale(10)" class="template-container-control" width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M7.5,2.13162821e-14 C11.6421356,2.13162821e-14 15,3.35786438 15,7.5 C15,9.30088771 14.3652718,10.9535267 13.3073234,12.246409 L16.2803301,15.2196699 C16.5732233,15.5125631 16.5732233,15.9874369 16.2803301,16.2803301 C16.0099671,16.5506931 15.5845438,16.5714902 15.2903254,16.3427215 L15.2196699,16.2803301 L12.246409,13.3073234 C10.9535267,14.3652718 9.30088771,15 7.5,15 C3.35786438,15 0,11.6421356 0,7.5 C0,3.35786438 3.35786438,2.13162821e-14 7.5,2.13162821e-14 Z M7.5,1.5 C4.1862915,1.5 1.5,4.1862915 1.5,7.5 C1.5,10.8137085 4.1862915,13.5 7.5,13.5 C10.8137085,13.5 13.5,10.8137085 13.5,7.5 C13.5,4.1862915 10.8137085,1.5 7.5,1.5 Z M7.5,3.75 C7.91421356,3.75 8.25,4.08578644 8.25,4.5 L8.25,6.749 L10.5,6.75 C10.9142136,6.75 11.25,7.08578644 11.25,7.5 C11.25,7.91421356 10.9142136,8.25 10.5,8.25 L8.25,8.249 L8.25,10.5 C8.25,10.9142136 7.91421356,11.25 7.5,11.25 C7.08578644,11.25 6.75,10.9142136 6.75,10.5 L6.75,8.249 L4.5,8.25 C4.08578644,8.25 3.75,7.91421356 3.75,7.5 C3.75,7.08578644 4.08578644,6.75 4.5,6.75 L6.75,6.749 L6.75,4.5 C6.75,4.08578644 7.08578644,3.75 7.5,3.75 Z"></path></svg>
       </tool-tip>
     </div>
 
@@ -1590,7 +1602,7 @@ export default {
         </div>
         <div v-for="p of placeholds" :id="p.id" :key="p.id" class="tpl-control-placeholder" @mousedown.stop="handleMouseDown"></div>
       </div>
-      <div class="template-editor-control-attribute-wrapper" v-show="showAttrsBoard">
+      <div class="template-editor-control-attribute-board" v-show="showAttrsBoard">
         <div class="template-editor-control-attribute-title">
           <template v-if="currentNode.type === 'bg'">
             <span style="font-weight:500;">模板编辑</span>
@@ -1748,7 +1760,7 @@ export default {
 
                 <svg style="width:10px;height:10px;" :class="[{ 'show-dash-select': showLineDashSelect }]" t="1651805230614" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1894" width="16" height="16"><path d="M512 378.24l-418.88 418.88L0 704l512-512 512 512-93.12 93.12z" fill="#262626" p-id="1895"></path></svg>
 
-                <div class="line-style-select-wrapper" v-show="showLineDashSelect">
+                <div :class="['line-style-select-wrapper', { 'line-style-select-wrapper-show': showLineDashSelect }]">
                   <div :class="['line-style-select-item', { 'active': currentNode.children[1].dynamic['stroke-dasharray'] === t.split(' ').map((d) => d * currentNode.children[1].dynamic['stroke-width']).join(' ') }]"
                       v-for="(t, i) of ['0', '1 1', '2 1', '15 3 4 3', '15 3 4 3 4 3', '20 3 10 3']" :key="i" @click="setLineDash(t)">
                     <svg
@@ -1815,8 +1827,6 @@ export default {
   }
 
   &-container {
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     background-color: #eef1f5;
@@ -1826,7 +1836,7 @@ export default {
     overflow: hidden;
   }
 
-  &-header {
+  &-hotkey-board {
     flex: none;
     width: 100%;
     height: 56px;
@@ -1928,7 +1938,7 @@ export default {
   }
 
   &-control-attribute {
-    &-wrapper {
+    &-board {
       flex: none;
       width: 168px;
       border-top: solid 1px #e5e7eb;
@@ -2016,6 +2026,13 @@ export default {
           flex-direction: column;
           justify-content: center;
           align-items: center;
+          transition: all .1s linear;
+          transform-origin: top center;
+          transform: scaleY(0);
+
+          &-show {
+            transform: scaleY(1);
+          }
         }
 
         &-item {

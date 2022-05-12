@@ -37,9 +37,9 @@ export default {
 </script>
 
 <template>
-  <QrCodeTemplateEditor ref="templateEditor"
+  <QrCodeTemplateEditor ref="templateEditor" style="width:100%;height:100%;"
     :fonts="[{ name: 'Fira Code', value: 'Fira Code' }, { name: 'JetBrains Mono', value: 'JetBrains Mono' }]"
-    :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48']" :hotKey="true"
+    :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48']" :hotKey="true" :fieldMaxCount="5" :rectMaxCount="5"
     :preControls="preControls" :showHotKeyBoard="true" :templateName.sync="templateName" :preTplInfo="preTplInfo"
   />
 </template>
