@@ -71,14 +71,20 @@ export default {
         renderText(subTitleHost, this.tplData.subTitle, containerWidth)
       }
 
-      if(this.tplInfo.tagCount !== 0) {
+      if(this.tplInfo.tagCount > 0) {
         qrCodeContainer.querySelectorAll('[data-type=field]').forEach((fieldHost) => {
           fieldHost.textContent = ''
         })
 
-        qrCodeContainer.querySelectorAll(`[data-count='${this.tplInfo.tagCount}']`).forEach((fieldHost, i) => {
-          renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
-        })
+        if(this.tplInfo.type === 2) {
+          qrCodeContainer.querySelectorAll(`[data-count='${this.tplInfo.tagCount}']`).forEach((fieldHost, i) => {
+            renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
+          })
+        } else if ([0, 1].includes(this.tplInfo.type)) {
+          qrCodeContainer.querySelectorAll(`[data-count='${this.tplData.tagFields.length}']`).forEach((fieldHost, i) => {
+            renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
+          })
+        }
       }
     },
     showFocus(type, index, text) {
