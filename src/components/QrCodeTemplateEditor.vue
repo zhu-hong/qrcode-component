@@ -1279,34 +1279,42 @@ export default {
       return tplCache.innerHTML
     },
     isLicitTpl() {
-      if(!this.controls.find(({ type }) => type === 'qr')) {
-        return false
-      }
-      return true
+      if(this.controls.find(({ type }) => type === 'qr')) return true
+
+      return false
     },
     getTplDemoBlob() {
-      if(this.isLicitTpl()) {
-        return new Blob([this.$refs.tpl.outerHTML], { type: 'image/svg+xml', })
-      } else {
+      if(!this.isLicitTpl()) {
+        this.$emit('noQr')
         return false
       }
+
+      const blob = new Blob([this.$refs.tpl.outerHTML], { type: 'image/svg+xml', })
+      blob.name = 'svgDemo.svg'
+      return blob
     },
     generateUsefulData() {
-      if(this.isLicitTpl()) {
-        return {
-          name: this.tplName,
-          svg: this.generateUseTpl(),
-          width: this.tplInfo.width,
-          height: this.tplInfo.height,
-          defaultColor: this.tplInfo.bgColor,
-          hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
-          hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
-          hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
-          tagCount: this.controls.filter(({ type }) => type === 'field').length,
-          controls: JSON.stringify(this.controls),
-        }
-      } else {
+      if(this.tplName.trim() === '') {
+        this.$emit('noName')
         return false
+      }
+
+      if(!this.isLicitTpl()) {
+        this.$emit('noQr')
+        return false
+      }
+
+      return {
+        name: this.tplName,
+        svg: this.generateUseTpl(),
+        width: this.tplInfo.width,
+        height: this.tplInfo.height,
+        defaultColor: this.tplInfo.bgColor,
+        hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
+        hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
+        hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
+        tagCount: this.controls.filter(({ type }) => type === 'field').length,
+        controls: JSON.stringify(this.controls),
       }
     },
     checkReadySize() {
