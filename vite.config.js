@@ -6,7 +6,11 @@ export default defineConfig({
   root: 'playground',
   plugins: [
     createVuePlugin(),
-    WindiCSS(),
+    WindiCSS({
+      // config: {
+      //   preflight: false,
+      // },
+    }),
   ],
   server: {
     open: true,

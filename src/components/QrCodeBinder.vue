@@ -4,7 +4,20 @@ import { encodeSvg, generateQrCodeContent, renderText } from '../utils'
 
 export default {
   name: 'QrCodeBinder',
-  props: ['tplInfo', 'tplData', 'focusColor'],
+  props: {
+    tplInfo: {
+      type: Object,
+      required: true,
+    },
+    tplData: {
+      type: Object,
+      required: true,
+    },
+    focusColor: {
+      type: String,
+      default: '#fbbf24',
+    },
+  },
   components: {
     QrCode,
   },
@@ -156,38 +169,11 @@ export default {
 
     <QrCode render-as="svg" :value="qrCodeText" style="display: none;" ref="qrCodeSvg" />
 
-    <span v-show="focusVisible" class="qrcode-binder-focuser" ref="focuser" :style="{ 'border-color': focusColor }">
-      <span class="qrcode-binder-focuser-title" :style="{ 'background-color': focusColor }"></span>
+    <span
+      v-show="focusVisible" style="display:inline-block;z-index:999;position:fixed;border-width:4px;border-style:solid;box-sizing:border-box;transform:translate(-10px, -5px);"
+      ref="focuser" :style="{ 'border-color': focusColor }"
+    >
+      <span :style="{ 'background-color': focusColor }" style="display:inline-block;position:absolute;padding:4px;color:black;font-size:16px;top:0;right:0;transform:translate(4px,-100%);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
     </span>
   </div>
 </template>
-
-<style lang="scss">
-.qrcode-binder-focuser {
-  display: inline-block;
-  z-index: 999;
-  position: fixed;
-  width: 180px;
-  height: 48px;
-  top: 200px;
-  left: 500px;
-  border: 4px solid rgba(251, 191, 36, 1);
-  box-sizing: border-box;
-  transform: translate(-10px, -5px);
-
-  .qrcode-binder-focuser-title {
-    display: inline-block;
-    position: absolute;
-    padding: 4px;
-    color: black;
-    font-size: 16px;
-    top: 0;
-    right: 0;
-    transform: translate(4px,-100%);
-    background-color: rgba(251, 191, 36, 1);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-</style>

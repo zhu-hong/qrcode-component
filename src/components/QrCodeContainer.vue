@@ -4,7 +4,12 @@ import { generateQrCodeContent, renderText } from '../utils'
 
 export default {
   name: 'QrCodeContainer',
-  props: ['qrInfo'],
+  props: {
+    qrInfo: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     QrCode,
   },

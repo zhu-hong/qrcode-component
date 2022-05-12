@@ -1,7 +1,12 @@
 <script>
 export default {
   name: 'QrCodeTemplate',
-  props: ['tplInfo'],
+  props: {
+    tplInfo: {
+      type: Object,
+      required: true,
+    },
+  },
 }
 </script>
 
