@@ -1,10 +1,10 @@
 <script>
 export default {
   name: 'QrCodeTemplate',
-  props: ['templateInfo'],
+  props: ['tplInfo'],
 }
 </script>
 
 <template>
-  <img :src="templateInfo.svgDemo" style="display:inline-block;object-fit:cover;">
+  <img :src="tplInfo.svgDemo" style="display:inline-block;object-fit:cover;">
 </template>

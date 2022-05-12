@@ -220,7 +220,7 @@ export default {
 <template>
   <div class="w-full h-full flex flex-wrap overflow-auto justify-start gap-10 py-50px px-20px">
     <QrCodeContainer
-      :qrCodeInfo="qr" v-for="qr of qrCodes" :key="qr.id"
+      :qrInfo="qr" v-for="qr of qrCodes" :key="qr.id"
       class="relative transition-all cursor-pointer text-shadow-lg transform hover:(shadow-xl)"
       :style="{ 'width': `${qr.model.width}mm`, 'height': `${qr.model.height}mm` }"
     />

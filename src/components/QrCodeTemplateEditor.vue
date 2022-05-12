@@ -40,6 +40,14 @@ export default {
       type: Array,
       default: () => [],
     },
+    preTplInfo: {
+      type: Object,
+      default: () => ({
+        defaultColor: "#FFFFFF",
+        defaultWidth: 150,
+        defaultHeight: 100,
+      }),
+    },
     preControls: {
       type: Array,
       default: () => [],
@@ -116,30 +124,9 @@ export default {
     document.addEventListener('keydown', this.handleKeyboard)
     window.addEventListener('mouseup', this.stopDrag)
 
-    // const tpls = await Qr.getTemplates()
-    // if(this.id) {
-    //   const curTpl = tpls.find(({ id }) => id === this.id)
-    //   if(curTpl) {
-    //     this.mode = 'edit'
-
-    //     this.tplInfo.bgColor = curTpl.defaultColor || this.tplInfo.bgColor
-    //     this.tplInfo.height = curTpl.defaultHeight
-    //     this.tplInfo.width = curTpl.defaultWidth
-    //     this.tplName = curTpl.name
-    //   } else {
-    //     let len = tpls.filter(({ type }) => type === 2).length
-    //     this.tplName = `自定义标签${len + 1}`
-
-    //     await this.$nextTick()
-    //     this.isChanged.changed = false
-    //   }
-    // } else {
-    //   let len = tpls.filter(({ type }) => type === 2).length
-    //   this.tplName = `自定义标签${len + 1}`
-
-    //   await this.$nextTick()
-    //   this.isChanged.changed = false
-    // }
+    this.tplInfo.bgColor = this.preTplInfo.defaultColor
+    this.tplInfo.width = this.preTplInfo.defaultWidth
+    this.tplInfo.height = this.preTplInfo.defaultHeight
     
     this.preControls.forEach((c) => {
       this.initControl(c)

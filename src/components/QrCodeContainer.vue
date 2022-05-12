@@ -4,19 +4,19 @@ import { generateQrCodeContent, renderText } from '../utils'
 
 export default {
   name: 'QrCodeContainer',
-  props: ['qrCodeInfo'],
+  props: ['qrInfo'],
   components: {
     QrCode,
   },
   computed: {
     tplInfo() {
-      return this.qrCodeInfo.model.config
+      return this.qrInfo.model.config
     },
     tplData() {
-      return this.qrCodeInfo.model
+      return this.qrInfo.model
     },
     qrCodeText() {
-      return generateQrCodeContent(this.qrCodeInfo.id)
+      return generateQrCodeContent(this.qrInfo.id)
     },
   },
   async mounted() {

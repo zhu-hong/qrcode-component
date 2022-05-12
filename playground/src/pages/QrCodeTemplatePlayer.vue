@@ -63,6 +63,6 @@ export default {
 
 <template>
   <div class="w-full h-full p-4">
-    <QrCodeTemplate v-for="t of qrCodeTemplates" :key="t.id" :templateInfo="t" class="mr-2" style="height:250px;" />
+    <QrCodeTemplate v-for="t of qrCodeTemplates" :key="t.id" :tplInfo="t" class="mr-2" style="height:250px;" />
   </div>
 </template>
