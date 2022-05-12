@@ -165,5 +165,5 @@ const tplData = {
 
 | 名称 | 描述 | 参数 |
 | --- | --- | --- |
-| showFocus | 显示聚焦框 | type: title(标题) | subTitle(副标题) | field(字段); index: 字段索引; text: 提示文字(不传不显示) |
-| hiddenFocus | 隐藏聚焦框 | - |%
+| showFocus | 显示聚焦框 | type: title|subTitle|field, index: 字段索引, text: 提示文字(不传不显示) |
+| hiddenFocus | 隐藏聚焦框 | - |
