@@ -1262,6 +1262,37 @@ export default {
       
       return tplCache.innerHTML
     },
+    isLicitTpl() {
+      if(!this.controls.find(({ type }) => type === 'qr')) {
+        return false
+      }
+      return true
+    },
+    getTplDemoBlob() {
+      if(this.isLicitTpl()) {
+        return new Blob([this.$refs.tpl.outerHTML], { type: 'image/svg+xml', })
+      } else {
+        return false
+      }
+    },
+    generateUsefulData() {
+      if(this.isLicitTpl()) {
+        return {
+          name: this.tplName,
+          svg: this.generateUseTpl(),
+          width: this.tplInfo.width,
+          height: this.tplInfo.height,
+          defaultColor: this.tplInfo.bgColor,
+          hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
+          hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
+          hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
+          tagCount: this.controls.filter(({ type }) => type === 'field').length,
+          controls: JSON.stringify(this.controls),
+        }
+      } else {
+        return false
+      }
+    },
     // saveTpl() {
     //   if(this.tplName.length === 0) {
     //     this.$message.error('标签名称不能为空')

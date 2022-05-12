@@ -12,7 +12,7 @@ export default {
     }
   },
   mounted() {
-    // const templateEditor = this.$refs.templateEditor
+    const templateEditor = this.$refs.templateEditor
     // const eventStack = [
     //   [templateEditor.setTemplateSize, [350, 200]],
     //   [templateEditor.changeColor, '#12aa9c'],
