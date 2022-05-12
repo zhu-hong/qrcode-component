@@ -1,5 +1,3 @@
-import './reset.css'
-
 import QrCodeContainerComponent from './components/QrCodeContainer.vue'
 import QrCodeTemplateComponent from './components/QrCodeTemplate.vue'
 import QrCodeBinderComponent from './components/QrCodeBinder.vue'

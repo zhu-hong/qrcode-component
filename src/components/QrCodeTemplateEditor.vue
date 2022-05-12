@@ -1803,37 +1803,6 @@ export default {
 
 <style lang="scss">
 .template-editor {
-  input {
-    font-family: inherit;
-    font-size: 100%;
-    line-height: 1.15;
-    margin: 0;
-    padding: 0;
-    line-height: inherit;
-    color: inherit;
-    
-    &::placeholder {
-      opacity: 1;
-      color: #9ca3af;
-    }
-    &::webkit-input-placeholder {
-      opacity: 1;
-      color: #9ca3af;
-    }
-    &::-moz-placeholder {
-      opacity: 1;
-      color: #9ca3af;
-    }
-    &:-ms-input-placeholder {
-      opacity: 1;
-      color: #9ca3af;
-    }
-    &::-ms-input-placeholder {
-      opacity: 1;
-      color: #9ca3af;
-    }
-  }
-
   &-container {
     display: flex;
     flex-direction: column;
@@ -1842,6 +1811,56 @@ export default {
     min-width: 790px;
     min-height: 510px;
     overflow: hidden;
+    
+    &, &::before, &::after {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    *:focus {
+      outline: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    *, ::before, ::after {
+      -webkit-box-sizing: border-box;
+      box-sizing: border-box;
+    }
+
+    input {
+      font-family: inherit;
+      font-size: 100%;
+      line-height: 1.15;
+      line-height: inherit;
+      color: inherit;
+      
+      &::placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      &::webkit-input-placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      &::-moz-placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      &:-ms-input-placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+      &::-ms-input-placeholder {
+        opacity: 1;
+        color: #9ca3af;
+      }
+    }
+    svg {
+      display: block;
+      vertical-align: middle;
+    }
+    text, tspan {
+      user-select: none;
+    }
   }
 
   &-hotkey-board {
@@ -1957,6 +1976,56 @@ export default {
 
       > * {
         padding: 0 20px;
+      }
+
+      .text-control-attribute {
+        width: 26px;
+        height: 26px;
+        border: solid 2px #DFE3E9;
+        border-radius: 4px;
+
+        &.active {
+          border-color: var(--template-editor-primary-color);
+
+          g, path {
+            fill: var(--template-editor-primary-color);
+          }
+        }
+      }
+      
+      .tpl-size-dialog {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: -1;
+        background-color: rgba(0, 0, 0, .4);
+        opacity: 0;
+        transition: all .2s linear;
+
+        &.show-dialog {
+          opacity: 1;
+          z-index: 999;
+
+          .tpl-size-dialog-body {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        &-body {
+          width: 340px;
+          background-color: white;
+          border-radius: 8px;
+          overflow: hidden;
+          transition: all .1s ease-in-out;
+          transform: translateY(-30%);
+          opacity: 0;
+        }
       }
     }
 
@@ -2115,60 +2184,6 @@ export default {
         color: white;
       }
     }
-  }
-}
-
-text, tspan {
-  user-select: none;
-}
-
-.text-control-attribute {
-  width: 26px;
-  height: 26px;
-  border: solid 2px #DFE3E9;
-  border-radius: 4px;
-
-  &.active {
-    border-color: var(--template-editor-primary-color);
-
-    g, path {
-      fill: var(--template-editor-primary-color);
-    }
-  }
-}
-
-.tpl-size-dialog {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: -1;
-  background-color: rgba(0, 0, 0, .4);
-  opacity: 0;
-  transition: all .2s linear;
-
-  &.show-dialog {
-    opacity: 1;
-    z-index: 999;
-
-    .tpl-size-dialog-body {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  &-body {
-    width: 340px;
-    background-color: white;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all .1s ease-in-out;
-    transform: translateY(-30%);
-    opacity: 0;
   }
 }
 </style>

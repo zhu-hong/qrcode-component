@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [
     createVuePlugin(),
     WindiCSS({
-      // config: {
-      //   preflight: false,
-      // },
+      config: {
+        // preflight: false,
+      },
     }),
   ],
   server: {
