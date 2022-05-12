@@ -27,39 +27,37 @@ Vue.use(QrCodeBinder)
 
 ### 例
 
-```js
+```jsx
 const qrInfo = {
-	"id": "4XyE7bjFLUq", // 二维码ID
-	"model": {
-	  "config": {
-	     "id": "color5",
-	     "svg": "<svg...", // 模版字符串
-	     "defaultColor": "#254569", // 模版默认背景色值
-	     "defaultWidth": 120, // 模版默认宽
-	     "defaultHeight": 80, // 模版默认高
-	     "hasLogo": true, // 模版是否有logo
-	     "hasTitle": true, // 模版是否有标题
-	     "hasSubTitle": true, // 模版是否有副标题
-	     "tagCount": 4, // 模版字段数量
-       "type": 2, // 0 黑白模版    1 彩色模版    2 自定义模版
-	   },
-	   "width": 120,
-	   "height": 80,
-	   "backgroudColor": "#254569",
-	   "logo": "https://pinia.vuejs.org/logo.svg",
-	   "title": "🥸🥸🥸🥸",
-	   "subTitle": "",
-	   "tagFields": [
-	     "🥸🥶🫠🥲🥸🥶🫠🥲🥸🥶",
-	     "🥱🥱🥱🥱",
-	     "🥱",
-	     "卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡",
-	   ],
-	 },
- }
-```
+  "id": "4XyE7bjFLUq", // 二维码ID
+  "model": {
+    "config": {
+      "id": "color5",
+      "svg": "<svg...", // 模版字符串
+      "defaultColor": "#254569", // 模版默认背景色值
+      "defaultWidth": 120, // 模版默认宽
+      "defaultHeight": 80, // 模版默认高
+      "hasLogo": true, // 模版是否有logo
+      "hasTitle": true, // 模版是否有标题
+      "hasSubTitle": true, // 模版是否有副标题
+      "tagCount": 4, // 模版字段数量
+      "type": 2, // 0 黑白模版    1 彩色模版    2 自定义模版
+    },
+    "width": 120,
+    "height": 80,
+    "backgroudColor": "#254569",
+    "logo": "https://pinia.vuejs.org/logo.svg",
+    "title": "🥸🥸🥸🥸",
+    "subTitle": "",
+    "tagFields": [
+      "🥸🥶🫠🥲🥸🥶🫠🥲🥸🥶",
+      "🥱🥱🥱🥱",
+      "🥱",
+      "卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡",
+    ],
+  },
+}
 
-```html
 <QrCodeContainer
   :qrInfo="qrInfo"
   style="{ 'width': `${qrInfo.model.width}mm`, 'height': `${qrInfo.model.height}mm` }"
@@ -93,9 +91,7 @@ const tplInfo = {
   "tagCount": 4,
   "type": 2,
 }
-```
 
-```html
 <QrCodeTemplate :tplInfo="tplInfo" style="height:250px;" />
 ```
 
@@ -149,9 +145,6 @@ const tplData = {
 	:tplInfo="tplInfo" :tplData="tplData" ref="QrCodeBinder"
 	focusColor="rgba(251, 113, 133, 1)"
 />
-```
-
-```html
 ```
 
 ### 参数
