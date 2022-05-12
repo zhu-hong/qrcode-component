@@ -48,7 +48,7 @@ export default {
       type: String,
       default: '',
     },
-    showHotKeyArea: {
+    showHotKeyBoard: {
       type: Boolean,
       default: true,
     },
@@ -56,7 +56,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    showAttrsArea: {
+    showAttrsBoard: {
       type: Boolean,
       default: true,
     },
@@ -1526,6 +1526,12 @@ export default {
     tplName() {
       this.$emit('update:templateName', this.tplName)
     },
+    templateName: {
+      immediate: true,
+      handler() {
+        this.tplName = this.templateName
+      },
+    },
   },
   computed: {
     currentNodeLevel() {
@@ -1569,7 +1575,7 @@ export default {
 
 <template>
   <div class="template-editor-container" :style="{ '--template-editor-primary-color': primaryColor }">
-    <div class="template-editor-header" v-show="showHotKeyArea">
+    <div class="template-editor-header" v-show="showHotKeyBoard">
       <tool-tip content="撤销">
         <svg @click="undo" width="18px" height="18px" :class="['template-container-control', { 'disabled': !undoHub.canUndo }]" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><path class="template-container-control-item" d="M12.245,5.66 L4.93,5.66 L4.93,3.45710678 C4.93,3.18096441 4.70614237,2.95710678 4.43,2.95710678 C4.29739176,2.95710678 4.1702148,3.0097852 4.07644661,3.10355339 L1.10355339,6.07644661 C0.908291245,6.27170876 0.908291245,6.58829124 1.10355339,6.78355339 L4.07644661,9.75644661 C4.27170876,9.95170876 4.58829124,9.95170876 4.78355339,9.75644661 C4.87732158,9.66267842 4.93,9.53550146 4.93,9.40289322 L4.93,7.2 L4.93,7.2 L12.245,7.2 C14.1586666,7.20000004 15.7099999,8.75133337 15.7099999,10.665 C15.7099999,12.5786666 14.1586666,14.13 12.245,14.13 L5.7,14.13 C5.27474074,14.13 4.93,14.4747407 4.93,14.9 C4.93,15.3252593 5.27474074,15.67 5.7,15.67 L12.245,15.67 L12.245,15.67 C15.0091852,15.67 17.25,13.4291852 17.25,10.665 C17.25,7.90081483 15.0091852,5.66 12.245,5.66 Z"></path></svg>
       </tool-tip>
@@ -1621,7 +1627,7 @@ export default {
         </div>
         <div v-for="p of placeholds" :id="p.id" :key="p.id" class="tpl-control-placeholder" @mousedown.stop="handleMouseDown"></div>
       </div>
-      <div class="template-editor-control-attribute-wrapper" v-show="showAttrsArea">
+      <div class="template-editor-control-attribute-wrapper" v-show="showAttrsBoard">
         <div class="template-editor-control-attribute-title">
           <template v-if="currentNode.type === 'bg'">
             <span style="font-weight:500;">模板编辑</span>
