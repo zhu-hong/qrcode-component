@@ -68,7 +68,7 @@ export default {
       type: Boolean,
       default: true,
     },
-    nativeHotKey: {
+    hotKey: {
       type: Boolean,
       default: true,
     },
@@ -125,11 +125,8 @@ export default {
     window.addEventListener('resize', this.renderPlaceholder)
     window.addEventListener('scroll', this.renderMask)
     window.addEventListener('scroll', this.renderPlaceholder)
+    document.addEventListener('keydown', this.handleKeyboard)
     window.addEventListener('mouseup', this.stopDrag)
-
-    if(this.nativeHotKey) {
-      document.addEventListener('keydown', this.handleKeyboard)
-    }
 
     this.tplInfo.bgColor = this.preTplInfo.defaultColor
     this.tplInfo.width = this.preTplInfo.defaultWidth
@@ -152,11 +149,8 @@ export default {
     window.removeEventListener('resize', this.renderPlaceholder)
     window.removeEventListener('scroll', this.renderMask)
     window.removeEventListener('scroll', this.renderPlaceholder)
+    document.removeEventListener('keydown', this.handleKeyboard)
     window.removeEventListener('mouseup', this.stopDrag)
-
-    if(this.nativeHotKey) {
-      document.removeEventListener('keydown', this.handleKeyboard)
-    }
   },
   methods: {
     modifyScale(scale) {
@@ -563,6 +557,8 @@ export default {
       this.setRecord()
     },
     handleKeyboard(e) {
+      if(!this.hotKey) return
+
       if(e.code === 'Delete') {
         this.removeControl()
       }

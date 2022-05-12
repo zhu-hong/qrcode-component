@@ -39,7 +39,7 @@ export default {
 <template>
   <QrCodeTemplateEditor ref="templateEditor"
     :fonts="[{ name: 'Fira Code', value: 'Fira Code' }, { name: 'JetBrains Mono', value: 'JetBrains Mono' }]"
-    :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48']" :nativeHotKey="false"
+    :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48']" :hotKey="true"
     :preControls="preControls" :showHotKeyBoard="true" :templateName.sync="templateName" :preTplInfo="preTplInfo"
   />
 </template>
