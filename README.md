@@ -143,14 +143,15 @@ const tplData = {
     "🥲🥸🥶🫠🥲🥸🥶🫠",
   ],
 }
-```
 
-```html
 <QrCodeBinder
 	:style="{ 'width': `${tplData.width}mm`, 'height': `${tplData.height}mm` }"
 	:tplInfo="tplInfo" :tplData="tplData" ref="QrCodeBinder"
 	focusColor="rgba(251, 113, 133, 1)"
 />
+```
+
+```html
 ```
 
 ### 参数
