@@ -56,9 +56,15 @@ export default {
         fieldHost.textContent = ''
       })
 
-      qrCodeContainer.querySelectorAll(`[data-count='${this.tplInfo.tagCount}']`).forEach((fieldHost, i) => {
-        renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
-      })
+      if(this.tplInfo.type === 2) {
+        qrCodeContainer.querySelectorAll(`[data-count='${this.tplInfo.tagCount}']`).forEach((fieldHost, i) => {
+          renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
+        })
+      } else if ([0, 1].includes(this.tplInfo.type)) {
+        qrCodeContainer.querySelectorAll(`[data-count='${this.tplData.tagFields.length}']`).forEach((fieldHost, i) => {
+          renderText(fieldHost, this.tplData.tagFields[i], containerWidth)
+        })
+      }
     }
   },
 }
