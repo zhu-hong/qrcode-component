@@ -33,6 +33,12 @@ export default {
     const qrCanvas = this.$refs.qrCodeCanvas.$el.querySelector('canvas').toDataURL()
     qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', qrCanvas)
 
+    if(this.tplInfo.type === 1) {
+      qr.querySelectorAll('[data-type=bg]').forEach((rect) => {
+        rect.setAttribute('fill', this.tplData.backgroudColor)
+      })
+    }
+
     if(this.tplInfo.hasLogo) {
       qrCodeContainer.querySelector('[data-type=logo]').setAttribute('href', this.tplData.logo)
     }
