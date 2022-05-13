@@ -43,6 +43,8 @@ export default {
     preTplInfo: {
       type: Object,
       default: () => ({
+        name: '',
+        id: '',
         defaultColor: "#FFFFFF",
         defaultWidth: 150,
         defaultHeight: 100,
@@ -51,10 +53,6 @@ export default {
     preControls: {
       type: Array,
       default: () => [],
-    },
-    templateName: {
-      type: String,
-      default: '',
     },
     showHotKeyBoard: {
       type: Boolean,
@@ -105,6 +103,7 @@ export default {
       nativeControls: Object.freeze(nativeControls),
       currentNode: {},
       tplName: '',
+      tplId: '',
       maskVisible: false,
       showLineDashSelect: false,
       placeholds: [],
@@ -141,8 +140,10 @@ export default {
     window.addEventListener('mouseup', this.stopDrag)
 
     this.tplInfo.bgColor = this.preTplInfo.defaultColor
-    this.tplInfo.width = this.preTplInfo.defaultWidth
-    this.tplInfo.height = this.preTplInfo.defaultHeight
+    this.tplInfo.width = this.preTplInfo.defaultWidth > 250 ? 250 : this.preTplInfo.defaultWidth < 20 ? 20 : this.preTplInfo.defaultWidth
+    this.tplInfo.height = this.preTplInfo.defaultHeight > 250 ? 250 : this.preTplInfo.defaultHeight < 20 ? 20 : this.preTplInfo.defaultHeight
+    this.tplName = this.preTplInfo.name
+    this.tplId = this.preTplInfo.id
     
     this.preControls.forEach((c) => {
       this.initControl(c)
@@ -467,7 +468,7 @@ export default {
       const node = document.getElementById(this.currentNode.id)
       node.setAttribute('transform', `translate(${this.currentNode.transform.x},${this.currentNode.transform.y})`)
     },
-    changeColor(color) {
+    setControlColor(color) {
       let type = this.currentNode.type
       switch (type) {
         case 'bg':
@@ -608,6 +609,33 @@ export default {
       style === 'italic' ? this.currentNode.children[1].dynamic['font-style'] = 'normal' : this.currentNode.children[1].dynamic['font-style'] = 'italic'
       // console.log('text italic')
       this.setRecord()
+    },
+    setFontFamily(font) {
+      if(!['title', 'subTitle', 'field'].includes(this.currentNode.type)) return
+
+      if(this.currentNode.children[1].dynamic['font-family'] === font) return
+
+      this.currentNode.children[1].dynamic['font-family'] = font
+      this.setRecord()
+    },
+    setFontSize(size) {
+      if(!['title', 'subTitle', 'field'].includes(this.currentNode.type)) return
+
+      if(this.currentNode.dynamic.size === size) return
+
+      if(size > 72 || size < 12) return
+
+      this.currentNode.dynamic.size = size
+      this.setRecord()
+    },
+    setRectRx(rx) {
+      if(this.currentNode.type !== 'rect') return
+
+      if(this.currentNode.dynamic.rx === rx) return
+
+      if(rx > 50 || rx < 0) return
+
+      this.currentNode.dynamic.rx = rx
     },
     toEdge(type) {
       if(this.currentNode.type === 'bg') return
@@ -1304,17 +1332,33 @@ export default {
         return false
       }
 
-      return {
-        name: this.tplName,
-        svg: this.generateUseTpl(),
-        width: this.tplInfo.width,
-        height: this.tplInfo.height,
-        defaultColor: this.tplInfo.bgColor,
-        hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
-        hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
-        hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
-        tagCount: this.controls.filter(({ type }) => type === 'field').length,
-        controls: JSON.stringify(this.controls),
+      if(this.tplId !== '') {
+        return {
+          id: this.tplId,
+          name: this.tplName,
+          svg: this.generateUseTpl(),
+          width: this.tplInfo.width,
+          height: this.tplInfo.height,
+          defaultColor: this.tplInfo.bgColor,
+          hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
+          hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
+          hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
+          tagCount: this.controls.filter(({ type }) => type === 'field').length,
+          controls: JSON.stringify(this.controls),
+        }
+      } else {
+        return {
+          name: this.tplName,
+          svg: this.generateUseTpl(),
+          width: this.tplInfo.width,
+          height: this.tplInfo.height,
+          defaultColor: this.tplInfo.bgColor,
+          hasLogo: this.controls.find(({ type }) => type === 'logo') ? true : false,
+          hasTitle: this.controls.find(({ type }) => type === 'title') ? true : false,
+          hasSubTitle: this.controls.find(({ type }) => type === 'subTitle') ? true : false,
+          tagCount: this.controls.filter(({ type }) => type === 'field').length,
+          controls: JSON.stringify(this.controls),
+        }
       }
     },
     checkReadySize() {
@@ -1506,15 +1550,6 @@ export default {
     'tplInfo.height'() {
       this.renderPlaceholder()
     },
-    tplName() {
-      this.$emit('update:templateName', this.tplName)
-    },
-    templateName: {
-      immediate: true,
-      handler() {
-        this.tplName = this.templateName
-      },
-    },
     showHotKeyBoard() {
       this.renderMask()
       this.renderPlaceholder()
@@ -1699,7 +1734,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': tplInfo.bgColor === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': tplInfo.bgColor }"></span>
                 </span>
-                <color-picker :colors="nanoColors" :activeColor="tplInfo.bgColor" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="tplInfo.bgColor" @select="setControlColor"></color-picker>
               </div>
             </div>
           </template>
@@ -1710,7 +1745,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.dynamic.fill === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.dynamic.fill }"></span>
                 </span>
-                <color-picker :colors="nanoColors" :activeColor="currentNode.dynamic.fill" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="currentNode.dynamic.fill" @select="setControlColor"></color-picker>
               </div>
             </div>
             <div class="template-editor-control-attribute-item">
@@ -1754,7 +1789,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.children[1].dynamic.fill === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.children[1].dynamic.fill }"></span>
                 </span>
-                <color-picker :colors="nanoColors" :activeColor="currentNode.children[1].dynamic.fill" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="currentNode.children[1].dynamic.fill" @select="setControlColor"></color-picker>
               </div>
             </div>
           </template>
@@ -1765,7 +1800,7 @@ export default {
                 <span style="width: 32px;height: 32px;border: #e5e7eb 1px solid;border-radius: 4px;margin-right: 10px;padding: 3px;">
                   <span style="display: inline-block;width: 100%;height: 100%;border-radius: 4px;" :style="{ 'border': currentNode.children[1].dynamic.stroke === '#FFFFFF' ? 'solid 1px rgba(156, 163, 175, .4)' : 'none', 'background-color': currentNode.children[1].dynamic.stroke }"></span>
                 </span>
-                <color-picker :colors="nanoColors" :activeColor="currentNode.children[1].dynamic.stroke" @select="changeColor"></color-picker>
+                <color-picker :colors="nanoColors" :activeColor="currentNode.children[1].dynamic.stroke" @select="setControlColor"></color-picker>
               </div>
             </div>
             <div class="template-editor-control-attribute-item">
