@@ -22,7 +22,7 @@ export default {
             "height": 100,
             "backgroudColor": "#FFFFFF",
             "logo": "https://pinia.vuejs.org/logo.svg",
-            "title": "朱鸿",
+            "title": "朱朱朱朱朱朱",
             "subTitle": "北包包包包包包包包包包包包包包包包包包包包包包包包",
             "tagFields": [
               "🥶🥶🥶🥶🥶🥶🥶🥶🥶🥶",
@@ -213,7 +213,7 @@ export default {
             "subTitle": "",
             "tagFields": [
               "🥸🥶🫠🥲🥸🥶🫠🥲🥸🥶",
-              "朱鸿",
+              "朱朱朱朱朱朱",
               "🥱",
               "卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡卡",
             ],
