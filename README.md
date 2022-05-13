@@ -222,7 +222,7 @@ const templateName = '标签123'
 | toEdge | type: ‘top’/‘bottom’ | - | 将当前控件移至画布顶部或底部 |
 | moveLevel | type: ‘up’/‘dowm’ | - | 将当前控件下或上移 |
 | removeControl | - | - | 删除当前控件 |
-| setTemplateSize | [width: 20 ≤ Number ≤ 250, height: 50 ≤ Number ≤ 250] | - | 设置模版大小 |
+| setTemplateSize | [width: 20 ≤ Number ≤ 250, height: 20 ≤ Number ≤ 250] | - | 设置模版大小 |
 | setControlColor | Color(色值) | - | 设置当前控件的颜色 |
 | toggleBold | - | - | 切换文字是否粗体 |
 | toggleItalic | - | - | 切换文字是否斜体 |
