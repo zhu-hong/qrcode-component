@@ -99,13 +99,6 @@ export function generateControl(ctx, wrapperWidth) {
       const size = ctxCloned.dynamic.size
       const len = ctxCloned.children[1].children[0].static.textContent.length
 
-      const fontFamily = ctxCloned.children[1].dynamic['font-family']
-      if(!fontFamilys.find(({ value }) => value === fontFamily)) {
-        console.log(1)
-        ctx.children[1].dynamic['font-family'] = fontFamilys[0].value
-        ctxCloned.children[1].dynamic['font-family'] = fontFamilys[0].value
-      }
-
       if(ctx.children[0].dynamic.width === undefined) {
         ctx.children[0].dynamic.width = size * len + 14
       }
