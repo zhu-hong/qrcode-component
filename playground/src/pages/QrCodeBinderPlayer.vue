@@ -13,6 +13,7 @@ export default {
           "hasTitle": true,
           "hasSubTitle": true,
           "tagCount": 4,
+          "type": 2,
         },
         {
           "id": "4Y1z6ML8AAj",
@@ -24,6 +25,7 @@ export default {
           "hasTitle": true,
           "hasSubTitle": false,
           "tagCount": 3,
+          "type": 2,
         }
       ],
       tplDatas: [
