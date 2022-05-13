@@ -1,6 +1,6 @@
 {
   "name": "yiyun-qrcode",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "亦云二维码组件",
   "main": "index.min.js",
   "scripts": {
