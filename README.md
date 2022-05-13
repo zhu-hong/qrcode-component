@@ -183,11 +183,12 @@ const preTplInfo = {
 const preControls = [{"type":"rect","tag":"rect": "..."}]
 const templateName = '标签123'
 
-<QrCodeTemplateEditor ref="templateEditor" style="width:100%;height:100%;" primaryColor="#fb7185"
+<QrCodeTemplateEditor
+  ref="templateEditor" style="width:100%;height:100%;"
   :fonts="[{ name: 'Fira Code', value: 'Fira Code' }, { name: 'JetBrains Mono', value: 'JetBrains Mono' }]"
-  :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48', '#9b1e64']" :hotKey="true"
-	:fieldMaxCount="5" :rectMaxCount="5"
-  :preControls="preControls" :showHotKeyBoard="true" :templateName.sync="templateName" :preTplInfo="preTplInfo"
+  :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48', '#9b1e64']"
+  :preControls="preControls" :preTplInfo="preTplInfo" :hotKey="true" primaryColor="#fb7185"
+	:fieldMaxCount="5" :rectMaxCount="5" :showHotKeyBoard="true"
 />
 ```
 
