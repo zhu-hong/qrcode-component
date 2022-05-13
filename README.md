@@ -1,10 +1,10 @@
 # 亦云二维码组件
 
-[doc](https://peppermint-fairy-a84.notion.site/d520127ac6174d13b4aafa7a8e420089)
+[doc](https://doc.wingoht.com/pages/viewpage.action?pageId=54134209)
 
 [example](https://qrcode-playground.vercel.app/)
 
-[git](http://gitlab.wingoht.com/TSESCloud/Front/yiyun-qrcode/-/tree/dev_zh)
+[git](http://gitlab.wingoht.com/TSESCloud/Front/yiyun-qrcode)
 
 ```bash
 npm install yiyun-qrcode
