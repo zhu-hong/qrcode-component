@@ -1,6 +1,6 @@
 # 亦云二维码组件
 
-[doc](https://www.notion.so/d520127ac6174d13b4aafa7a8e420089)
+[doc](https://peppermint-fairy-a84.notion.site/d520127ac6174d13b4aafa7a8e420089)
 
 [example](https://qrcode-playground.vercel.app/)
 
