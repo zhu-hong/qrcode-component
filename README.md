@@ -230,7 +230,7 @@ const templateName = '标签123'
 | setFontFamily | font: String | - | 设置当前文字控件的字体 |
 | setFontSize | size: 12 ≤ Number ≤ 72  |  | 设置当前文字控件的字体大小 |
 | setRectRx | rx: 0 ≤ Number ≤ 50 | - | 设置当前矩形控件的圆角 |
-| getTplDemoBlob | - | false | Blob | 获取模版缩略图的Blob对象,模版不符合要求时返回false(未添加二维码控件) |
+| getTplDemoBlob | - | false/Blob | 获取模版缩略图的Blob对象,模版不符合要求时返回false(未添加二维码控件) |
 | generateUsefulData | - | - | 生成完整的二维码模版信息,模版不符合要求时返回false(未添加二维码控件或二维码名称为空),数据格式见下方 |
 
 ```tsx
