@@ -157,14 +157,14 @@ const tplData = {
 | --- | --- | --- | --- | --- |
 | tplInfo | - | 是 | - | 模版详情 |
 | tplData | - | 是 | - | 绑定到模版的数据 |
-| focusColor | 色值 | 否 | #fbbf24 | 聚焦框颜色 |
+| focusColor | String(色值) | 否 | #fbbf24 | 聚焦框颜色 |
 
 ### 方法
 
-| 名称 | 描述 | 参数 |
+| 名称 | 参数 | 描述 |
 | --- | --- | --- |
-| showFocus | 显示聚焦框 | type: title/subTitle/field, index: 字段索引, text?: 提示文字 |
-| hiddenFocus | 隐藏聚焦框 | - |
+| showFocus | type: ‘title'/'subTitle'/'field', index(字段索引): Number, text?(提示文字): String | 显示聚焦框 |
+| hiddenFocus | - | 隐藏聚焦框 |
 
 ## `QrCodeTemplateEditor`
 
@@ -184,11 +184,11 @@ const preControls = [{"type":"rect","tag":"rect": "..."}]
 const templateName = '标签123'
 
 <QrCodeTemplateEditor
-  ref="templateEditor" style="width:100%;height:100%;"
+	ref="templateEditor" style="width:100%;height:100%;"
   :fonts="[{ name: 'Fira Code', value: 'Fira Code' }, { name: 'JetBrains Mono', value: 'JetBrains Mono' }]"
   :colors="['#eea2a4', '#ee3f4d', '#12aa9c', '#57c3c2', '#ef6f48', '#9b1e64']"
-  :preControls="preControls" :preTplInfo="preTplInfo" :hotKey="true" primaryColor="#fb7185"
-	:fieldMaxCount="5" :rectMaxCount="5" :showHotKeyBoard="true"
+  :preControls="preControls" :preTplInfo="preTplInfo" primaryColor="#fb7185"
+	:fieldMaxCount="5" :rectMaxCount="5" :showHotKeyBoard="true" :hotKey="true"
 />
 ```
 
@@ -197,14 +197,14 @@ const templateName = '标签123'
 | 名称 | 类型 | 必填 | 默认值 | 描述 |
 | --- | --- | --- | --- | --- |
 | primaryColor | 色值 | 否 | #0B58D2 | 组件主题色 |
-| fonts | []{ name: String, value: String } | 否 | 四种字体 | 通过参数添加自己的字体 |
-| colors | []String | 否 | 16种颜色 | 通过参数添加自己的颜色 |
+| fonts | []{ name: String, value: String } | 否 | 四种字体 | 添加自己的字体 |
+| colors | []String | 否 | 16种颜色 | 添加自己的颜色 |
 | preTplInfo | - | 否 | { id: '', name: '', defaultColor: ‘#FFFFFF, defaultWidth: 150, defaultHeight: 100 } | 模版详情,用于编辑已有模版,不传则为新建模版 |
 | preControls | []Control | 否 | [] | 通过获取模版控件信息接口得到的数据(反序列化再使用) |
 | showHotKeyBoard | Boolean | 否 | true | 显示快捷键面板 |
 | showControlLib | Boolean | 否 | true | 显示控件库 |
 | showAttrsBoard | Boolean | 否 | true | 显示控件属性面板 |
-| hotKey | Boolean | 否 | true | 使用内置快捷键 |
+| hotKey | Boolean | 否 | true | 开启内置快捷键 |
 | fieldMaxCount | Number | 否 | 8 | 字段控件最大数量 |
 | rectMaxCount | Number | 否 | 10 | 矩形控件最大数量 |
 | lineMaxCount | Number | 否 | 3 | 直线控件最大数量 |
@@ -220,8 +220,8 @@ const templateName = '标签123'
 | incrementScale | Number | - | 画布缩放 |
 | fitScale | - | - | 画布缩放至一个合适的大小 |
 | addControl | type(控件类型):‘title’/‘subTitle’/‘field’/‘qr’/‘logo’/‘rect’/‘line’, position?(相对于画布左上角的偏移量): [x:Number, y:Nnmber] | - | 添加一个控件 |
-| toEdge | type: ‘top’/‘bottom’ | - | 将当前控件移至画布顶部或底部 |
-| moveLevel | type: ‘up’/‘dowm’ | - | 将当前控件下或上移 |
+| toEdge | type: ‘top’/‘bottom’ | - | 将当前控件图层移至画布顶部或底部 |
+| moveLevel | type: ‘up’/‘dowm’ | - | 将当前控件图层下或上移一层 |
 | removeControl | - | - | 删除当前控件 |
 | setTemplateSize | [width: 20 ≤ Number ≤ 250, height: 20 ≤ Number ≤ 250] | - | 设置模版大小 |
 | setControlColor | Color(色值) | - | 设置当前控件的颜色 |
