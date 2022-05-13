@@ -7,7 +7,7 @@ export default defineConfig({
   input: './src/index.js',
   output: {
     format: 'esm',
-    file: 'index.min.js',
+    file: 'sdk/index.min.js',
     sourcemap: true,
   },
   plugins: [
