@@ -1,9 +1,11 @@
 {
   "name": "yiyun-qrcode",
   "version": "0.0.0",
-  "main": "dist/index.min.js",
+  "main": "index.min.js",
   "files": [
-    "dist"
+    "index.min.js",
+    "index.min.js.map",
+    "style.css"
   ],
   "scripts": {
     "dev": "vite",
