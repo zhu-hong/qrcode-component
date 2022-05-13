@@ -54,7 +54,7 @@ export default {
       qrCodeContainer.querySelector('[data-type=qr]').setAttribute('href', 'data:image/svg+xml;utf8,' + encodeSvg(qrSvg))
 
       if(this.tplInfo.type === 1) {
-        qr.querySelectorAll('[data-type=bg]').forEach((rect) => {
+        qrCodeContainer.querySelectorAll('[data-type=bg]').forEach((rect) => {
           rect.setAttribute('fill', this.tplData.backgroudColor)
         })
       }
