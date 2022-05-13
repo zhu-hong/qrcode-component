@@ -226,7 +226,7 @@ const templateName = '标签123'
 | setControlColor | Color(色值) | - | 设置当前控件的颜色 |
 | toggleBold | - | - | 切换文字是否粗体 |
 | toggleItalic | - | - | 切换文字是否斜体 |
-| setTextAlign | type: ‘left’|‘center’|‘right’ | - | 设置当前文字控件的对齐方式 |
+| setTextAlign | type: ‘left’/‘center’/‘right’ | - | 设置当前文字控件的对齐方式 |
 | setFontFamily | font: String | - | 设置当前文字控件的字体 |
 | setFontSize | size: 12 ≤ Number ≤ 72  |  | 设置当前文字控件的字体大小 |
 | setRectRx | rx: 0 ≤ Number ≤ 50 | - | 设置当前矩形控件的圆角 |
