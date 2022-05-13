@@ -219,7 +219,7 @@ const templateName = '标签123'
 | pasteControl | - | - | 粘贴复制的控件 |
 | incrementScale | Number | - | 画布缩放 |
 | fitScale | - | - | 画布缩放至一个合适的大小 |
-| addControl | type(控件类型):‘title’/‘subTitle’/‘field’/‘qr’/‘logo’/‘rect’/‘line’, position?(相对于画布左上角的偏移量): [x:Number, y:Nnmber] | - | 添加一个控件 |
+| addControl | type(控件类型):‘title’/‘subTitle’/‘field’/‘qr’/‘logo’/‘rect’/‘line’, position?(相对于画布左上角的偏移量): [x:Number, y:Number] | - | 添加一个控件 |
 | toEdge | type: ‘top’/‘bottom’ | - | 将当前控件图层移至画布顶部或底部 |
 | moveLevel | type: ‘up’/‘dowm’ | - | 将当前控件图层下或上移一层 |
 | removeControl | - | - | 删除当前控件 |
